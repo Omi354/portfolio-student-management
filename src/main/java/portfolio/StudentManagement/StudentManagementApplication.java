@@ -12,20 +12,21 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @RestController
 public class StudentManagementApplication {
-	private Map<String, String> studentInfoMap = new HashMap<>();
 
 	public StudentManagementApplication() {
 		studentInfoMap.put("name", "omi");
 		studentInfoMap.put("age", "92");
 	}
 
+	private Map<String, String> studentInfoMap = new HashMap<>();
+
 	public static void main(String[] args) {
 		SpringApplication.run(StudentManagementApplication.class, args);
 	}
 
 	@GetMapping("/studentInfo")
-	public String getStudentInfo() {
-		return studentInfoMap.get("name") + " " + studentInfoMap.get("age") + "歳";
+	public Map<String, String> getStudentInfo() {
+		return studentInfoMap;
 	}
 
 	@GetMapping("/studentName")
