@@ -1,7 +1,9 @@
 package portfolio.StudentManagement;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,6 +25,15 @@ public class StudentManagementApplication {
 		SpringApplication.run(StudentManagementApplication.class, args);
 	}
 
+	@GetMapping("/allStudents")
+	public String getAllStudents() {
+		List<Student> allStudentsList = repository.selectAllStudents();
+		String allStudents = allStudentsList.stream()
+				.map(student -> student.getName() + " " + student.getAge() + "歳")
+				.collect(Collectors.joining("\n"));
+		return allStudents;
+	}
+
 	@GetMapping("/student")
 	public String getStudent(@RequestParam String name) {
 		Student student =  repository.searchByName(name);
@@ -35,8 +46,8 @@ public class StudentManagementApplication {
 	}
 
 	@PatchMapping("/student")
-	public void setStudentName(String name, String newName) {
-		repository.updateStudent(name, newName);
+	public void setStudent(String name, int age) {
+		repository.updateStudent(name, age);
 	}
 
 	@DeleteMapping("student")
