@@ -22,11 +22,11 @@ public class StudentManagementApplication {
 
 	@GetMapping("/studentList")
 	public List<Student> getStudentList() {
-		return studentRepository.search();
+		return studentRepository.selectAllStudentList();
 	}
 
 	@GetMapping("/studentCourseList")
 	public List<StudentCourse> getStudentCourseList() {
-		return studentCourseRepository.searchStudentCourseList();
+		return studentCourseRepository.selectAllStudentCourseList();
 	}
 }
