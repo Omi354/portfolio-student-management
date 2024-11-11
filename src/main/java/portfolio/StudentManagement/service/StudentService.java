@@ -20,11 +20,11 @@ public class StudentService {
     this.studentCourseRepository = studentCourseRepository;
   }
 
-  public List<Student> selectAllStudentList() {
+  public List<Student> searchForAllStudentList() {
     return studentRepository.selectAllStudentList();
   }
 
-  public List<StudentCourse> gelectAllStudentCourseList() {
+  public List<StudentCourse> searchForAllStudentCourseList() {
     return studentCourseRepository.selectAllStudentCourseList();
   }
 }
