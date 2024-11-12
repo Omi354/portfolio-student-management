@@ -1,8 +1,6 @@
 package portfolio.StudentManagement.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +12,7 @@ import portfolio.StudentManagement.service.StudentService;
 
 @RestController
 public class StudentController {
+
   private StudentService service;
   private StudentConverter converter;
 
@@ -35,7 +34,10 @@ public class StudentController {
 
   @GetMapping("/studentDetailList")
   public List<StudentDetail> getStudentDetailsList() {
-    return converter.convertStudentDetails();
+    List<Student> allStudentList = service.searchForAllStudentList();
+    List<StudentCourse> allStudentCourseList = service.searchForAllStudentCourseList();
 
+    return converter.getStudentDetailsList(allStudentList, allStudentCourseList);
   }
+
 }

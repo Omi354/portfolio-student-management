@@ -12,18 +12,9 @@ import portfolio.StudentManagement.service.StudentService;
 
 @Component
 public class StudentConverter {
-  private StudentService service;
-
-  @Autowired
-  public StudentConverter(StudentService service) {
-    this.service = service;
-  }
-
-  public List<StudentDetail> convertStudentDetails() {
+  public List<StudentDetail> getStudentDetailsList(List<Student> allStudentList,
+      List<StudentCourse> allStudentCourseList) {
     List<StudentDetail> studentDetailsList = new ArrayList<>();
-    List<Student> allStudentList = service.searchForAllStudentList();
-    List<StudentCourse> allStudentCourseList = service.searchForAllStudentCourseList();
-
     allStudentList.forEach(student -> {
       StudentDetail studentDetail = new StudentDetail();
       studentDetail.setStudent(student);
