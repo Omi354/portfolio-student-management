@@ -2,15 +2,15 @@ package portfolio.StudentManagement.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import portfolio.StudentManagement.controller.converter.StudentConverter;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.StudentCourse;
-import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.service.StudentService;
 
-@RestController
+@Controller
 public class StudentController {
 
   private StudentService service;
@@ -23,8 +23,14 @@ public class StudentController {
   }
 
   @GetMapping("/studentList")
-  public List<Student> getStudentList() {
-    return service.searchForAllStudentList();
+  public String getStudentList(Model model) {
+    List<Student> allStudentList = service.searchForAllStudentList();
+    List<StudentCourse> allStudentCourseList = service.searchForAllStudentCourseList();
+    model.addAttribute("studentList",
+        converter.getStudentDetailsList(allStudentList, allStudentCourseList));
+
+    return "studentList";
+
   }
 
   @GetMapping("/studentCourseList")
@@ -33,11 +39,13 @@ public class StudentController {
   }
 
   @GetMapping("/studentDetailList")
-  public List<StudentDetail> getStudentDetailsList() {
+  public String getStudentDetailsList(Model model) {
     List<Student> allStudentList = service.searchForAllStudentList();
     List<StudentCourse> allStudentCourseList = service.searchForAllStudentCourseList();
+    model.addAttribute("studentList",
+        converter.getStudentDetailsList(allStudentList, allStudentCourseList));
 
-    return converter.getStudentDetailsList(allStudentList, allStudentCourseList);
+    return "studentList";
   }
 
 }
