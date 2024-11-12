@@ -15,11 +15,6 @@ import portfolio.StudentManagement.repository.StudentRepository;
 @RestController
 public class StudentManagementApplication {
 
-	@Autowired
-	private StudentRepository studentRepository;
-	@Autowired
-	private StudentCourseRepository studentCourseRepository;
-
 	public static void main(String[] args) {
 		SpringApplication.run(StudentManagementApplication.class, args);
 	}
