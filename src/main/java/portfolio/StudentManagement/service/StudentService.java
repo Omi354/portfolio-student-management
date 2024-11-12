@@ -21,20 +21,10 @@ public class StudentService {
   }
 
   public List<Student> searchForAllStudentList() {
-    List<Student> allStudentList = studentRepository.selectAllStudentList();
-    List<Student> studentListOrMore30YearsOld = allStudentList.stream()
-        .filter(student -> student.getAge() >= 30)
-        .toList();
-
-    return studentListOrMore30YearsOld;
+    return studentRepository.selectAllStudentList();
   }
 
   public List<StudentCourse> searchForAllStudentCourseList() {
-    List<StudentCourse> allStudentCourseList = studentCourseRepository.selectAllStudentCourseList();
-    List<StudentCourse> javaCourseList = allStudentCourseList.stream()
-        .filter(studentCourse -> studentCourse.getCourseName().contains("Java"))
-        .toList();
-
-    return javaCourseList;
+    return studentCourseRepository.selectAllStudentCourseList();
   }
 }
