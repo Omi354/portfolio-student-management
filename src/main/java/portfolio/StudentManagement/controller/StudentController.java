@@ -2,6 +2,7 @@ package portfolio.StudentManagement.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,21 +36,17 @@ public class StudentController {
     List<Student> allStudentList = service.searchForAllStudentList();
     List<StudentCourse> allStudentCourseList = service.searchForAllStudentCourseList();
 
-    for (Student student : allStudentList) {
+    allStudentList.forEach(student -> {
       StudentDetail studentDetail = new StudentDetail();
       studentDetail.setStudent(student);
 
-      List<StudentCourse> convertedStudentCoursesList = new ArrayList<>();
-      for (StudentCourse studentCourse : allStudentCourseList) {
-        if (student.getId().equals(studentCourse.getStudentId())) {
-          convertedStudentCoursesList.add(studentCourse);
-        }
-      }
+      List<StudentCourse> convertedStudentCoursesList = allStudentCourseList.stream()
+          .filter(studentCourse -> student.getId().equals(studentCourse.getStudentId()))
+          .collect(Collectors.toList());
       studentDetail.setStudentCourseList(convertedStudentCoursesList);
       studentDetailsList.add(studentDetail);
-    }
+    });
     return studentDetailsList;
 
-    // { student:{Studentの情報},StudentCourse: {StudentCourse},{StudentCourse} }
   }
 }
