@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import portfolio.StudentManagement.controller.converter.StudentConverter;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.domain.StudentDetail;
@@ -14,10 +15,12 @@ import portfolio.StudentManagement.service.StudentService;
 @RestController
 public class StudentController {
   private StudentService service;
+  private StudentConverter converter;
 
   @Autowired
-  public StudentController(StudentService service) {
+  public StudentController(StudentService service, StudentConverter converter) {
     this.service = service;
+    this.converter = converter;
   }
 
   @GetMapping("/studentList")
@@ -32,21 +35,7 @@ public class StudentController {
 
   @GetMapping("/studentDetailList")
   public List<StudentDetail> getStudentDetailsList() {
-    List<StudentDetail> studentDetailsList = new ArrayList<>();
-    List<Student> allStudentList = service.searchForAllStudentList();
-    List<StudentCourse> allStudentCourseList = service.searchForAllStudentCourseList();
-
-    allStudentList.forEach(student -> {
-      StudentDetail studentDetail = new StudentDetail();
-      studentDetail.setStudent(student);
-
-      List<StudentCourse> convertedStudentCoursesList = allStudentCourseList.stream()
-          .filter(studentCourse -> student.getId().equals(studentCourse.getStudentId()))
-          .collect(Collectors.toList());
-      studentDetail.setStudentCourseList(convertedStudentCoursesList);
-      studentDetailsList.add(studentDetail);
-    });
-    return studentDetailsList;
+    return converter.convertStudentDetails();
 
   }
 }
