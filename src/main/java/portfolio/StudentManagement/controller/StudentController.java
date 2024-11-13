@@ -30,22 +30,11 @@ public class StudentController {
         converter.getStudentDetailsList(allStudentList, allStudentCourseList));
 
     return "studentList";
-
   }
 
   @GetMapping("/studentCourseList")
   public List<StudentCourse> getStudentCourseList() {
     return service.searchForAllStudentCourseList();
   }
-
-  @GetMapping("/studentDetailList")
-  public String getStudentDetailsList(Model model) {
-    List<Student> allStudentList = service.searchForAllStudentList();
-    List<StudentCourse> allStudentCourseList = service.searchForAllStudentCourseList();
-    model.addAttribute("studentList",
-        converter.getStudentDetailsList(allStudentList, allStudentCourseList));
-
-    return "studentList";
-  }
-
+  
 }
