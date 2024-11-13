@@ -52,6 +52,19 @@
   </div>
 
   <div>
+    <label for="courseId">コースID</label>
+    <input type="number" th:field="*{studentCourseList[0].id}" id="courseId" required>
+  </div>
+  <div>
+    <label for="courseName">性別</label>
+    <select th:field="*{studentCourseList[0].courseName}" id="courseName">
+      <option value="Javaフルコース">Javaフルコース</option>
+      <option value="AWSフルコース">AWSフルコース</option>
+      <option value="デザインコース">デザインコース</option>
+    </select>
+  </div>
+
+  <div>
     <button type="submit">登録</button>
   </div>
 
