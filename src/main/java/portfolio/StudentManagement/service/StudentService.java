@@ -5,11 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.StudentCourse;
+import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.repository.StudentCourseRepository;
 import portfolio.StudentManagement.repository.StudentRepository;
 
 @Service
 public class StudentService {
+
   private StudentRepository studentRepository;
   private StudentCourseRepository studentCourseRepository;
 
@@ -26,5 +28,10 @@ public class StudentService {
 
   public List<StudentCourse> searchForAllStudentCourseList() {
     return studentCourseRepository.selectAllStudentCourseList();
+  }
+
+  public void registerStudent(StudentDetail studentDetail) {
+    Student newStudent = studentDetail.getStudent();
+    studentRepository.createStudent(newStudent);
   }
 }
