@@ -26,15 +26,15 @@ public class StudentController {
   public String getStudentList(Model model) {
     List<Student> allStudentList = service.searchForAllStudentList();
     List<StudentCourse> allStudentCourseList = service.searchForAllStudentCourseList();
-    model.addAttribute("studentList",
+    model.addAttribute("studentList", // これはテンプレートリテラルに渡す変数名
         converter.getStudentDetailsList(allStudentList, allStudentCourseList));
 
-    return "studentList";
+    return "studentList"; // これはテンプレートエンジンのファイル名
   }
 
   @GetMapping("/studentCourseList")
   public List<StudentCourse> getStudentCourseList() {
     return service.searchForAllStudentCourseList();
   }
-  
+
 }
