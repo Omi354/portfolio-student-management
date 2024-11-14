@@ -8,11 +8,6 @@
 
 <form th:action="@{/registerStudent}" th:object="${studentDetail}" method="post">
   <div>
-    <label for="id">ID</label>
-    <input type="number" th:field="*{student.id}" id="id" required>
-  </div>
-
-  <div>
     <label for="fullName">名前</label>
     <input type="text" th:field="*{student.fullName}" id="fullName" required>
   </div>
@@ -34,7 +29,7 @@
 
   <div>
     <label for="city">住所</label>
-    <input type="text" th:field="*{student.city}" id="city">
+    <input type="text" th:field="*{student.city}" id="city" required>
   </div>
 
   <div>
@@ -52,11 +47,7 @@
   </div>
 
   <div>
-    <label for="courseId">コースID</label>
-    <input type="number" th:field="*{studentCourseList[0].id}" id="courseId" required>
-  </div>
-  <div>
-    <label for="courseName">性別</label>
+    <label for="courseName">受講コース</label>
     <select th:field="*{studentCourseList[0].courseName}" id="courseName">
       <option value="Javaフルコース">Javaフルコース</option>
       <option value="AWSフルコース">AWSフルコース</option>

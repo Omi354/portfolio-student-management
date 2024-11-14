@@ -3,6 +3,7 @@ package portfolio.StudentManagement.repository;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import portfolio.StudentManagement.data.Student;
@@ -22,7 +23,8 @@ public interface StudentCourseRepository {
   @Select("SELECT * FROM students_courses")
   List<StudentCourse> selectAllStudentCourseList();
 
-  @Insert("INSERT INTO students_courses (id, student_id, course_name, start_date, end_date) VALUES(#{studentCourse.id}, #{student.id}, #{studentCourse.courseName}, CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 YEAR))")
+  @Insert("INSERT INTO students_courses (student_id, course_name, start_date, end_date) VALUES((SELECT id FROM students WHERE email = #{student.email}), #{studentCourse.courseName}, CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 YEAR))")
+  @Options(useGeneratedKeys = true, keyProperty = "studentCourse.id")
   void createStudentCourse(@Param("student") Student student,
       @Param("studentCourse") StudentCourse studentCourse);
 }

@@ -3,6 +3,7 @@ package portfolio.StudentManagement.repository;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import portfolio.StudentManagement.data.Student;
@@ -22,6 +23,7 @@ public interface StudentRepository {
   List<Student> selectAllStudentList();
 
 
-  @Insert("INSERT INTO students (id, full_name, kana, nick_name, email, city, age, gender) VALUES(#{student.id},#{student.fullName},#{student.kana},#{student.nickName},#{student.email},#{student.city},#{student.age},#{student.gender})")
+  @Insert("INSERT INTO students (full_name, kana, nick_name, email, city, age, gender) VALUES(#{student.fullName},#{student.kana},#{student.nickName},#{student.email},#{student.city},#{student.age},#{student.gender})")
+  @Options(useGeneratedKeys = true, keyProperty = "student.id")
   void createStudent(@Param("student") Student student);
 }
