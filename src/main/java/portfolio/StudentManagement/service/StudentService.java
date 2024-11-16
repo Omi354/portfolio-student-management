@@ -53,6 +53,11 @@ public class StudentService {
   @Transactional
   public void updateStudent(StudentDetail studentDetail) {
     Student studentAfterModifying = studentDetail.getStudent();
+    List<StudentCourse> studentCourseListAfterModifying = studentDetail.getStudentCourseList();
+
     studentRepository.updateStudent(studentAfterModifying);
+    for (StudentCourse studentCourse : studentCourseListAfterModifying) {
+      studentCourseRepository.updateStudentCourse(studentCourse);
+    }
   }
 }

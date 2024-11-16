@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.StudentCourse;
 
@@ -30,4 +31,10 @@ public interface StudentCourseRepository {
   @Options(useGeneratedKeys = true, keyProperty = "studentCourse.id")
   void createStudentCourse(@Param("student") Student student,
       @Param("studentCourse") StudentCourse studentCourse);
+
+  @Update(
+      "UPDATE students_courses SET course_name = #{studentCourse.courseName} "
+          + "WHERE id = #{studentCourse.id}"
+  )
+  void updateStudentCourse(@Param("studentCourse") StudentCourse studentCourse);
 }
