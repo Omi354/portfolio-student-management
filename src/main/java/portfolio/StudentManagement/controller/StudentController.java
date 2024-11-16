@@ -30,8 +30,8 @@ public class StudentController {
 
   @GetMapping("/studentList")
   public String getStudentList(Model model) {
-    List<Student> allStudentList = service.searchForAllStudentList();
-    List<StudentCourse> allStudentCourseList = service.searchForAllStudentCourseList();
+    List<Student> allStudentList = service.getAllStudentList();
+    List<StudentCourse> allStudentCourseList = service.getAllStudentCourseList();
     model.addAttribute("studentList", // これはテンプレートリテラルに渡す変数名
         converter.getStudentDetailsList(allStudentList, allStudentCourseList));
 
@@ -40,7 +40,7 @@ public class StudentController {
 
   @GetMapping("/studentCourseList")
   public String getStudentCourseList(Model model) {
-    model.addAttribute("allStudentCourseList", service.searchForAllStudentCourseList());
+    model.addAttribute("allStudentCourseList", service.getAllStudentCourseList());
     return "studentCourseList";
   }
 
@@ -61,7 +61,7 @@ public class StudentController {
 
   @GetMapping("/student/{id}")
   public String getStudent(@PathVariable String id, Model model) {
-    model.addAttribute("studentDetail", service.searchForStudentDetailById(id));
+    model.addAttribute("studentDetail", service.getStudentDetailById(id));
     return "updateStudent";
   }
 

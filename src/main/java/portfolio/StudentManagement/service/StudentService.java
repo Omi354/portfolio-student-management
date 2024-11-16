@@ -25,23 +25,23 @@ public class StudentService {
     this.studentCourseRepository = studentCourseRepository;
   }
 
-  public StudentDetail searchForStudentDetailById(String id) {
-    Student studentSearchById = studentRepository.selectStudentById(id);
-    List<StudentCourse> studentCourseListSearchById = studentCourseRepository.selectStudentCourseListByStudentId(
+  public StudentDetail getStudentDetailById(String id) {
+    Student student = studentRepository.selectStudentById(id);
+    List<StudentCourse> studentCourseList = studentCourseRepository.selectCourseListByStudentId(
         id);
-    StudentDetail studentDetailSearchById = new StudentDetail();
+    StudentDetail studentDetail = new StudentDetail();
 
-    studentDetailSearchById.setStudent(studentSearchById);
-    studentDetailSearchById.setStudentCourseList(studentCourseListSearchById);
-    return studentDetailSearchById;
+    studentDetail.setStudent(student);
+    studentDetail.setStudentCourseList(studentCourseList);
+    return studentDetail;
   }
 
-  public List<Student> searchForAllStudentList() {
+  public List<Student> getAllStudentList() {
     return studentRepository.selectAllStudentList();
   }
 
-  public List<StudentCourse> searchForAllStudentCourseList() {
-    return studentCourseRepository.selectAllStudentCourseList();
+  public List<StudentCourse> getAllStudentCourseList() {
+    return studentCourseRepository.selectAllCourseList();
   }
 
   @Transactional
@@ -54,25 +54,27 @@ public class StudentService {
 
   @Transactional
   public void updateStudent(StudentDetail studentDetail) {
-    Student studentAfterModifying = studentDetail.getStudent();
-    List<StudentCourse> studentCourseListAfterModifying = studentDetail.getStudentCourseList();
+    Student modifiedStudent = studentDetail.getStudent();
+    List<StudentCourse> modifiedStudentCourseList = studentDetail.getStudentCourseList();
 
-    String studentId = studentAfterModifying.getId();
-    Student studentBeforeModifying = studentRepository.selectStudentById(studentId);
-    List<StudentCourse> studentCourseListBeforeModifying = studentCourseRepository.selectStudentCourseListByStudentId(
+    String studentId = modifiedStudent.getId();
+    Student currentStudent = studentRepository.selectStudentById(studentId);
+    List<StudentCourse> currentStudentCourseList = studentCourseRepository.selectCourseListByStudentId(
         studentId);
 
-    if (!studentAfterModifying.equals(studentBeforeModifying)) {
-      studentRepository.updateStudent(studentAfterModifying);
+    if (!modifiedStudent.equals(currentStudent)) {
+      studentRepository.updateStudent(modifiedStudent);
     }
 
-    Map<String, StudentCourse> beforeCourseMap = studentCourseListBeforeModifying.stream()
-        .collect(Collectors.toMap(StudentCourse::getId, beforeCourse -> beforeCourse, (a, b) -> b));
+    Map<String, StudentCourse> currentStudentCourseMap = currentStudentCourseList.stream()
+        .collect(
+            Collectors.toMap(StudentCourse::getId, currentCourse -> currentCourse, (a, b) -> b));
 
-    for (StudentCourse afterCourse : studentCourseListAfterModifying) {
-      StudentCourse beforeCourse = beforeCourseMap.get(afterCourse.getId());
-      if (!afterCourse.equals(beforeCourse)) {
-        studentCourseRepository.updateStudentCourse(afterCourse);
+    for (StudentCourse modifiedStudentCourse : modifiedStudentCourseList) {
+      StudentCourse currentStudentCourse = currentStudentCourseMap.get(
+          modifiedStudentCourse.getId());
+      if (!modifiedStudentCourse.equals(currentStudentCourse)) {
+        studentCourseRepository.updateStudentCourse(modifiedStudentCourse);
       }
     }
   }

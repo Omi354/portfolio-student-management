@@ -22,10 +22,10 @@ public interface StudentCourseRepository {
    * @return 全件検索した受講生コースの一覧
    */
   @Select("SELECT * FROM students_courses")
-  List<StudentCourse> selectAllStudentCourseList();
+  List<StudentCourse> selectAllCourseList();
 
   @Select("SELECT * FROM students_courses WHERE student_id = #{studentId}")
-  List<StudentCourse> selectStudentCourseListByStudentId(@Param("studentId") String studentId);
+  List<StudentCourse> selectCourseListByStudentId(@Param("studentId") String studentId);
 
   @Insert("INSERT INTO students_courses (student_id, course_name, start_date, end_date) VALUES((SELECT id FROM students WHERE email = #{student.email}), #{studentCourse.courseName}, CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 YEAR))")
   @Options(useGeneratedKeys = true, keyProperty = "studentCourse.id")
