@@ -3,13 +3,16 @@ package portfolio.StudentManagement.service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.StudentCourse;
+import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.repository.StudentCourseRepository;
 import portfolio.StudentManagement.repository.StudentRepository;
 
 @Service
 public class StudentService {
+
   private StudentRepository studentRepository;
   private StudentCourseRepository studentCourseRepository;
 
@@ -26,5 +29,13 @@ public class StudentService {
 
   public List<StudentCourse> searchForAllStudentCourseList() {
     return studentCourseRepository.selectAllStudentCourseList();
+  }
+
+  @Transactional
+  public void registerStudent(StudentDetail studentDetail) {
+    Student newStudent = studentDetail.getStudent();
+    StudentCourse newStudentCourse = studentDetail.getStudentCourseList().getFirst();
+    studentRepository.createStudent(newStudent);
+    studentCourseRepository.createStudentCourse(newStudent, newStudentCourse);
   }
 }

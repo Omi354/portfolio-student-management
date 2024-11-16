@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>受講生登録</title>
+</head>
+<body>
+<h1>受講生登録</h1>
+
+<form th:action="@{/registerStudent}" th:object="${studentDetail}" method="post">
+  <div>
+    <label for="fullName">名前</label>
+    <input type="text" th:field="*{student.fullName}" id="fullName" required>
+  </div>
+
+  <div>
+    <label for="kana">フリガナ</label>
+    <input type="text" th:field="*{student.kana}" id="kana">
+  </div>
+
+  <div>
+    <label for="nickName">ニックネーム</label>
+    <input type="text" th:field="*{student.nickName}" id="nickName">
+  </div>
+
+  <div>
+    <label for="email">メールアドレス</label>
+    <input type="email" th:field="*{student.email}" id="email" required>
+  </div>
+
+  <div>
+    <label for="city">住所</label>
+    <input type="text" th:field="*{student.city}" id="city" required>
+  </div>
+
+  <div>
+    <label for="age">年齢</label>
+    <input type="number" th:field="*{student.age}" id="age" required>
+  </div>
+
+  <div>
+    <label for="gender">性別</label>
+    <select th:field="*{student.gender}" id="gender">
+      <option value="Male">男性</option>
+      <option value="Female">女性</option>
+      <option value="Non-binary">ノンバイナリー</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="courseName">受講コース</label>
+    <select th:field="*{studentCourseList[0].courseName}" id="courseName">
+      <option value="Javaフルコース">Javaフルコース</option>
+      <option value="AWSフルコース">AWSフルコース</option>
+      <option value="デザインコース">デザインコース</option>
+    </select>
+  </div>
+
+  <div>
+    <button type="submit">登録</button>
+  </div>
+
+</form>
+</body>
+</html>
