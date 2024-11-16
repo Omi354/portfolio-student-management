@@ -23,6 +23,17 @@ public class StudentService {
     this.studentCourseRepository = studentCourseRepository;
   }
 
+  public StudentDetail searchForStudentDetailById(String id) {
+    Student studentSearchById = studentRepository.selectStudentById(id);
+    List<StudentCourse> studentCourseListSearchById = studentCourseRepository.selectStudentCourseListByStudentId(
+        id);
+    StudentDetail studentDetailSearchById = new StudentDetail();
+
+    studentDetailSearchById.setStudent(studentSearchById);
+    studentDetailSearchById.setStudentCourseList(studentCourseListSearchById);
+    return studentDetailSearchById;
+  }
+
   public List<Student> searchForAllStudentList() {
     return studentRepository.selectAllStudentList();
   }
@@ -37,5 +48,11 @@ public class StudentService {
     StudentCourse newStudentCourse = studentDetail.getStudentCourseList().getFirst();
     studentRepository.createStudent(newStudent);
     studentCourseRepository.createStudentCourse(newStudent, newStudentCourse);
+  }
+
+  @Transactional
+  public void updateStudent(StudentDetail studentDetail) {
+    Student studentAfterModifying = studentDetail.getStudent();
+    studentRepository.updateStudent(studentAfterModifying);
   }
 }
