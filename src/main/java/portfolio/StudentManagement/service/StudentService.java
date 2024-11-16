@@ -1,6 +1,8 @@
 package portfolio.StudentManagement.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,9 +57,23 @@ public class StudentService {
     Student studentAfterModifying = studentDetail.getStudent();
     List<StudentCourse> studentCourseListAfterModifying = studentDetail.getStudentCourseList();
 
-    studentRepository.updateStudent(studentAfterModifying);
-    for (StudentCourse studentCourse : studentCourseListAfterModifying) {
-      studentCourseRepository.updateStudentCourse(studentCourse);
+    String studentId = studentAfterModifying.getId();
+    Student studentBeforeModifying = studentRepository.selectStudentById(studentId);
+    List<StudentCourse> studentCourseListBeforeModifying = studentCourseRepository.selectStudentCourseListByStudentId(
+        studentId);
+
+    if (!studentAfterModifying.equals(studentBeforeModifying)) {
+      studentRepository.updateStudent(studentAfterModifying);
+    }
+
+    Map<String, StudentCourse> beforeCourseMap = studentCourseListBeforeModifying.stream()
+        .collect(Collectors.toMap(StudentCourse::getId, beforeCourse -> beforeCourse, (a, b) -> b));
+
+    for (StudentCourse afterCourse : studentCourseListAfterModifying) {
+      StudentCourse beforeCourse = beforeCourseMap.get(afterCourse.getId());
+      if (!afterCourse.equals(beforeCourse)) {
+        studentCourseRepository.updateStudentCourse(afterCourse);
+      }
     }
   }
 }
