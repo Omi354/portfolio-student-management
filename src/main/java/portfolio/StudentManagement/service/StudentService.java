@@ -27,8 +27,7 @@ public class StudentService {
 
   public StudentDetail getStudentDetailById(String id) {
     Student student = studentRepository.selectStudentById(id);
-    List<StudentCourse> studentCourseList = studentCourseRepository.selectCourseListByStudentId(
-        id);
+    List<StudentCourse> studentCourseList = studentCourseRepository.selectCourseListByStudentId(id);
     StudentDetail studentDetail = new StudentDetail();
 
     studentDetail.setStudent(student);
