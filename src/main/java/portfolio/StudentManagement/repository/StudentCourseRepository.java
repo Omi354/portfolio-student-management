@@ -25,7 +25,7 @@ public interface StudentCourseRepository {
   List<StudentCourse> selectAllCourseList();
 
   @Select("SELECT * FROM students_courses WHERE student_id = #{studentId}")
-  List<StudentCourse> selectCourseListByStudentId(@Param("studentId") String studentId);
+  List<StudentCourse> selectCourseListByStudentId(String studentId);
 
   @Insert("INSERT INTO students_courses (student_id, course_name, start_date, end_date) VALUES((SELECT id FROM students WHERE email = #{student.email}), #{studentCourse.courseName}, CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 YEAR))")
   @Options(useGeneratedKeys = true, keyProperty = "studentCourse.id")
@@ -33,8 +33,8 @@ public interface StudentCourseRepository {
       @Param("studentCourse") StudentCourse studentCourse);
 
   @Update(
-      "UPDATE students_courses SET course_name = #{studentCourse.courseName} "
-          + "WHERE id = #{studentCourse.id}"
+      "UPDATE students_courses SET course_name = #{courseName} "
+          + "WHERE id = #{id}"
   )
-  void updateStudentCourse(@Param("studentCourse") StudentCourse studentCourse);
+  void updateStudentCourse(StudentCourse studentCourse);
 }

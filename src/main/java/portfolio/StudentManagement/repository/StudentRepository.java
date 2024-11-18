@@ -4,7 +4,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import portfolio.StudentManagement.data.Student;
@@ -24,17 +23,17 @@ public interface StudentRepository {
   List<Student> selectAllStudentList();
 
   @Select("SELECT * FROM students WHERE id = #{id}")
-  Student selectStudentById(@Param("id") String id);
+  Student selectStudentById(String id);
 
-  @Insert("INSERT INTO students (full_name, kana, nick_name, email, city, age, gender) VALUES(#{student.fullName},#{student.kana},#{student.nickName},#{student.email},#{student.city},#{student.age},#{student.gender})")
-  @Options(useGeneratedKeys = true, keyProperty = "student.id")
-  void createStudent(@Param("student") Student student);
+  @Insert("INSERT INTO students (full_name, kana, nick_name, email, city, age, gender) VALUES(#{fullName},#{kana},#{nickName},#{email},#{city},#{age},#{gender})")
+  @Options(useGeneratedKeys = true, keyProperty = "id")
+  void createStudent(Student student);
 
   @Update(
-      "UPDATE students SET full_name = #{student.fullName}, kana = #{student.kana}, nick_name = #{student.nickName}, email = #{student.email}, city = #{student.city}, age = #{student.age}, gender = #{student.gender}, remark = #{student.remark} "
-          + "WHERE id = #{student.id}"
+      "UPDATE students SET full_name = #{fullName}, kana = #{kana}, nick_name = #{nickName}, email = #{email}, city = #{city}, age = #{age}, gender = #{gender}, remark = #{remark} "
+          + "WHERE id = #{id}"
   )
-  void updateStudent(@Param("student") Student student);
+  void updateStudent(Student student);
 }
 
 
