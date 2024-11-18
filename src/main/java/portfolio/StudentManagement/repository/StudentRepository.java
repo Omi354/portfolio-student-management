@@ -25,12 +25,12 @@ public interface StudentRepository {
   @Select("SELECT * FROM students WHERE id = #{id}")
   Student selectStudentById(String id);
 
-  @Insert("INSERT INTO students (full_name, kana, nick_name, email, city, age, gender) VALUES(#{fullName},#{kana},#{nickName},#{email},#{city},#{age},#{gender})")
+  @Insert("INSERT INTO students (full_name, kana, nick_name, email, city, age, gender) VALUES(#{fullName}, #{kana}, #{nickName}, #{email}, #{city}, #{age}, #{gender})")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   void createStudent(Student student);
 
   @Update(
-      "UPDATE students SET full_name = #{fullName}, kana = #{kana}, nick_name = #{nickName}, email = #{email}, city = #{city}, age = #{age}, gender = #{gender}, remark = #{remark} "
+      "UPDATE students SET full_name = #{fullName}, kana = #{kana}, nick_name = #{nickName}, email = #{email}, city = #{city}, age = #{age}, gender = #{gender}, remark = #{remark}, isDeleted = #{isDeleted} "
           + "WHERE id = #{id}"
   )
   void updateStudent(Student student);
