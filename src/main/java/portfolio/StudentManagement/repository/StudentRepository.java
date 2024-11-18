@@ -19,7 +19,7 @@ public interface StudentRepository {
    *
    * @return 全件検索した受講生情報の一覧
    */
-  @Select("SELECT * FROM students")
+  @Select("SELECT * FROM students WHERE is_deleted = false")
   List<Student> selectAllStudentList();
 
   @Select("SELECT * FROM students WHERE id = #{id}")
@@ -30,7 +30,7 @@ public interface StudentRepository {
   void createStudent(Student student);
 
   @Update(
-      "UPDATE students SET full_name = #{fullName}, kana = #{kana}, nick_name = #{nickName}, email = #{email}, city = #{city}, age = #{age}, gender = #{gender}, remark = #{remark}, isDeleted = #{isDeleted} "
+      "UPDATE students SET full_name = #{fullName}, kana = #{kana}, nick_name = #{nickName}, email = #{email}, city = #{city}, age = #{age}, gender = #{gender}, remark = #{remark}, is_deleted = #{isDeleted} "
           + "WHERE id = #{id}"
   )
   void updateStudent(Student student);
