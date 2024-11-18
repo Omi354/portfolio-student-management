@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.StudentCourse;
 
@@ -21,10 +22,19 @@ public interface StudentCourseRepository {
    * @return 全件検索した受講生コースの一覧
    */
   @Select("SELECT * FROM students_courses")
-  List<StudentCourse> selectAllStudentCourseList();
+  List<StudentCourse> selectAllCourseList();
+
+  @Select("SELECT * FROM students_courses WHERE student_id = #{studentId}")
+  List<StudentCourse> selectCourseListByStudentId(@Param("studentId") String studentId);
 
   @Insert("INSERT INTO students_courses (student_id, course_name, start_date, end_date) VALUES((SELECT id FROM students WHERE email = #{student.email}), #{studentCourse.courseName}, CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 YEAR))")
   @Options(useGeneratedKeys = true, keyProperty = "studentCourse.id")
   void createStudentCourse(@Param("student") Student student,
       @Param("studentCourse") StudentCourse studentCourse);
+
+  @Update(
+      "UPDATE students_courses SET course_name = #{studentCourse.courseName} "
+          + "WHERE id = #{studentCourse.id}"
+  )
+  void updateStudentCourse(@Param("studentCourse") StudentCourse studentCourse);
 }

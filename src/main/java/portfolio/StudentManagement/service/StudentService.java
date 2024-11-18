@@ -1,6 +1,8 @@
 package portfolio.StudentManagement.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +25,22 @@ public class StudentService {
     this.studentCourseRepository = studentCourseRepository;
   }
 
-  public List<Student> searchForAllStudentList() {
+  public StudentDetail getStudentDetailById(String id) {
+    Student student = studentRepository.selectStudentById(id);
+    List<StudentCourse> studentCourseList = studentCourseRepository.selectCourseListByStudentId(id);
+    StudentDetail studentDetail = new StudentDetail();
+
+    studentDetail.setStudent(student);
+    studentDetail.setStudentCourseList(studentCourseList);
+    return studentDetail;
+  }
+
+  public List<Student> getAllStudentList() {
     return studentRepository.selectAllStudentList();
   }
 
-  public List<StudentCourse> searchForAllStudentCourseList() {
-    return studentCourseRepository.selectAllStudentCourseList();
+  public List<StudentCourse> getAllStudentCourseList() {
+    return studentCourseRepository.selectAllCourseList();
   }
 
   @Transactional
@@ -37,5 +49,32 @@ public class StudentService {
     StudentCourse newStudentCourse = studentDetail.getStudentCourseList().getFirst();
     studentRepository.createStudent(newStudent);
     studentCourseRepository.createStudentCourse(newStudent, newStudentCourse);
+  }
+
+  @Transactional
+  public void updateStudent(StudentDetail studentDetail) {
+    Student modifiedStudent = studentDetail.getStudent();
+    List<StudentCourse> modifiedStudentCourseList = studentDetail.getStudentCourseList();
+
+    String studentId = modifiedStudent.getId();
+    Student currentStudent = studentRepository.selectStudentById(studentId);
+    List<StudentCourse> currentStudentCourseList = studentCourseRepository.selectCourseListByStudentId(
+        studentId);
+
+    if (!modifiedStudent.equals(currentStudent)) {
+      studentRepository.updateStudent(modifiedStudent);
+    }
+
+    Map<String, StudentCourse> currentStudentCourseMap = currentStudentCourseList.stream()
+        .collect(
+            Collectors.toMap(StudentCourse::getId, currentCourse -> currentCourse, (a, b) -> b));
+
+    for (StudentCourse modifiedStudentCourse : modifiedStudentCourseList) {
+      StudentCourse currentStudentCourse = currentStudentCourseMap.get(
+          modifiedStudentCourse.getId());
+      if (!modifiedStudentCourse.equals(currentStudentCourse)) {
+        studentCourseRepository.updateStudentCourse(modifiedStudentCourse);
+      }
+    }
   }
 }

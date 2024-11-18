@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import portfolio.StudentManagement.controller.converter.StudentConverter;
 import portfolio.StudentManagement.data.Student;
@@ -28,8 +30,8 @@ public class StudentController {
 
   @GetMapping("/studentList")
   public String getStudentList(Model model) {
-    List<Student> allStudentList = service.searchForAllStudentList();
-    List<StudentCourse> allStudentCourseList = service.searchForAllStudentCourseList();
+    List<Student> allStudentList = service.getAllStudentList();
+    List<StudentCourse> allStudentCourseList = service.getAllStudentCourseList();
     model.addAttribute("studentList", // これはテンプレートリテラルに渡す変数名
         converter.getStudentDetailsList(allStudentList, allStudentCourseList));
 
@@ -38,7 +40,7 @@ public class StudentController {
 
   @GetMapping("/studentCourseList")
   public String getStudentCourseList(Model model) {
-    model.addAttribute("allStudentCourseList", service.searchForAllStudentCourseList());
+    model.addAttribute("allStudentCourseList", service.getAllStudentCourseList());
     return "studentCourseList";
   }
 
@@ -54,6 +56,21 @@ public class StudentController {
       return "registerStudent";
     }
     service.registerStudent(studentDetail);
+    return "redirect:/studentList";
+  }
+
+  @GetMapping("/student/{id}")
+  public String getStudent(@PathVariable String id, Model model) {
+    model.addAttribute("studentDetail", service.getStudentDetailById(id));
+    return "updateStudent";
+  }
+
+  @PatchMapping("/updateStudent")
+  public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+    if (result.hasErrors()) {
+      return "updateStudent";
+    }
+    service.updateStudent(studentDetail);
     return "redirect:/studentList";
   }
 
