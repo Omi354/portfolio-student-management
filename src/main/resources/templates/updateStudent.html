@@ -8,7 +8,6 @@
 
 <form th:action="@{/updateStudent}" th:object="${studentDetail}" th:method="patch">
   <input type="hidden" th:field="*{student.id}">
-  <input type="hidden" th:field="*{student.isDeleted}">
 
   <div>
     <label for="fullName">名前</label>
@@ -59,6 +58,11 @@
   <div>
     <label for="remark">備考</label>
     <input type="text" th:field="*{student.remark}" id="remark">
+  </div>
+
+  <div>
+    <input type="checkbox" th:field="*{student.isDeleted}" id="isDeleted">
+    <label for="isDeleted">キャンセル</label>
   </div>
 
   <div th:each="studentCourse, stat : ${studentDetail.studentCourseList}">
