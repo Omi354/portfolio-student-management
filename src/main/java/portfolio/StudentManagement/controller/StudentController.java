@@ -3,9 +3,7 @@ package portfolio.StudentManagement.controller;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,12 +45,9 @@ public class StudentController {
   }
 
   @PostMapping("/registerStudent")
-  public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
-    if (result.hasErrors()) {
-      return "registerStudent";
-    }
+  public ResponseEntity<String> registerStudent(@RequestBody StudentDetail studentDetail) {
     service.registerStudent(studentDetail);
-    return "redirect:/studentList";
+    return ResponseEntity.ok("登録が完了しました");
   }
 
 
