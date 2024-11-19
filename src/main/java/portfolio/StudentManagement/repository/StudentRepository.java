@@ -3,7 +3,6 @@ package portfolio.StudentManagement.repository;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import portfolio.StudentManagement.data.Student;
@@ -31,8 +30,7 @@ public interface StudentRepository {
   @Select("SELECT * FROM students WHERE id = #{id}")
   Student selectStudentById(String id);
 
-  @Insert("INSERT INTO students (full_name, kana, nick_name, email, city, age, gender) VALUES(#{fullName}, #{kana}, #{nickName}, #{email}, #{city}, #{age}, #{gender})")
-  @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
+  @Insert("INSERT INTO students (id, full_name, kana, nick_name, email, city, age, gender, remark, is_deleted) VALUES(#{id}, #{fullName}, #{kana}, #{nickName}, #{email}, #{city}, #{age}, #{gender}, #{remark}, #{isDeleted})")
   void createStudent(Student student);
 
   @Update(
