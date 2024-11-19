@@ -57,15 +57,6 @@ public class StudentService {
     return converter.getStudentDetailsList(studentList, studentCourseList);
   }
 
-  /**
-   * 受講生コース情報の一覧検索を行います。全件取得のため条件指定は行いません。
-   *
-   * @return 受講生コース一覧（全件）
-   */
-  public List<StudentCourse> getAllStudentCourseList() {
-    return studentCourseRepository.selectAllCourseList();
-  }
-
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail) {
     Student newStudent = studentDetail.getStudent();
