@@ -44,11 +44,12 @@ public class StudentService {
   }
 
   @Transactional
-  public void registerStudent(StudentDetail studentDetail) {
+  public StudentDetail registerStudent(StudentDetail studentDetail) {
     Student newStudent = studentDetail.getStudent();
     StudentCourse newStudentCourse = studentDetail.getStudentCourseList().getFirst();
     studentRepository.createStudent(newStudent);
     studentCourseRepository.createStudentCourse(newStudent, newStudentCourse);
+    return studentDetail;
   }
 
   @Transactional

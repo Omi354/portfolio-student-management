@@ -28,7 +28,7 @@ public interface StudentCourseRepository {
   List<StudentCourse> selectCourseListByStudentId(String studentId);
 
   @Insert("INSERT INTO students_courses (student_id, course_name, start_date, end_date) VALUES((SELECT id FROM students WHERE email = #{student.email}), #{studentCourse.courseName}, CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 YEAR))")
-  @Options(useGeneratedKeys = true, keyProperty = "studentCourse.id")
+  @Options(useGeneratedKeys = true, keyProperty = "studentCourse.id", keyColumn = "id")
   void createStudentCourse(@Param("student") Student student,
       @Param("studentCourse") StudentCourse studentCourse);
 

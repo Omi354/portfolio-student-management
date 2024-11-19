@@ -26,7 +26,7 @@ public interface StudentRepository {
   Student selectStudentById(String id);
 
   @Insert("INSERT INTO students (full_name, kana, nick_name, email, city, age, gender) VALUES(#{fullName}, #{kana}, #{nickName}, #{email}, #{city}, #{age}, #{gender})")
-  @Options(useGeneratedKeys = true, keyProperty = "id")
+  @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
   void createStudent(Student student);
 
   @Update(
