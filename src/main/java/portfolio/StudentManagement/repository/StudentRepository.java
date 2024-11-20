@@ -3,7 +3,6 @@ package portfolio.StudentManagement.repository;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import portfolio.StudentManagement.data.Student;
 
@@ -18,7 +17,6 @@ public interface StudentRepository {
    *
    * @return 受講生一覧（全件）
    */
-  @Select("SELECT * FROM students WHERE is_deleted = false")
   List<Student> selectAllStudentList();
 
   /**
@@ -27,7 +25,6 @@ public interface StudentRepository {
    * @param id 受講生ID
    * @return 受講生
    */
-  @Select("SELECT * FROM students WHERE id = #{id}")
   Student selectStudentById(String id);
 
   /**

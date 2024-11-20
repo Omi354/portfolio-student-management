@@ -4,7 +4,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import portfolio.StudentManagement.data.StudentCourse;
 
@@ -19,7 +18,6 @@ public interface StudentCourseRepository {
    *
    * @return 受講生コース一覧（全件）
    */
-  @Select("SELECT * FROM students_courses")
   List<StudentCourse> selectAllCourseList();
 
   /**
@@ -28,9 +26,7 @@ public interface StudentCourseRepository {
    * @param studentId 受講生ID
    * @return 受講生IDに紐づく受講生コース情報
    */
-  @Select("SELECT * FROM students_courses WHERE student_id = #{studentId}")
   List<StudentCourse> selectCourseListByStudentId(String studentId);
-
 
   /**
    * 受講生コース情報の新規登録を行います。
