@@ -3,15 +3,25 @@ package portfolio.StudentManagement.controller.converter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.domain.StudentDetail;
-import portfolio.StudentManagement.service.StudentService;
+
+/**
+ * 受講生詳細を受講生や受講生コース情報、もしくはその逆の変換を行うコンバーターです。
+ */
 
 @Component
 public class StudentConverter {
+
+  /**
+   * 受講生に紐づく受講生コース情報をマッピングします。 受講生コース情報は受講生に対して複数存在するのでループを回して受講生詳細情報を組み立てます。
+   *
+   * @param allStudentList       受講生一覧（全件）
+   * @param allStudentCourseList 受講生コース情報のリスト（全件）
+   * @return 受講生詳細のリスト（全件）
+   */
   public List<StudentDetail> getStudentDetailsList(List<Student> allStudentList,
       List<StudentCourse> allStudentCourseList) {
     List<StudentDetail> studentDetailsList = new ArrayList<>();
