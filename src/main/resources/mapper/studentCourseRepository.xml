@@ -18,8 +18,14 @@
   <!-- 受講生コース情報の新規登録 -->
   <insert id="createStudentCourse" parameterType="portfolio.StudentManagement.data.StudentCourse">
     INSERT INTO students_courses (id, student_id, course_name, start_date, end_date)
-    VALUES(#{id}, #{studentId}, #{courseName}, #{startDate}, #{endDate} )
+    VALUES (#{id}, #{studentId}, #{courseName}, #{startDate}, #{endDate} )
   </insert>
 
-  
+  <!-- 受講生コース情報の更新 -->
+  <insert id="updateStudentCourse">
+    UPDATE students_courses SET
+    course_name = #{courseName}
+    WHERE id = #{id}
+  </insert>
+
 </mapper>

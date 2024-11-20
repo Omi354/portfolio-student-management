@@ -2,7 +2,6 @@ package portfolio.StudentManagement.repository;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Update;
 import portfolio.StudentManagement.data.Student;
 
 /**
@@ -33,10 +32,11 @@ public interface StudentRepository {
    */
   void createStudent(Student student);
 
-  @Update(
-      "UPDATE students SET full_name = #{fullName}, kana = #{kana}, nick_name = #{nickName}, email = #{email}, city = #{city}, age = #{age}, gender = #{gender}, remark = #{remark}, is_deleted = #{isDeleted} "
-          + "WHERE id = #{id}"
-  )
+  /**
+   * 受講生の更新を行います
+   *
+   * @param student 受講生
+   */
   void updateStudent(Student student);
 }
 

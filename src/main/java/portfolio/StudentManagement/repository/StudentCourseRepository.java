@@ -3,7 +3,6 @@ package portfolio.StudentManagement.repository;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Update;
 import portfolio.StudentManagement.data.StudentCourse;
 
 /**
@@ -40,9 +39,5 @@ public interface StudentCourseRepository {
    * @param id         受講生コースID
    * @param courseName コース名
    */
-  @Update(
-      "UPDATE students_courses SET course_name = #{courseName} "
-          + "WHERE id = #{id}"
-  )
   void updateStudentCourse(@Param("id") String id, @Param("courseName") String courseName);
 }

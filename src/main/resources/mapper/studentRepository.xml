@@ -19,9 +19,24 @@
   <insert id="createStudent" parameterType="portfolio.StudentManagement.data.Student">
     INSERT INTO students (id, full_name, kana, nick_name, email, city, age, gender, remark,
     is_deleted)
-    VALUES(#{id}, #{fullName}, #{kana}, #{nickName}, #{email}, #{city}, #{age}, #{gender},
+    VALUES (#{id}, #{fullName}, #{kana}, #{nickName}, #{email}, #{city}, #{age}, #{gender},
     #{remark}, #{isDeleted})
   </insert>
+
+  <!-- 受講生の更新 -->
+  <update id="updateStudent" parameterType="portfolio.StudentManagement.data.Student">
+    UPDATE students SET
+    full_name = #{fullName},
+    kana = #{kana},
+    nick_name = #{nickName},
+    email = #{email},
+    city = #{city},
+    age = #{age},
+    gender = #{gender},
+    remark = #{remark},
+    is_deleted = #{isDeleted}
+    WHERE id = #{id}
+  </update>
 
 
 </mapper>
