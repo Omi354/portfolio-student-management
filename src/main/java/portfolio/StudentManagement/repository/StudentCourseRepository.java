@@ -3,6 +3,7 @@ package portfolio.StudentManagement.repository;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import portfolio.StudentManagement.data.StudentCourse;
@@ -39,9 +40,15 @@ public interface StudentCourseRepository {
   @Insert("INSERT INTO students_courses (id, student_id, course_name, start_date, end_date) VALUES(#{id}, #{studentId}, #{courseName}, #{startDate}, #{endDate} )")
   void createStudentCourse(StudentCourse studentCourse);
 
+  /**
+   * 受講生コースIDに紐づくコース名の更新を行います。
+   *
+   * @param id         受講生コースID
+   * @param courseName コース名
+   */
   @Update(
       "UPDATE students_courses SET course_name = #{courseName} "
           + "WHERE id = #{id}"
   )
-  void updateStudentCourse(StudentCourse studentCourse);
+  void updateStudentCourse(@Param("id") String id, @Param("courseName") String courseName);
 }

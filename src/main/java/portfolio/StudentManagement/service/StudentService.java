@@ -67,10 +67,10 @@ public class StudentService {
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail) {
     Student newStudent = studentDetail.getStudent();
-    String newStudentId = newStudent.getId();
     StudentCourse newStudentCourse = studentDetail.getStudentCourseList().getFirst();
 
     initStudent(newStudent);
+    String newStudentId = newStudent.getId();
     initStudentCourse(newStudentCourse, newStudentId);
 
     studentRepository.createStudent(newStudent);
@@ -85,7 +85,7 @@ public class StudentService {
    * @param newStudentCourse 新規受講生コース情報
    * @param newStudentId     新規受講生ID
    */
-  private static void initStudentCourse(StudentCourse newStudentCourse, String newStudentId) {
+  private void initStudentCourse(StudentCourse newStudentCourse, String newStudentId) {
     newStudentCourse.setId(UUID.randomUUID().toString());
     newStudentCourse.setStudentId(newStudentId);
     newStudentCourse.setStartDate(LocalDateTime.now());
@@ -97,36 +97,72 @@ public class StudentService {
    *
    * @param newStudent 新規受講生
    */
-  private static void initStudent(Student newStudent) {
+  private void initStudent(Student newStudent) {
     newStudent.setId(UUID.randomUUID().toString());
     newStudent.setRemark("");
     newStudent.setIsDeleted(false);
   }
 
+  /**
+   * 受講生情報と受講生コース情報をそれぞれ更新します。
+   * 更新処理前に受け取った受講生情報・受講生コース情報と、登録されている受講生情報・受講生コース情報を比較し、修正点が有る場合のみ処理を実行します。
+   *
+   * @param studentDetail 受講生詳細
+   */
   @Transactional
   public void updateStudent(StudentDetail studentDetail) {
-    Student modifiedStudent = studentDetail.getStudent();
-    List<StudentCourse> modifiedStudentCourseList = studentDetail.getStudentCourseList();
+    // リクエストとして受け取った受講生と受講生コース情報を定義します
+    Student receivedStudent = studentDetail.getStudent();
+    List<StudentCourse> receivedStudentCourseList = studentDetail.getStudentCourseList();
 
-    String studentId = modifiedStudent.getId();
+    // リクエストとして受け取った受講生IDから、現時点でDBに登録されている受講生と受講生コース情報を定義します
+    String studentId = receivedStudent.getId();
     Student currentStudent = studentRepository.selectStudentById(studentId);
-    List<StudentCourse> currentStudentCourseList = studentCourseRepository.selectCourseListByStudentId(
-        studentId);
+    List<StudentCourse> currentStudentCourseList = studentCourseRepository
+        .selectCourseListByStudentId(studentId);
 
-    if (!modifiedStudent.equals(currentStudent)) {
-      studentRepository.updateStudent(modifiedStudent);
-    }
+    // リクエストとして受け取った受講生情報・受講生コース情報とDBに登録されている受講生・受講生コース情報に差異がある場合に更新処理を実行します
+    updateStudentDetailIfModified(receivedStudent, currentStudent);
+    updateStudentCourseIfModified(receivedStudentCourseList, currentStudentCourseList);
+  }
 
-    Map<String, StudentCourse> currentStudentCourseMap = currentStudentCourseList.stream()
+  /**
+   * リクエストとして受け取った受講生コース情報と現時点でDBに登録されている受講生コース情報に差異がある場合に更新処理を実行します。
+   * 受講生コース情報はリスト渡されるため、ループを回して中身の受講生コース情報を取り出して処理します。
+   *
+   * @param receivedStudentCourseList リクエストとして受け取った受講生コース
+   * @param currentStudentCourseList  現時点でDBに登録されている受講生コース情報
+   */
+  private void updateStudentCourseIfModified(List<StudentCourse> receivedStudentCourseList,
+      List<StudentCourse> currentStudentCourseList) {
+
+    // currentStudentCourseList　を　{"id", "courseName"} のマップに変換します
+    Map<String, String> currentCourseNameMap = currentStudentCourseList.stream()
         .collect(
-            Collectors.toMap(StudentCourse::getId, currentCourse -> currentCourse, (a, b) -> b));
+            Collectors.toMap(StudentCourse::getId, StudentCourse::getCourseName, (a, b) -> b));
 
-    for (StudentCourse modifiedStudentCourse : modifiedStudentCourseList) {
-      StudentCourse currentStudentCourse = currentStudentCourseMap.get(
-          modifiedStudentCourse.getId());
-      if (!modifiedStudentCourse.equals(currentStudentCourse)) {
-        studentCourseRepository.updateStudentCourse(modifiedStudentCourse);
+    // receivedStudentCourseListをfor文で回し、中身のreceivedStudentCourseを一つずつ取り出します
+    for (StudentCourse receivedStudentCourse : receivedStudentCourseList) {
+      // receivedStudentCourseのIDに紐づく、現時点で登録されているコース名を取得します
+      String currentCourseName = currentCourseNameMap
+          .get(receivedStudentCourse.getId());
+      // 現時点で登録されているコース名と、受け取ったコース名が異なる場合にRepositoryにidと変更後のコース名を渡します
+      if (!receivedStudentCourse.getCourseName().equals(currentCourseName)) {
+        studentCourseRepository.updateStudentCourse(receivedStudentCourse.getId(),
+            receivedStudentCourse.getCourseName());
       }
+    }
+  }
+
+  /**
+   * リクエストとして受け取った受講生情報と現時点でDBに登録されている受講生情報に差異がある場合に更新処理を実行します。
+   *
+   * @param receivedStudent リクエストとして受け取った受講生情報
+   * @param currentStudent  現時点でDBに登録されている受講生情報
+   */
+  private void updateStudentDetailIfModified(Student receivedStudent, Student currentStudent) {
+    if (!receivedStudent.equals(currentStudent)) {
+      studentRepository.updateStudent(receivedStudent);
     }
   }
 }
