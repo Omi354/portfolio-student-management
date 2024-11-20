@@ -51,7 +51,12 @@ public class StudentController {
     return service.getStudentDetailById(id);
   }
 
-
+  /**
+   * 受講生詳細を新規登録します。
+   *
+   * @param studentDetail 受講生詳細
+   * @return 処理結果
+   */
   @PostMapping("/registerStudent")
   public ResponseEntity<StudentDetail> registerStudent(@RequestBody StudentDetail studentDetail) {
     StudentDetail registeredStudentDetail = service.registerStudent(studentDetail);

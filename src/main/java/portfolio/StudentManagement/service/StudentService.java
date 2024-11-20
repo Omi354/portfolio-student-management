@@ -57,23 +57,50 @@ public class StudentService {
     return converter.getStudentDetailsList(studentList, studentCourseList);
   }
 
+  /**
+   * 受講生情報と受講生コース情報をそれぞれ登録します。 登録前に受講生情報については、デフォルト値としてUUIDをランダム, 備考を空欄、キャンセルフラグをfalseに設定します。
+   * 登録前に受講生コース情報については、デフォルト値としてUUIDをランダム、受講生IDを同時に作成される受講生情報のID、受講開始日をレコード登録日時、受講修了予定日を受講開始日から１年後に設定します。
+   *
+   * @param studentDetail 受講生詳細
+   * @return 新規登録された受講生詳細
+   */
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail) {
     Student newStudent = studentDetail.getStudent();
+    String newStudentId = newStudent.getId();
     StudentCourse newStudentCourse = studentDetail.getStudentCourseList().getFirst();
 
-    newStudent.setId(UUID.randomUUID().toString());
-    newStudent.setRemark("");
-    newStudent.setIsDeleted(false);
-
-    newStudentCourse.setId(UUID.randomUUID().toString());
-    newStudentCourse.setStudentId(newStudent.getId());
-    newStudentCourse.setStartDate(LocalDateTime.now());
-    newStudentCourse.setEndDate(LocalDateTime.now().plusYears(1));
+    initStudent(newStudent);
+    initStudentCourse(newStudentCourse, newStudentId);
 
     studentRepository.createStudent(newStudent);
     studentCourseRepository.createStudentCourse(newStudentCourse);
     return studentDetail;
+  }
+
+  /**
+   * 受講生コース情報に初期値を設定します。
+   * IDに自動生成されたUUID、受講生IDに同時に作成される受講生のID、受講開始日にレコードが作成された時点の日時、受講修了予定日にレコードが作成された時点から１年後の日時を設定します。
+   *
+   * @param newStudentCourse 新規受講生コース情報
+   * @param newStudentId     新規受講生ID
+   */
+  private static void initStudentCourse(StudentCourse newStudentCourse, String newStudentId) {
+    newStudentCourse.setId(UUID.randomUUID().toString());
+    newStudentCourse.setStudentId(newStudentId);
+    newStudentCourse.setStartDate(LocalDateTime.now());
+    newStudentCourse.setEndDate(LocalDateTime.now().plusYears(1));
+  }
+
+  /**
+   * 受講生に初期値を設定します。 IDに自動生成されたUUID、備考に空欄、キャンセルフラグにfalseを設定します。
+   *
+   * @param newStudent 新規受講生
+   */
+  private static void initStudent(Student newStudent) {
+    newStudent.setId(UUID.randomUUID().toString());
+    newStudent.setRemark("");
+    newStudent.setIsDeleted(false);
   }
 
   @Transactional

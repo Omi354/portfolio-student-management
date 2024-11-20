@@ -31,6 +31,11 @@ public interface StudentCourseRepository {
   List<StudentCourse> selectCourseListByStudentId(String studentId);
 
 
+  /**
+   * 受講生コース情報の新規登録を行います。
+   *
+   * @param studentCourse 受講生コース情報
+   */
   @Insert("INSERT INTO students_courses (id, student_id, course_name, start_date, end_date) VALUES(#{id}, #{studentId}, #{courseName}, #{startDate}, #{endDate} )")
   void createStudentCourse(StudentCourse studentCourse);
 

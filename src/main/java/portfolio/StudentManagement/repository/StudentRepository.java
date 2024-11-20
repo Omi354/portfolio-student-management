@@ -30,6 +30,11 @@ public interface StudentRepository {
   @Select("SELECT * FROM students WHERE id = #{id}")
   Student selectStudentById(String id);
 
+  /**
+   * 受講生の新規登録を行います。
+   *
+   * @param student 受講生
+   */
   @Insert("INSERT INTO students (id, full_name, kana, nick_name, email, city, age, gender, remark, is_deleted) VALUES(#{id}, #{fullName}, #{kana}, #{nickName}, #{email}, #{city}, #{age}, #{gender}, #{remark}, #{isDeleted})")
   void createStudent(Student student);
 
