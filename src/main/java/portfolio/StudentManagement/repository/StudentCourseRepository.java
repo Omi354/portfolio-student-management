@@ -1,7 +1,6 @@
 package portfolio.StudentManagement.repository;
 
 import java.util.List;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
@@ -33,7 +32,6 @@ public interface StudentCourseRepository {
    *
    * @param studentCourse 受講生コース情報
    */
-  @Insert("INSERT INTO students_courses (id, student_id, course_name, start_date, end_date) VALUES(#{id}, #{studentId}, #{courseName}, #{startDate}, #{endDate} )")
   void createStudentCourse(StudentCourse studentCourse);
 
   /**

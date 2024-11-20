@@ -15,5 +15,11 @@
     SELECT * FROM students_courses WHERE student_id = #{studentId}
   </select>
 
+  <!-- 受講生コース情報の新規登録 -->
+  <insert id="createStudentCourse" parameterType="portfolio.StudentManagement.data.StudentCourse">
+    INSERT INTO students_courses (id, student_id, course_name, start_date, end_date)
+    VALUES(#{id}, #{studentId}, #{courseName}, #{startDate}, #{endDate} )
+  </insert>
 
+  
 </mapper>

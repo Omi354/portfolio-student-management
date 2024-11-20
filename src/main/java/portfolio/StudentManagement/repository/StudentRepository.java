@@ -1,7 +1,6 @@
 package portfolio.StudentManagement.repository;
 
 import java.util.List;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
 import portfolio.StudentManagement.data.Student;
@@ -32,7 +31,6 @@ public interface StudentRepository {
    *
    * @param student 受講生
    */
-  @Insert("INSERT INTO students (id, full_name, kana, nick_name, email, city, age, gender, remark, is_deleted) VALUES(#{id}, #{fullName}, #{kana}, #{nickName}, #{email}, #{city}, #{age}, #{gender}, #{remark}, #{isDeleted})")
   void createStudent(Student student);
 
   @Update(
