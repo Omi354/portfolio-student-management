@@ -1,5 +1,6 @@
 package portfolio.StudentManagement.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,8 @@ public class StudentController {
    * @return 処理結果
    */
   @PostMapping("/registerStudent")
-  public ResponseEntity<StudentDetail> registerStudent(@RequestBody StudentDetail studentDetail) {
+  public ResponseEntity<StudentDetail> registerStudent(
+      @RequestBody @Valid StudentDetail studentDetail) {
     StudentDetail registeredStudentDetail = service.registerStudent(studentDetail);
     return ResponseEntity.ok(registeredStudentDetail);
   }
@@ -82,7 +84,7 @@ public class StudentController {
    * @throws StudentCourseNotFoundException 　受講生コース情報が存在しない場合の例外処理
    */
   @PutMapping("/updateStudent")
-  public ResponseEntity<String> updateStudent(@RequestBody StudentDetail studentDetail)
+  public ResponseEntity<String> updateStudent(@RequestBody @Valid StudentDetail studentDetail)
       throws StudentNotFoundException, StudentCourseNotFoundException {
     service.updateStudent(studentDetail);
     return ResponseEntity.ok("更新に成功しました");

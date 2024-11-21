@@ -1,21 +1,34 @@
 package portfolio.StudentManagement.data;
 
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
 @Getter
 @Setter
 public class Student {
 
   private String id;
+  @NotBlank(message = "入力が必要です")
   private String fullName;
+  @Pattern(
+      regexp = "^[ァ-ヶー\\s　]+$",
+      message = "カタカナとスペースのみを入力してください"
+  )
   private String kana;
   private String nickName;
+  @NotBlank(message = "入力が必要です")
+  @Email(message = "メールアドレスの形式が誤っています")
   private String email;
+  @NotBlank(message = "入力が必要です")
   private String city;
+  @Range(min = 0, max = 150, message = "正しい値を入力してください")
   private int age;
   private Gender gender;
   private String remark;
