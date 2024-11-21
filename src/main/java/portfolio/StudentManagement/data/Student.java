@@ -2,6 +2,7 @@ package portfolio.StudentManagement.data;
 
 
 import java.util.Objects;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,22 @@ public class Student {
   private Gender gender;
   private String remark;
   private Boolean isDeleted;
+
+  public enum Gender {
+    Male, Female, Non_binary
+  }
+
+  /**
+   * 受講生に初期値を設定します。 IDに自動生成されたUUID、備考に空欄、キャンセルフラグにfalseを設定します。
+   *
+   * @param newStudent 新規受講生
+   */
+  public static void initStudent(Student newStudent) {
+    newStudent.setId(UUID.randomUUID().toString());
+    newStudent.setRemark("");
+    newStudent.setIsDeleted(false);
+  }
+
 
   @Override
   public boolean equals(Object o) {
@@ -42,8 +59,5 @@ public class Student {
     return Objects.hash(id, fullName, kana, nickName, email, city, age, gender, remark, isDeleted);
   }
 
-  public enum Gender {
-    Male, Female, Non_binary
-  }
 
 }

@@ -1,9 +1,10 @@
 package portfolio.StudentManagement.service;
 
-import java.time.LocalDateTime;
+import static portfolio.StudentManagement.data.Student.initStudent;
+import static portfolio.StudentManagement.data.StudentCourse.initStudentCourse;
+
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,31 +77,6 @@ public class StudentService {
     studentRepository.createStudent(newStudent);
     studentCourseRepository.createStudentCourse(newStudentCourse);
     return studentDetail;
-  }
-
-  /**
-   * 受講生コース情報に初期値を設定します。
-   * IDに自動生成されたUUID、受講生IDに同時に作成される受講生のID、受講開始日にレコードが作成された時点の日時、受講修了予定日にレコードが作成された時点から１年後の日時を設定します。
-   *
-   * @param newStudentCourse 新規受講生コース情報
-   * @param newStudentId     新規受講生ID
-   */
-  private void initStudentCourse(StudentCourse newStudentCourse, String newStudentId) {
-    newStudentCourse.setId(UUID.randomUUID().toString());
-    newStudentCourse.setStudentId(newStudentId);
-    newStudentCourse.setStartDate(LocalDateTime.now());
-    newStudentCourse.setEndDate(LocalDateTime.now().plusYears(1));
-  }
-
-  /**
-   * 受講生に初期値を設定します。 IDに自動生成されたUUID、備考に空欄、キャンセルフラグにfalseを設定します。
-   *
-   * @param newStudent 新規受講生
-   */
-  private void initStudent(Student newStudent) {
-    newStudent.setId(UUID.randomUUID().toString());
-    newStudent.setRemark("");
-    newStudent.setIsDeleted(false);
   }
 
   /**
