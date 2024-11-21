@@ -13,6 +13,7 @@ import portfolio.StudentManagement.controller.converter.StudentConverter;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.repository.StudentCourseRepository;
 import portfolio.StudentManagement.repository.StudentRepository;
 
@@ -86,7 +87,7 @@ public class StudentService {
    * @param studentDetail 受講生詳細
    */
   @Transactional
-  public void updateStudent(StudentDetail studentDetail) {
+  public void updateStudent(StudentDetail studentDetail) throws StudentNotFoundException {
     // リクエストとして受け取った受講生と受講生コース情報を定義します
     Student receivedStudent = studentDetail.getStudent();
     List<StudentCourse> receivedStudentCourseList = studentDetail.getStudentCourseList();
@@ -96,6 +97,11 @@ public class StudentService {
     Student currentStudent = studentRepository.selectStudentById(studentId);
     List<StudentCourse> currentStudentCourseList = studentCourseRepository
         .selectCourseListByStudentId(studentId);
+
+    // リクエストとして受け取った受講生IDに該当する受講生が存在しない場合にエラーを発生させます
+    if (currentStudent == null) {
+      throw new StudentNotFoundException();
+    }
 
     // リクエストとして受け取った受講生情報・受講生コース情報とDBに登録されている受講生・受講生コース情報に差異がある場合に更新処理を実行します
     updateStudentDetailIfModified(receivedStudent, currentStudent);
