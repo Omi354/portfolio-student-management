@@ -1,5 +1,6 @@
 package portfolio.StudentManagement.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -29,5 +30,11 @@ public class GlobalExceptionHandler {
     errorResponse.put("error", "Student Not Found");
     errorResponse.put("message", ex.getMessage());
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ResponseEntity<String> handleConstraintViolationException(
+      ConstraintViolationException ex) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
   }
 }

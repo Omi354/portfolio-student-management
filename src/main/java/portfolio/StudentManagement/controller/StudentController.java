@@ -1,8 +1,10 @@
 package portfolio.StudentManagement.controller;
 
+import jakarta.validation.constraints.Pattern;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import portfolio.StudentManagement.service.StudentService;
 /**
  * 受講生の検索や登録、更新などを行うREST APIとして実行されるControllerです
  */
+@Validated
 @RestController
 public class StudentController {
 
@@ -50,7 +53,10 @@ public class StudentController {
    * @throws StudentNotFoundException 受講生が存在しない場合の例外処理
    */
   @GetMapping("/student/{id}")
-  public StudentDetail getStudent(@PathVariable String id) throws StudentNotFoundException {
+  public StudentDetail getStudent(@PathVariable @Pattern(
+      regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+      message = "UUIDの形式が誤っています") String id)
+      throws StudentNotFoundException {
     return service.getStudentDetailById(id);
   }
 
