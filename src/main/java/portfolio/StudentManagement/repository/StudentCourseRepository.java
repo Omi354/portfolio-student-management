@@ -2,7 +2,6 @@ package portfolio.StudentManagement.repository;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import portfolio.StudentManagement.data.StudentCourse;
 
 /**
@@ -36,8 +35,7 @@ public interface StudentCourseRepository {
   /**
    * 受講生コースIDに紐づくコース名の更新を行います。
    *
-   * @param id         受講生コースID
-   * @param courseName コース名
+   * @param studentCourse 受講生コース情報
    */
-  void updateStudentCourse(@Param("id") String id, @Param("courseName") String courseName);
+  void updateStudentCourse(StudentCourse studentCourse);
 }

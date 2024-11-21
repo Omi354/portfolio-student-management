@@ -123,20 +123,18 @@ public class StudentService {
   private void updateStudentCourseIfModified(List<StudentCourse> receivedStudentCourseList,
       List<StudentCourse> currentStudentCourseList) {
 
-    // currentStudentCourseList　を　{"id", "courseName"} のマップに変換します
-    Map<String, String> currentCourseNameMap = currentStudentCourseList.stream()
+    // currentStudentCourseList　を　{"id", {studentCourse}} のマップに変換します
+    Map<String, StudentCourse> currentStudentCourseMap = currentStudentCourseList.stream()
         .collect(
-            Collectors.toMap(StudentCourse::getId, StudentCourse::getCourseName, (a, b) -> b));
-
+            Collectors.toMap(StudentCourse::getId, studentCourse -> studentCourse, (a, b) -> b));
     // receivedStudentCourseListをfor文で回し、中身のreceivedStudentCourseを一つずつ取り出します
     for (StudentCourse receivedStudentCourse : receivedStudentCourseList) {
-      // receivedStudentCourseのIDに紐づく、現時点で登録されているコース名を取得します
-      String currentCourseName = currentCourseNameMap
+      // receivedStudentCourseのIDに紐づく、現時点で登録されている受講生コース情報を取得します
+      StudentCourse currentStudentCourse = currentStudentCourseMap
           .get(receivedStudentCourse.getId());
       // 現時点で登録されているコース名と、受け取ったコース名が異なる場合にRepositoryにidと変更後のコース名を渡します
-      if (!receivedStudentCourse.getCourseName().equals(currentCourseName)) {
-        studentCourseRepository.updateStudentCourse(receivedStudentCourse.getId(),
-            receivedStudentCourse.getCourseName());
+      if (!receivedStudentCourse.equals(currentStudentCourse)) {
+        studentCourseRepository.updateStudentCourse(receivedStudentCourse);
       }
     }
   }

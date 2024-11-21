@@ -22,9 +22,11 @@
   </insert>
 
   <!-- 受講生コース情報の更新 -->
-  <insert id="updateStudentCourse">
+  <insert id="updateStudentCourse" parameterType="portfolio.StudentManagement.data.StudentCourse">
     UPDATE students_courses SET
-    course_name = #{courseName}
+    course_name = #{courseName},
+    start_date = #{startDate},
+    end_date = #{endDate}
     WHERE id = #{id}
   </insert>
 
