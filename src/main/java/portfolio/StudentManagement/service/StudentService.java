@@ -41,8 +41,13 @@ public class StudentService {
    * @param id 受講生ID
    * @return 受講生詳細（受講生と受講コース情報）
    */
-  public StudentDetail getStudentDetailById(String id) {
+  public StudentDetail getStudentDetailById(String id) throws StudentNotFoundException {
     Student student = studentRepository.selectStudentById(id);
+    // 指定したID該当する受講生が存在しない場合、エラーを発生させます
+    if (student == null) {
+      throw new StudentNotFoundException();
+    }
+
     List<StudentCourse> studentCourseList = studentCourseRepository.selectCourseListByStudentId(id);
     return new StudentDetail(student, studentCourseList);
   }

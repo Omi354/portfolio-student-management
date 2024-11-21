@@ -42,13 +42,14 @@ public class StudentController {
   }
 
   /**
-   * 受講生検索です IDに紐づく任意の受講生の情報を取得します
+   * 受講生検索です IDに紐づく任意の受講生の情報を取得します。 IDに紐づく受講生が存在しない場合エラーを発生させます。
    *
    * @param id 受講生id
    * @return idに紐づく任意の受講生情報
+   * @throws StudentNotFoundException 受講生が存在しない場合の例外処理
    */
   @GetMapping("/student/{id}")
-  public StudentDetail getStudent(@PathVariable String id) {
+  public StudentDetail getStudent(@PathVariable String id) throws StudentNotFoundException {
     return service.getStudentDetailById(id);
   }
 
@@ -70,6 +71,7 @@ public class StudentController {
    *
    * @param studentDetail 受講生詳細
    * @return 処理結果
+   * @throws StudentNotFoundException 受講生が存在しない場合の例外処理
    */
   @PutMapping("/updateStudent")
   public ResponseEntity<String> updateStudent(@RequestBody StudentDetail studentDetail)
