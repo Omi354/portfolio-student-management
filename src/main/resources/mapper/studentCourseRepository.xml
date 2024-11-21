@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="portfolio.StudentManagement.repository.StudentCourseRepository">
+
+  <!-- 受講生コース情報の全件検索 -->
+  <select id="selectAllCourseList" resultType="portfolio.StudentManagement.data.StudentCourse">
+    SELECT * FROM students_courses
+  </select>
+
+  <!-- 受講生コース情報の検索 -->
+  <select id="selectCourseListByStudentId" parameterType="String"
+    resultType="portfolio.StudentManagement.data.StudentCourse">
+    SELECT * FROM students_courses WHERE student_id = #{studentId}
+  </select>
+
+  <!-- 受講生コース情報の新規登録 -->
+  <insert id="createStudentCourse" parameterType="portfolio.StudentManagement.data.StudentCourse">
+    INSERT INTO students_courses (id, student_id, course_name, start_date, end_date)
+    VALUES (#{id}, #{studentId}, #{courseName}, #{startDate}, #{endDate} )
+  </insert>
+
+  <!-- 受講生コース情報の更新 -->
+  <insert id="updateStudentCourse" parameterType="portfolio.StudentManagement.data.StudentCourse">
+    UPDATE students_courses SET
+    course_name = #{courseName},
+    start_date = #{startDate},
+    end_date = #{endDate}
+    WHERE id = #{id}
+  </insert>
+
+</mapper>

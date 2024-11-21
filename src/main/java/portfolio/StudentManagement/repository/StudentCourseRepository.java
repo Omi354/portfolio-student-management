@@ -1,10 +1,7 @@
 package portfolio.StudentManagement.repository;
 
 import java.util.List;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 import portfolio.StudentManagement.data.StudentCourse;
 
 /**
@@ -18,7 +15,6 @@ public interface StudentCourseRepository {
    *
    * @return 受講生コース一覧（全件）
    */
-  @Select("SELECT * FROM students_courses")
   List<StudentCourse> selectAllCourseList();
 
   /**
@@ -27,16 +23,19 @@ public interface StudentCourseRepository {
    * @param studentId 受講生ID
    * @return 受講生IDに紐づく受講生コース情報
    */
-  @Select("SELECT * FROM students_courses WHERE student_id = #{studentId}")
   List<StudentCourse> selectCourseListByStudentId(String studentId);
 
-
-  @Insert("INSERT INTO students_courses (id, student_id, course_name, start_date, end_date) VALUES(#{id}, #{studentId}, #{courseName}, #{startDate}, #{endDate} )")
+  /**
+   * 受講生コース情報の新規登録を行います。
+   *
+   * @param studentCourse 受講生コース情報
+   */
   void createStudentCourse(StudentCourse studentCourse);
 
-  @Update(
-      "UPDATE students_courses SET course_name = #{courseName} "
-          + "WHERE id = #{id}"
-  )
+  /**
+   * 受講生コースIDに紐づくコース名の更新を行います。
+   *
+   * @param studentCourse 受講生コース情報
+   */
   void updateStudentCourse(StudentCourse studentCourse);
 }

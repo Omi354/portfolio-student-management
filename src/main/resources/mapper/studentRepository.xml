@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="portfolio.StudentManagement.repository.StudentRepository">
+
+  <!-- 受講生の全件検索 -->
+  <select id="selectAllStudentList" resultType="portfolio.StudentManagement.data.Student">
+    SELECT * FROM students WHERE is_deleted = false
+  </select>
+
+  <!-- 受講生の検索 -->
+  <select id="selectStudentById" parameterType="String"
+    resultType="portfolio.StudentManagement.data.Student">
+    SELECT * FROM students WHERE id = #{id}
+  </select>
+
+  <!-- 受講生の新規登録 -->
+  <insert id="createStudent" parameterType="portfolio.StudentManagement.data.Student">
+    INSERT INTO students (id, full_name, kana, nick_name, email, city, age, gender, remark,
+    is_deleted)
+    VALUES (#{id}, #{fullName}, #{kana}, #{nickName}, #{email}, #{city}, #{age}, #{gender},
+    #{remark}, #{isDeleted})
+  </insert>
+
+  <!-- 受講生の更新 -->
+  <update id="updateStudent" parameterType="portfolio.StudentManagement.data.Student">
+    UPDATE students SET
+    full_name = #{fullName},
+    kana = #{kana},
+    nick_name = #{nickName},
+    email = #{email},
+    city = #{city},
+    age = #{age},
+    gender = #{gender},
+    remark = #{remark},
+    is_deleted = #{isDeleted}
+    WHERE id = #{id}
+  </update>
+
+
+</mapper>

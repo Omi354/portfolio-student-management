@@ -4,12 +4,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
+import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.service.StudentService;
 
 /**
@@ -41,17 +43,23 @@ public class StudentController {
   }
 
   /**
-   * 受講生検索です IDに紐づく任意の受講生の情報を取得します
+   * 受講生検索です IDに紐づく任意の受講生の情報を取得します。 IDに紐づく受講生が存在しない場合エラーを発生させます。
    *
    * @param id 受講生id
    * @return idに紐づく任意の受講生情報
+   * @throws StudentNotFoundException 受講生が存在しない場合の例外処理
    */
   @GetMapping("/student/{id}")
-  public StudentDetail getStudent(@PathVariable String id) {
+  public StudentDetail getStudent(@PathVariable String id) throws StudentNotFoundException {
     return service.getStudentDetailById(id);
   }
 
-
+  /**
+   * 受講生詳細を新規登録します。
+   *
+   * @param studentDetail 受講生詳細
+   * @return 処理結果
+   */
   @PostMapping("/registerStudent")
   public ResponseEntity<StudentDetail> registerStudent(@RequestBody StudentDetail studentDetail) {
     StudentDetail registeredStudentDetail = service.registerStudent(studentDetail);
@@ -59,8 +67,17 @@ public class StudentController {
   }
 
 
-  @PatchMapping("/updateStudent")
-  public ResponseEntity<String> updateStudent(@RequestBody StudentDetail studentDetail) {
+  /**
+   * 受講生詳細を更新します。
+   *
+   * @param studentDetail 受講生詳細
+   * @return 処理結果
+   * @throws StudentNotFoundException       受講生が存在しない場合の例外処理
+   * @throws StudentCourseNotFoundException 　受講生コース情報が存在しない場合の例外処理
+   */
+  @PutMapping("/updateStudent")
+  public ResponseEntity<String> updateStudent(@RequestBody StudentDetail studentDetail)
+      throws StudentNotFoundException, StudentCourseNotFoundException {
     service.updateStudent(studentDetail);
     return ResponseEntity.ok("更新に成功しました");
   }
