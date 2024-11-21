@@ -13,6 +13,7 @@ import portfolio.StudentManagement.controller.converter.StudentConverter;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.repository.StudentCourseRepository;
 import portfolio.StudentManagement.repository.StudentRepository;
@@ -92,7 +93,8 @@ public class StudentService {
    * @param studentDetail 受講生詳細
    */
   @Transactional
-  public void updateStudent(StudentDetail studentDetail) throws StudentNotFoundException {
+  public void updateStudent(StudentDetail studentDetail)
+      throws StudentNotFoundException, StudentCourseNotFoundException {
     // リクエストとして受け取った受講生と受講生コース情報を定義します
     Student receivedStudent = studentDetail.getStudent();
     List<StudentCourse> receivedStudentCourseList = studentDetail.getStudentCourseList();
@@ -121,7 +123,7 @@ public class StudentService {
    * @param currentStudentCourseList  現時点でDBに登録されている受講生コース情報
    */
   private void updateStudentCourseIfModified(List<StudentCourse> receivedStudentCourseList,
-      List<StudentCourse> currentStudentCourseList) {
+      List<StudentCourse> currentStudentCourseList) throws StudentCourseNotFoundException {
 
     // currentStudentCourseList　を　{"id", {studentCourse}} のマップに変換します
     Map<String, StudentCourse> currentStudentCourseMap = currentStudentCourseList.stream()
@@ -132,6 +134,10 @@ public class StudentService {
       // receivedStudentCourseのIDに紐づく、現時点で登録されている受講生コース情報を取得します
       StudentCourse currentStudentCourse = currentStudentCourseMap
           .get(receivedStudentCourse.getId());
+      // receivedStudentCourseのIDに紐づく受講生コース情報が存在しない場合、エラーを発生させます
+      if (currentStudentCourse == null) {
+        throw new StudentCourseNotFoundException();
+      }
       // 現時点で登録されているコース名と、受け取ったコース名が異なる場合にRepositoryにidと変更後のコース名を渡します
       if (!receivedStudentCourse.equals(currentStudentCourse)) {
         studentCourseRepository.updateStudentCourse(receivedStudentCourse);

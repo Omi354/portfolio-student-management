@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.service.StudentService;
 
@@ -71,11 +72,12 @@ public class StudentController {
    *
    * @param studentDetail 受講生詳細
    * @return 処理結果
-   * @throws StudentNotFoundException 受講生が存在しない場合の例外処理
+   * @throws StudentNotFoundException       受講生が存在しない場合の例外処理
+   * @throws StudentCourseNotFoundException 　受講生コース情報が存在しない場合の例外処理
    */
   @PutMapping("/updateStudent")
   public ResponseEntity<String> updateStudent(@RequestBody StudentDetail studentDetail)
-      throws StudentNotFoundException {
+      throws StudentNotFoundException, StudentCourseNotFoundException {
     service.updateStudent(studentDetail);
     return ResponseEntity.ok("更新に成功しました");
   }
