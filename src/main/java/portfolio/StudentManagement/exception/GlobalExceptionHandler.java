@@ -35,24 +35,33 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
-  public ResponseEntity<String> handleConstraintViolationException(
+  public ResponseEntity<Map<String, String>> handleConstraintViolationException(
       ConstraintViolationException ex) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body("入力された値が無効です。再度ご確認の上、正しい値を入力してください。");
+    Map<String, String> errorResponse = new HashMap<>();
+    errorResponse.put("error", "Violation Exception");
+    errorResponse.put("message",
+        "入力された値が無効です。再度ご確認の上、正しい値を入力してください。");
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
   }
 
   @ExceptionHandler(UnexpectedTypeException.class)
-  public ResponseEntity<String> handleUnexpectedTypeException(
+  public ResponseEntity<Map<String, String>> handleUnexpectedTypeException(
       UnexpectedTypeException ex) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body("入力内容に誤りがあります。指定された形式に従って修正してください。");
+    Map<String, String> errorResponse = new HashMap<>();
+    errorResponse.put("error", "Violation Exception");
+    errorResponse.put("message",
+        "入力された値が無効です。再度ご確認の上、正しい値を入力してください。");
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<String> handleMethodArgumentNotValidException(
+  public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(
       MethodArgumentNotValidException ex) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body("入力内容が無効です。再度ご確認の上、正しい値を入力してください。");
+    Map<String, String> errorResponse = new HashMap<>();
+    errorResponse.put("error", "Violation Exception");
+    errorResponse.put("message",
+        "入力された値が無効です。再度ご確認の上、正しい値を入力してください。");
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
   }
 
 
