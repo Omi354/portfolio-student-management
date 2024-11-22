@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import portfolio.StudentManagement.data.ErrorResponse;
 import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
@@ -83,19 +84,14 @@ public class StudentController {
               responseCode = "404", description = "指定されたIDの受講生が存在しない場合のエラー",
               content = @Content(
                   mediaType = "application/json",
-                  schema = @Schema(
-                      type = "object",
-                      example = "{\"error\": \"Student Not Found\", \"message\": \"指定したIDの受講生が見つかりませんでした\"}"
-                  ))
+                  schema = @Schema(implementation = ErrorResponse.class)
+              )
           ),
           @ApiResponse(
               responseCode = "400", description = "UUIDの形式が誤っていた際のバリデーションエラー",
               content = @Content(
                   mediaType = "application/json",
-                  schema = @Schema(
-                      type = "object",
-                      example = "{\"error\": \"Violation Exception\", \"message\": \"入力された値が無効です。再度ご確認の上、正しい値を入力してください。\"}"
-                  )
+                  schema = @Schema(implementation = ErrorResponse.class)
               )
           )
       },
@@ -140,10 +136,7 @@ public class StudentController {
               responseCode = "400", description = "リクエストボディのバリデーションエラー",
               content = @Content(
                   mediaType = "application/json",
-                  schema = @Schema(
-                      type = "object",
-                      example = "{\"error\": \"Violation Exception\", \"message\": \"入力された値が無効です。再度ご確認の上、正しい値を入力してください。\"}"
-                  )
+                  schema = @Schema(implementation = ErrorResponse.class)
               )
           )
       },
@@ -189,20 +182,14 @@ public class StudentController {
               responseCode = "400", description = "リクエストボディのバリデーションエラー",
               content = @Content(
                   mediaType = "application/json",
-                  schema = @Schema(
-                      type = "object",
-                      example = "{\"error\": \"Violation Exception\", \"message\": \"入力された値が無効です。再度ご確認の上、正しい値を入力してください。\"}"
-                  )
+                  schema = @Schema(implementation = ErrorResponse.class)
               )
           ),
           @ApiResponse(
               responseCode = "404", description = "指定されたIDの受講生または受講生コース情報が存在しない場合のエラー",
               content = @Content(
                   mediaType = "application/json",
-                  schema = @Schema(
-                      type = "object",
-                      example = "{\"error\": \"Student Not Found\", \"message\": \"指定したIDの受講生が見つかりませんでした\"}"
-                  )
+                  schema = @Schema(implementation = ErrorResponse.class)
               )
           ),
       },
