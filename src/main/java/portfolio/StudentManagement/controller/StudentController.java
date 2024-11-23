@@ -102,7 +102,8 @@ public class StudentController {
               schema = @Schema(
                   type = "string",
                   format = "uuid",
-                  description = "自動生成されたUUID"
+                  description = "自動生成されたUUID",
+                  example = "5998fd5d-a2cd-11ef-b71f-6845f15f510c"
               )
           )}
   )
