@@ -2,7 +2,7 @@ package portfolio.StudentManagement.data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "エラーーレスポンスモデル")
+@Schema(description = "エラーレスポンスモデル")
 public class ErrorResponse {
 
   @Schema(description = "エラーの種類", example = "error occurred")
