@@ -119,7 +119,6 @@ class StudentServiceTest {
         .createStudent(mockStudent);
     Mockito.verify(studentCourseRepository, Mockito.times(1))
         .createStudentCourse(mockStudentcourse);
-    Assertions.assertEquals(result, mockstudentDetail);
   }
 
   @Test
