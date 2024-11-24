@@ -2,6 +2,7 @@ package portfolio.StudentManagement.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import portfolio.StudentManagement.controller.converter.StudentConverter;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.repository.StudentCourseRepository;
 import portfolio.StudentManagement.repository.StudentRepository;
 
@@ -51,6 +53,31 @@ class StudentServiceTest {
     Mockito.verify(studentCourseRepository, Mockito.times(1)).selectAllCourseList();
     Mockito.verify(converter, Mockito.times(1))
         .getStudentDetailsList(studentList, studentCourseList);
+  }
+
+  @Test
+  void 受講生検索_引数で渡されたIDに紐づく受講生情報が存在する場合にRepositoryの処理が適切に呼び出せていること()
+      throws StudentNotFoundException {
+
+    // 準備
+    String id = UUID.randomUUID().toString();
+    Student mockStudent = new Student();
+    mockStudent.setId(id);
+
+    StudentCourse mockCourse1 = new StudentCourse();
+    StudentCourse mockCourse2 = new StudentCourse();
+    List<StudentCourse> mockStudentCourseList = List.of(mockCourse1, mockCourse2);
+
+    Mockito.when(studentRepository.selectStudentById(id)).thenReturn(mockStudent);
+    Mockito.when(studentCourseRepository.selectCourseListByStudentId(id))
+        .thenReturn(mockStudentCourseList);
+
+    // 実行
+    StudentDetail actual = sut.getStudentDetailById(id);
+
+    // 検証
+    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
+    Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
   }
 
 }
