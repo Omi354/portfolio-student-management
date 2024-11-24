@@ -1,23 +1,21 @@
 package portfolio.StudentManagement;
 
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import portfolio.StudentManagement.data.Student;
-import portfolio.StudentManagement.data.StudentCourse;
-import portfolio.StudentManagement.repository.StudentCourseRepository;
-import portfolio.StudentManagement.repository.StudentRepository;
 
+@OpenAPIDefinition(info = @Info(
+    title = "受講生管理システム",
+    description = "受講生情報を管理するためのシステムです。主に受講生の個人情報と受講しているコース情報の管理、操作を行います"
+
+))
 @SpringBootApplication
-@RestController
 public class StudentManagementApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(StudentManagementApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(StudentManagementApplication.class, args);
+  }
 
 
 }

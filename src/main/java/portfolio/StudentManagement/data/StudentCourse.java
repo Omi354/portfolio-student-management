@@ -1,5 +1,6 @@
 package portfolio.StudentManagement.data;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -7,15 +8,25 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
+@Schema(description = "受講生コース情報")
 @Getter
 @Setter
 public class StudentCourse {
 
+  @Schema(description = "ID、UUIDを自動付与", example = "78af6312-a2cd-11ef-b71f-6845f15f510c")
   private String id;
+
+  @Schema(description = "受講生ID、外部キー", example = "5998fd5d-a2cd-11ef-b71f-6845f15f510c")
   private String studentId;
+
+  @Schema(description = "受講コース名", example = "Javaフルコース")
   @NotBlank
   private String courseName;
+
+  @Schema(description = "受講開始日", example = "2024-01-10T00:00:00")
   private LocalDateTime startDate;
+
+  @Schema(description = "受講修了予定日", example = "2025-01-10T00:00:00")
   private LocalDateTime endDate;
 
   /**
