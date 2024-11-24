@@ -91,14 +91,13 @@ class StudentServiceTest {
     Mockito.when(studentRepository.selectStudentById(wrongId)).thenReturn(null);
 
     // 実行と検証
-    try {
-      sut.getStudentDetailById(wrongId);
-      Assertions.fail("例外がスローされることを期待しましたが、スローされませんでした");
-    } catch (StudentNotFoundException e) {
-      Assertions.assertEquals("指定したIDの受講生が見つかりませんでした", e.getMessage());
-    }
+    StudentNotFoundException exception = Assertions.assertThrows(
+        StudentNotFoundException.class,
+        () -> sut.getStudentDetailById(wrongId)
+    );
 
     // 検証
+    Assertions.assertEquals("指定したIDの受講生が見つかりませんでした", exception.getMessage());
     Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(wrongId);
     Mockito.verify(studentCourseRepository, Mockito.never())
         .selectCourseListByStudentId(Mockito.anyString());
