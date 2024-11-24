@@ -127,21 +127,24 @@ class StudentServiceTest {
   void 受講生更新_適切な受講生IDがわたってくる場合かつ更新前後に差異がある場合StudentRepositoryとStudentCourseRepositoryが処理が適切に呼び出されること()
       throws StudentNotFoundException, StudentCourseNotFoundException {
     // 準備
-    Student mockStudent = new Student();
-    StudentCourse mockStudentCourse = new StudentCourse();
     String id = UUID.randomUUID().toString();
 
+    Student mockStudent = new Student();
     mockStudent.setId(id);
     mockStudent.setRemark("テスト");
+
+    StudentCourse mockStudentCourse = new StudentCourse();
     mockStudentCourse.setStudentId(id);
     mockStudentCourse.setCourseName("Javaフルコース");
     List<StudentCourse> mockStudentCourseList = List.of(mockStudentCourse);
+
     StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
 
     Student currentStudent = new Student();
-    StudentCourse currentStudentCourse = new StudentCourse();
     currentStudent.setId(id);
     currentStudent.setRemark("");
+
+    StudentCourse currentStudentCourse = new StudentCourse();
     currentStudentCourse.setStudentId(id);
     currentStudentCourse.setCourseName("AWSフルコース");
     List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse);
@@ -165,26 +168,26 @@ class StudentServiceTest {
   void 受講生更新_存在しない受講生IDがわたってくる場合例外がスローをされること()
       throws StudentNotFoundException, StudentCourseNotFoundException {
     // 準備
-    Student mockStudent = new Student();
-    StudentCourse mockStudentCourse = new StudentCourse();
     String id = UUID.randomUUID().toString();
 
+    Student mockStudent = new Student();
     mockStudent.setId(id);
+
+    StudentCourse mockStudentCourse = new StudentCourse();
     mockStudentCourse.setStudentId(id);
     List<StudentCourse> mockStudentCourseList = List.of(mockStudentCourse);
+
     StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
 
     Mockito.when(studentRepository.selectStudentById(id)).thenReturn(null);
 
     // 実行と検証
-    try {
-      sut.updateStudent(mockstudentDetail);
-      Assertions.fail("例外がスローされることを期待しましたが、スローされませんでした");
-    } catch (StudentNotFoundException e) {
-      Assertions.assertEquals("指定したIDの受講生が見つかりませんでした", e.getMessage());
-    }
+    StudentNotFoundException exception = Assertions.assertThrows(
+        StudentNotFoundException.class, () -> sut.updateStudent(mockstudentDetail)
+    );
 
     // 検証
+    Assertions.assertEquals("指定したIDの受講生が見つかりませんでした", exception.getMessage());
     Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
     Mockito.verify(studentRepository, Mockito.never()).updateStudent(mockStudent);
     Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
