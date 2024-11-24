@@ -14,6 +14,7 @@ import portfolio.StudentManagement.controller.converter.StudentConverter;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.repository.StudentCourseRepository;
 import portfolio.StudentManagement.repository.StudentRepository;
@@ -100,7 +101,7 @@ class StudentServiceTest {
   }
 
   @Test
-  void 受講生更新_リクエストボディから必要な情報を取得しStudentRepositoryとStudentCourseRepositoryが処理が適切に呼び出されていること() {
+  void 受講生登録_リクエストボディから必要な情報を取得しStudentRepositoryとStudentCourseRepositoryが処理が適切に呼び出されていること() {
     // 準備
     Student mockStudent = new Student();
     List<StudentCourse> mockStudentCourseList = List.of(new StudentCourse());
@@ -117,4 +118,44 @@ class StudentServiceTest {
         .createStudentCourse(mockStudentcourse);
     Assertions.assertEquals(result, mockstudentDetail);
   }
+
+  @Test
+  void 受講生更新_適切な受講生IDがわたってくる場合かつ更新前後に差異がある場合StudentRepositoryとStudentCourseRepositoryが処理が適切に呼び出されること()
+      throws StudentNotFoundException, StudentCourseNotFoundException {
+    // 準備
+    Student mockStudent = new Student();
+    StudentCourse mockStudentCourse = new StudentCourse();
+    String id = UUID.randomUUID().toString();
+
+    mockStudent.setId(id);
+    mockStudent.setRemark("テスト");
+    mockStudentCourse.setStudentId(id);
+    mockStudentCourse.setCourseName("Javaフルコース");
+    List<StudentCourse> mockStudentCourseList = List.of(mockStudentCourse);
+    StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
+
+    Student currentStudent = new Student();
+    StudentCourse currentStudentCourse = new StudentCourse();
+    currentStudent.setId(id);
+    currentStudent.setRemark("");
+    currentStudentCourse.setStudentId(id);
+    currentStudentCourse.setCourseName("AWSフルコース");
+    List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse);
+
+    Mockito.when(studentRepository.selectStudentById(id)).thenReturn(currentStudent);
+    Mockito.when(studentCourseRepository.selectCourseListByStudentId(id))
+        .thenReturn(currentStudentCourseList);
+
+    // 実行
+    sut.updateStudent(mockstudentDetail);
+
+    // 検証
+    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
+    Mockito.verify(studentRepository, Mockito.times(1)).updateStudent(mockStudent);
+    Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
+    Mockito.verify(studentCourseRepository, Mockito.times(1))
+        .updateStudentCourse(mockStudentCourse);
+  }
+
+  
 }
