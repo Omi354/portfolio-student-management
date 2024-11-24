@@ -99,4 +99,22 @@ class StudentServiceTest {
         .selectCourseListByStudentId(Mockito.anyString());
   }
 
+  @Test
+  void 受講生更新_リクエストボディから必要な情報を取得しStudentRepositoryとStudentCourseRepositoryが処理が適切に呼び出されていること() {
+    // 準備
+    Student mockStudent = new Student();
+    List<StudentCourse> mockStudentCourseList = List.of(new StudentCourse());
+    StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
+    StudentCourse mockStudentcourse = mockStudentCourseList.getFirst();
+
+    // 実行
+    StudentDetail result = sut.registerStudent(mockstudentDetail);
+
+    // 検証
+    Mockito.verify(studentRepository, Mockito.times(1))
+        .createStudent(mockStudent);
+    Mockito.verify(studentCourseRepository, Mockito.times(1))
+        .createStudentCourse(mockStudentcourse);
+    Assertions.assertEquals(result, mockstudentDetail);
+  }
 }
