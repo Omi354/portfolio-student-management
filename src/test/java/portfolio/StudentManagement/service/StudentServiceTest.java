@@ -161,5 +161,35 @@ class StudentServiceTest {
         .updateStudentCourse(mockStudentCourse);
   }
 
+  @Test
+  void 受講生更新_存在しない受講生IDがわたってくる場合例外がスローをされること()
+      throws StudentNotFoundException, StudentCourseNotFoundException {
+    // 準備
+    Student mockStudent = new Student();
+    StudentCourse mockStudentCourse = new StudentCourse();
+    String id = UUID.randomUUID().toString();
+
+    mockStudent.setId(id);
+    mockStudentCourse.setStudentId(id);
+    List<StudentCourse> mockStudentCourseList = List.of(mockStudentCourse);
+    StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
+
+    Mockito.when(studentRepository.selectStudentById(id)).thenReturn(null);
+
+    // 実行と検証
+    try {
+      sut.updateStudent(mockstudentDetail);
+      Assertions.fail("例外がスローされることを期待しましたが、スローされませんでした");
+    } catch (StudentNotFoundException e) {
+      Assertions.assertEquals("指定したIDの受講生が見つかりませんでした", e.getMessage());
+    }
+
+    // 検証
+    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
+    Mockito.verify(studentRepository, Mockito.never()).updateStudent(mockStudent);
+    Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
+    Mockito.verify(studentCourseRepository, Mockito.never()).updateStudentCourse(mockStudentCourse);
+  }
+
 
 }
