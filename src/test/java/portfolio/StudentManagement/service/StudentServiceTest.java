@@ -193,7 +193,7 @@ class StudentServiceTest {
   }
 
   @Test
-  void StudentCourseの更新有無の確認_有効なIDがわたってきており変更点がある場合()
+  void StudentCourseの更新有無の確認_有効なIDがわたってきており変更点が1箇所のみある場合に変更箇所のみ更新処理がされること()
       throws StudentCourseNotFoundException {
     // 準備
     String id1 = UUID.randomUUID().toString();
@@ -232,4 +232,29 @@ class StudentServiceTest {
 
   }
 
+  @Test
+  void StudentCourseの更新有無の確認_無効なIDがわたってきた場合例外をスローすること()
+      throws StudentCourseNotFoundException {
+    // 準備
+    String id = UUID.randomUUID().toString();
+
+    StudentCourse receivedStudentCourse = new StudentCourse();
+    receivedStudentCourse.setStudentId(id);
+    receivedStudentCourse.setCourseName("Javaフルコース");
+    List<StudentCourse> receivedStudentCourseList = List.of(receivedStudentCourse);
+    List<StudentCourse> currentStudentCourseList = new ArrayList<>();
+
+    // 実行と検証
+    StudentCourseNotFoundException exception = Assertions.assertThrows(
+        StudentCourseNotFoundException.class,
+        () -> sut.updateStudentCourseIfModified(receivedStudentCourseList, currentStudentCourseList)
+    );
+
+    // 検証
+    Assertions.assertEquals("指定したIDの受講生コースが見つかりませんでした",
+        exception.getMessage());
+    Mockito.verify(studentCourseRepository, Mockito.never())
+        .updateStudentCourse(receivedStudentCourse);
+
+  }
 }
