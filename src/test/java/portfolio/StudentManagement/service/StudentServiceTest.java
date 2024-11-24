@@ -192,5 +192,44 @@ class StudentServiceTest {
     Mockito.verify(studentCourseRepository, Mockito.never()).updateStudentCourse(mockStudentCourse);
   }
 
+  @Test
+  void StudentCourseの更新有無の確認_有効なIDがわたってきており変更点がある場合()
+      throws StudentCourseNotFoundException {
+    // 準備
+    String id1 = UUID.randomUUID().toString();
+    String id2 = UUID.randomUUID().toString();
+
+    StudentCourse receivedStudentCourse1 = new StudentCourse();
+    receivedStudentCourse1.setStudentId(id1);
+    receivedStudentCourse1.setCourseName("Javaフルコース");
+
+    StudentCourse receivedStudentCourse2 = new StudentCourse();
+    receivedStudentCourse2.setStudentId(id2);
+    receivedStudentCourse2.setCourseName("AWSフルコース");
+
+    List<StudentCourse> receivedStudentCourseList = List.of(
+        receivedStudentCourse1, receivedStudentCourse2);
+
+    StudentCourse currentStudentCourse1 = new StudentCourse();
+    currentStudentCourse1.setStudentId(id1);
+    currentStudentCourse1.setCourseName("デザインコース");
+
+    StudentCourse currentStudentCourse2 = new StudentCourse();
+    currentStudentCourse2.setStudentId(id2);
+    currentStudentCourse2.setCourseName("AWSフルコース");
+
+    List<StudentCourse> currentStudentCourseList = List.of(
+        currentStudentCourse1, currentStudentCourse2);
+
+    // 実行
+    sut.updateStudentCourseIfModified(receivedStudentCourseList, currentStudentCourseList);
+
+    // 検証
+    Mockito.verify(studentCourseRepository, Mockito.times(1))
+        .updateStudentCourse(receivedStudentCourse1);
+    Mockito.verify(studentCourseRepository, Mockito.never())
+        .updateStudentCourse(receivedStudentCourse2);
+
+  }
 
 }
