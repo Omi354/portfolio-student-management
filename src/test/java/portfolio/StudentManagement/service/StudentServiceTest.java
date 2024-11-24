@@ -3,6 +3,7 @@ package portfolio.StudentManagement.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,6 +79,24 @@ class StudentServiceTest {
     // 検証
     Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
     Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
+  }
+
+  @Test
+  void 受講生検索_引数で渡されたIDに紐づく受講生情報が存在しない場合に例外がスローされること()
+      throws StudentNotFoundException {
+
+    // 準備
+    String wrongId = UUID.randomUUID().toString();
+
+    // 実行と検証
+    StudentNotFoundException exception = Assertions.assertThrows(StudentNotFoundException.class,
+        () -> sut.getStudentDetailById(wrongId));
+
+    // 検証
+    Assertions.assertEquals("指定したIDの受講生が見つかりませんでした", exception.getMessage());
+    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(wrongId);
+    Mockito.verify(studentCourseRepository, Mockito.never())
+        .selectCourseListByStudentId(Mockito.anyString());
   }
 
 }
