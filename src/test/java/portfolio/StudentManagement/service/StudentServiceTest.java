@@ -85,16 +85,20 @@ class StudentServiceTest {
   @Test
   void 受講生検索_引数で渡されたIDに紐づく受講生情報が存在しない場合に例外がスローされること()
       throws StudentNotFoundException {
-
     // 準備
     String wrongId = UUID.randomUUID().toString();
 
+    Mockito.when(studentRepository.selectStudentById(wrongId)).thenReturn(null);
+
     // 実行と検証
-    StudentNotFoundException exception = Assertions.assertThrows(StudentNotFoundException.class,
-        () -> sut.getStudentDetailById(wrongId));
+    try {
+      sut.getStudentDetailById(wrongId);
+      Assertions.fail("例外がスローされることを期待しましたが、スローされませんでした");
+    } catch (StudentNotFoundException e) {
+      Assertions.assertEquals("指定したIDの受講生が見つかりませんでした", e.getMessage());
+    }
 
     // 検証
-    Assertions.assertEquals("指定したIDの受講生が見つかりませんでした", exception.getMessage());
     Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(wrongId);
     Mockito.verify(studentCourseRepository, Mockito.never())
         .selectCourseListByStudentId(Mockito.anyString());
@@ -157,5 +161,5 @@ class StudentServiceTest {
         .updateStudentCourse(mockStudentCourse);
   }
 
-  
+
 }
