@@ -111,7 +111,7 @@ public class StudentService {
     }
 
     // リクエストとして受け取った受講生情報・受講生コース情報とDBに登録されている受講生・受講生コース情報に差異がある場合に更新処理を実行します
-    updateStudentDetailIfModified(receivedStudent, currentStudent);
+    updateStudentIfModified(receivedStudent, currentStudent);
     updateStudentCourseIfModified(receivedStudentCourseList, currentStudentCourseList);
   }
 
@@ -151,7 +151,7 @@ public class StudentService {
    * @param receivedStudent リクエストとして受け取った受講生情報
    * @param currentStudent  現時点でDBに登録されている受講生情報
    */
-  private void updateStudentDetailIfModified(Student receivedStudent, Student currentStudent) {
+  void updateStudentIfModified(Student receivedStudent, Student currentStudent) {
     if (!receivedStudent.equals(currentStudent)) {
       studentRepository.updateStudent(receivedStudent);
     }

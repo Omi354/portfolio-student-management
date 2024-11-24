@@ -104,7 +104,7 @@ class StudentServiceTest {
   }
 
   @Test
-  void 受講生登録_リクエストボディから必要な情報を取得しStudentRepositoryとStudentCourseRepositoryが処理が適切に呼び出されていること() {
+  void 受講生登録_リクエストボディから必要な情報を取得しStudentRepositoryとStudentCourseRepositoryの処理が適切に呼び出されていること() {
     // 準備
     Student mockStudent = new Student();
     List<StudentCourse> mockStudentCourseList = List.of(new StudentCourse());
@@ -122,7 +122,7 @@ class StudentServiceTest {
   }
 
   @Test
-  void 受講生更新_適切な受講生IDがわたってくる場合かつ更新前後に差異がある場合StudentRepositoryとStudentCourseRepositoryが処理が適切に呼び出されること()
+  void 受講生更新_適切な受講生IDがわたってくる場合かつ更新前後に差異がある場合StudentRepositoryとStudentCourseRepositoryの処理が適切に呼び出されること()
       throws StudentNotFoundException, StudentCourseNotFoundException {
     // 準備
     String id = UUID.randomUUID().toString();
@@ -193,7 +193,7 @@ class StudentServiceTest {
   }
 
   @Test
-  void StudentCourseの更新有無の確認_有効なIDがわたってきており変更点が1箇所のみある場合に変更箇所のみ更新処理がされること()
+  void StudentCourseの更新有無の確認_有効なIDがわたってきており変更点が1箇所のみある場合に変更箇所のみでStudentCourseRepositoryの処理が呼び出されること()
       throws StudentCourseNotFoundException {
     // 準備
     String id1 = UUID.randomUUID().toString();
@@ -256,5 +256,45 @@ class StudentServiceTest {
     Mockito.verify(studentCourseRepository, Mockito.never())
         .updateStudentCourse(receivedStudentCourse);
 
+  }
+
+  @Test
+  void Studentの更新有無の確認_変更点がある場合適切にStudentRepositoryの処理が呼び出されること() {
+    // 準備
+    String id = UUID.randomUUID().toString();
+
+    Student receivedStudent = new Student();
+    receivedStudent.setId(id);
+    receivedStudent.setRemark("変更後");
+
+    Student currentStudent = new Student();
+    currentStudent.setId(id);
+    currentStudent.setRemark("変更前");
+
+    // 実行
+    sut.updateStudentIfModified(receivedStudent, currentStudent);
+
+    // 検証
+    Mockito.verify(studentRepository, Mockito.times(1)).updateStudent(receivedStudent);
+  }
+
+  @Test
+  void Studentの更新有無の確認_変更点がない場合StudentRepositoryの処理が呼び出されないこと() {
+    // 準備
+    String id = UUID.randomUUID().toString();
+
+    Student receivedStudent = new Student();
+    receivedStudent.setId(id);
+    receivedStudent.setRemark("変更なし");
+
+    Student currentStudent = new Student();
+    currentStudent.setId(id);
+    currentStudent.setRemark("変更なし");
+
+    // 実行
+    sut.updateStudentIfModified(receivedStudent, currentStudent);
+
+    // 検証
+    Mockito.verify(studentRepository, Mockito.never()).updateStudent(receivedStudent);
   }
 }
