@@ -1,5 +1,6 @@
 package portfolio.StudentManagement.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import portfolio.StudentManagement.controller.converter.StudentConverter;
 import portfolio.StudentManagement.data.Student;
+import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
@@ -193,30 +195,44 @@ class StudentServiceTest {
   }
 
   @Test
-  void StudentCourseの更新有無の確認_有効なIDがわたってきており変更点が1箇所のみある場合に変更箇所のみでStudentCourseRepositoryの処理が呼び出されること()
+  void StudentCourseの更新有無の確認_有効なIDがわたってきており変更箇所がある受講生コース情報と変更箇所がない受講生コース情報がある場合に変更箇所のみでStudentCourseRepositoryの処理が呼び出されること()
       throws StudentCourseNotFoundException {
     // 準備
     String id1 = UUID.randomUUID().toString();
     String id2 = UUID.randomUUID().toString();
+    String studentId = UUID.randomUUID().toString();
 
+    // Course1はid,studentId以外の項目に差異があり、Course2はすべての項目に差異がない設定
     StudentCourse receivedStudentCourse1 = new StudentCourse();
-    receivedStudentCourse1.setStudentId(id1);
+    receivedStudentCourse1.setId(id1);
+    receivedStudentCourse1.setStudentId(studentId);
     receivedStudentCourse1.setCourseName("Javaフルコース");
+    receivedStudentCourse1.setStartDate(LocalDateTime.parse("2023-11-26T15:30:45"));
+    receivedStudentCourse1.setEndDate(LocalDateTime.parse("2024-11-26T15:30:45"));
 
     StudentCourse receivedStudentCourse2 = new StudentCourse();
-    receivedStudentCourse2.setStudentId(id2);
+    receivedStudentCourse2.setId(id2);
+    receivedStudentCourse2.setStudentId(studentId);
     receivedStudentCourse2.setCourseName("AWSフルコース");
+    receivedStudentCourse2.setStartDate(LocalDateTime.parse("2022-11-26T15:30:45"));
+    receivedStudentCourse2.setEndDate(LocalDateTime.parse("2023-11-26T15:30:45"));
 
     List<StudentCourse> receivedStudentCourseList = List.of(
         receivedStudentCourse1, receivedStudentCourse2);
 
     StudentCourse currentStudentCourse1 = new StudentCourse();
-    currentStudentCourse1.setStudentId(id1);
+    currentStudentCourse1.setId(id1);
+    currentStudentCourse1.setStudentId(studentId);
     currentStudentCourse1.setCourseName("デザインコース");
+    currentStudentCourse1.setStartDate(LocalDateTime.parse("2024-11-26T15:30:45"));
+    currentStudentCourse1.setEndDate(LocalDateTime.parse("2025-11-26T15:30:45"));
 
     StudentCourse currentStudentCourse2 = new StudentCourse();
-    currentStudentCourse2.setStudentId(id2);
+    currentStudentCourse2.setId(id2);
+    currentStudentCourse2.setStudentId(studentId);
     currentStudentCourse2.setCourseName("AWSフルコース");
+    currentStudentCourse2.setStartDate(LocalDateTime.parse("2022-11-26T15:30:45"));
+    currentStudentCourse2.setEndDate(LocalDateTime.parse("2023-11-26T15:30:45"));
 
     List<StudentCourse> currentStudentCourseList = List.of(
         currentStudentCourse1, currentStudentCourse2);
@@ -265,11 +281,27 @@ class StudentServiceTest {
 
     Student receivedStudent = new Student();
     receivedStudent.setId(id);
+    receivedStudent.setFullName("変更後");
+    receivedStudent.setKana("ヘンコウゴ");
+    receivedStudent.setNickName("変更後");
+    receivedStudent.setEmail("after@test.com");
+    receivedStudent.setCity("変更後");
+    receivedStudent.setAge(10);
+    receivedStudent.setGender(Gender.valueOf("Male"));
     receivedStudent.setRemark("変更後");
+    receivedStudent.setIsDeleted(false);
 
     Student currentStudent = new Student();
     currentStudent.setId(id);
+    currentStudent.setFullName("変更前");
+    currentStudent.setKana("ヘンコウマエ");
+    currentStudent.setNickName("変更前");
+    currentStudent.setEmail("before@test.com");
+    currentStudent.setCity("変更前");
+    currentStudent.setAge(1);
+    currentStudent.setGender(Gender.valueOf("Female"));
     currentStudent.setRemark("変更前");
+    currentStudent.setIsDeleted(true);
 
     // 実行
     sut.updateStudentIfModified(receivedStudent, currentStudent);
@@ -285,11 +317,27 @@ class StudentServiceTest {
 
     Student receivedStudent = new Student();
     receivedStudent.setId(id);
+    receivedStudent.setFullName("変更なし");
+    receivedStudent.setKana("ヘンコウナシ");
+    receivedStudent.setNickName("変更なし");
+    receivedStudent.setEmail("not-change@test.com");
+    receivedStudent.setCity("変更なし");
+    receivedStudent.setAge(20);
+    receivedStudent.setGender(Gender.valueOf("Male"));
     receivedStudent.setRemark("変更なし");
+    receivedStudent.setIsDeleted(false);
 
     Student currentStudent = new Student();
     currentStudent.setId(id);
+    currentStudent.setFullName("変更なし");
+    currentStudent.setKana("ヘンコウナシ");
+    currentStudent.setNickName("変更なし");
+    currentStudent.setEmail("not-change@test.com");
+    currentStudent.setCity("変更なし");
+    currentStudent.setAge(20);
+    currentStudent.setGender(Gender.valueOf("Male"));
     currentStudent.setRemark("変更なし");
+    currentStudent.setIsDeleted(false);
 
     // 実行
     sut.updateStudentIfModified(receivedStudent, currentStudent);
