@@ -1,6 +1,7 @@
 package portfolio.StudentManagement.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,12 +196,11 @@ class StudentServiceTest {
     Mockito.when(studentRepository.selectStudentById(id)).thenReturn(null);
 
     // 実行と検証
-    StudentNotFoundException exception = Assertions.assertThrows(
-        StudentNotFoundException.class, () -> sut.updateStudent(mockstudentDetail)
-    );
+    assertThatThrownBy(() -> sut.updateStudent(mockstudentDetail))
+        .isInstanceOf(StudentNotFoundException.class)
+        .hasMessageContaining("指定したIDの受講生が見つかりませんでした");
 
     // 検証
-    Assertions.assertEquals("指定したIDの受講生が見つかりませんでした", exception.getMessage());
     Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
     Mockito.verify(studentRepository, Mockito.never()).updateStudent(mockStudent);
     Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);

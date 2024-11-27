@@ -32,7 +32,7 @@ public class StudentCourse {
    *
    * @param builder 受講生コースビルダー
    */
-  public StudentCourse(StudentCourseBuilder builder) {
+  private StudentCourse(StudentCourseBuilder builder) {
     this.id = UUID.randomUUID().toString();
     this.studentId = builder.studentId;
     this.courseName = builder.courseName;
