@@ -131,7 +131,7 @@ public class StudentService {
    * @param receivedStudentCourseList リクエストとして受け取った受講生コース
    * @param currentStudentCourseList  現時点でDBに登録されている受講生コース情報
    */
-  void updateStudentCourseIfModified(List<StudentCourse> receivedStudentCourseList,
+  private void updateStudentCourseIfModified(List<StudentCourse> receivedStudentCourseList,
       List<StudentCourse> currentStudentCourseList) throws StudentCourseNotFoundException {
 
     // currentStudentCourseList　を　{"id", {studentCourse}} のマップに変換します
@@ -160,7 +160,7 @@ public class StudentService {
    * @param receivedStudent リクエストとして受け取った受講生情報
    * @param currentStudent  現時点でDBに登録されている受講生情報
    */
-  void updateStudentIfModified(Student receivedStudent, Student currentStudent) {
+  private void updateStudentIfModified(Student receivedStudent, Student currentStudent) {
     if (!receivedStudent.equals(currentStudent)) {
       studentRepository.updateStudent(receivedStudent);
     }
