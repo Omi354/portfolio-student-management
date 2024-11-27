@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,7 +53,7 @@ class StudentServiceTest {
     Mockito.when(studentCourseRepository.selectAllCourseList()).thenReturn(studentCourseList);
 
     // 実行
-    List<StudentDetail> actual = sut.getAllStudentDetailList();
+    sut.getAllStudentDetailList();
 
     // 検証
     Mockito.verify(studentRepository, Mockito.times(1)).selectAllStudentList();
@@ -82,7 +81,7 @@ class StudentServiceTest {
         .thenReturn(mockStudentCourseList);
 
     // 実行
-    StudentDetail actual = sut.getStudentDetailById(id);
+    sut.getStudentDetailById(id);
 
     // 検証
     Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
@@ -98,13 +97,11 @@ class StudentServiceTest {
     Mockito.when(studentRepository.selectStudentById(wrongId)).thenReturn(null);
 
     // 実行と検証
-    StudentNotFoundException exception = Assertions.assertThrows(
-        StudentNotFoundException.class,
-        () -> sut.getStudentDetailById(wrongId)
-    );
+    assertThatThrownBy(() -> sut.getStudentDetailById(wrongId))
+        .isInstanceOf(StudentNotFoundException.class)
+        .hasMessageContaining("指定したIDの受講生が見つかりませんでした");
 
     // 検証
-    Assertions.assertEquals("指定したIDの受講生が見つかりませんでした", exception.getMessage());
     Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(wrongId);
     Mockito.verify(studentCourseRepository, Mockito.never())
         .selectCourseListByStudentId(Mockito.anyString());
