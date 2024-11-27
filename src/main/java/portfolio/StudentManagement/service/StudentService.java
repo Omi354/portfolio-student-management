@@ -73,7 +73,7 @@ public class StudentService {
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail) {
     Student receivedStudent = studentDetail.getStudent();
-    StudentCourse newStudentCourse = studentDetail.getStudentCourseList().getFirst();
+    StudentCourse receivedStudentCourse = studentDetail.getStudentCourseList().getFirst();
 
     String fullName = receivedStudent.getFullName();
     String kana = receivedStudent.getKana();
@@ -82,9 +82,13 @@ public class StudentService {
     String city = receivedStudent.getCity();
     int age = receivedStudent.getAge();
     Gender gender = receivedStudent.getGender();
-
     Student newStudent = new Student.StudentBuilder(fullName, email, city, age)
         .kana(kana).nickName(nickName).gender(gender).build();
+
+    String studentId = newStudent.getId();
+    String courseName = receivedStudentCourse.getCourseName();
+    StudentCourse newStudentCourse = new StudentCourse.StudentCourseBuilder(studentId,
+        courseName).build();
 
     studentRepository.createStudent(newStudent);
     studentCourseRepository.createStudentCourse(newStudentCourse);

@@ -74,6 +74,23 @@ public class Student {
   }
 
   /**
+   * テスト専用のコンストラクターです
+   *
+   * @param id      ID
+   * @param builder 受講生ビルダー
+   */
+  private Student(String id, StudentBuilder builder) {
+    this.id = id;
+    this.fullName = builder.fullName;
+    this.email = builder.email;
+    this.city = builder.city;
+    this.age = builder.age;
+    this.gender = builder.gender;
+    this.remark = builder.remark;
+    this.isDeleted = builder.isDeleted;
+  }
+
+  /**
    * 受講生ビルダーです。
    */
   @Schema(description = "受講生のビルダー")
@@ -148,6 +165,10 @@ public class Student {
 
     public Student build() {
       return new Student(this);
+    }
+
+    public Student useOnlyTestBuildWithId(String id) {
+      return new Student(id, this);
     }
   }
 

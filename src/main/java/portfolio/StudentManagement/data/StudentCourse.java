@@ -6,11 +6,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
-import lombok.Setter;
 
 @Schema(description = "受講生コース情報")
 @Getter
-@Setter
 public class StudentCourse {
 
   @Schema(description = "ID、UUIDを自動付与", example = "78af6312-a2cd-11ef-b71f-6845f15f510c")
@@ -30,17 +28,80 @@ public class StudentCourse {
   private LocalDateTime endDate;
 
   /**
-   * 受講生コース情報に初期値を設定します。
-   * IDに自動生成されたUUID、受講生IDに同時に作成される受講生のID、受講開始日にレコードが作成された時点の日時、受講修了予定日にレコードが作成された時点から１年後の日時を設定します。
+   * 受講生コース情報のコンストラクターです。 UUIDを自動生成し、それ以外のフィールドについては受講生コースビルダーから情報を受け取ります。
    *
-   * @param newStudentCourse 新規受講生コース情報
-   * @param newStudentId     新規受講生ID
+   * @param builder 受講生コースビルダー
    */
-  public static void initStudentCourse(StudentCourse newStudentCourse, String newStudentId) {
-    newStudentCourse.setId(UUID.randomUUID().toString());
-    newStudentCourse.setStudentId(newStudentId);
-    newStudentCourse.setStartDate(LocalDateTime.now());
-    newStudentCourse.setEndDate(LocalDateTime.now().plusYears(1));
+  public StudentCourse(StudentCourseBuilder builder) {
+    this.id = UUID.randomUUID().toString();
+    this.studentId = builder.studentId;
+    this.courseName = builder.courseName;
+    this.startDate = builder.startDate;
+    this.endDate = builder.endDate;
+  }
+
+  /**
+   * テスト専用のコンストラクターです。
+   *
+   * @param id      ID
+   * @param builder 受講生コースビルダー
+   */
+  StudentCourse(String id, StudentCourseBuilder builder) {
+    this.id = id;
+    this.studentId = builder.studentId;
+    this.courseName = builder.courseName;
+    this.startDate = builder.startDate;
+    this.endDate = builder.endDate;
+  }
+
+  /**
+   * 受講生コースビルダー（内部クラス）です。受講生コース情報のインスタンス生成時にフィールドの値を設定する役割を持ちます。
+   */
+  @Schema(description = "受講生コースビルダー")
+  public static class StudentCourseBuilder {
+
+    @Schema(description = "受講生ID、外部キー", example = "5998fd5d-a2cd-11ef-b71f-6845f15f510c")
+    private String studentId;
+
+    @Schema(description = "受講コース名", example = "Javaフルコース")
+    @NotBlank
+    private String courseName;
+
+    @Schema(description = "受講開始日", example = "2024-01-10T00:00:00")
+    private LocalDateTime startDate = LocalDateTime.now();
+
+    @Schema(description = "受講修了予定日", example = "2025-01-10T00:00:00")
+    private LocalDateTime endDate = LocalDateTime.now().plusYears(1);
+
+    /**
+     * 受講生コースビルダーのコンストラクターです。 必須の受講生IDと受講コース名を引数に取り、それ以外のフィールドは別途メソッドから設定できます。
+     *
+     * @param studentId  受講生ID
+     * @param courseName コース名
+     */
+    public StudentCourseBuilder(String studentId, String courseName) {
+      this.studentId = studentId;
+      this.courseName = courseName;
+    }
+
+    public StudentCourseBuilder startDate(LocalDateTime startDate) {
+      this.startDate = startDate;
+      return this;
+    }
+
+    public StudentCourseBuilder endDate(LocalDateTime endDate) {
+      this.endDate = endDate;
+      return this;
+    }
+
+    public StudentCourse build() {
+      return new StudentCourse(this);
+    }
+
+    public StudentCourse useOnlyTestBuildWithId(String id) {
+      return new StudentCourse(id, this);
+    }
+
   }
 
   @Override

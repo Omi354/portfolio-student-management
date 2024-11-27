@@ -69,8 +69,9 @@ class StudentServiceTest {
         "田中太郎", "taro@test.com", "千葉県市原市", 24).build();
     String id = mockStudent.getId();
 
-    StudentCourse mockCourse1 = new StudentCourse();
-    StudentCourse mockCourse2 = new StudentCourse();
+    StudentCourse mockCourse1 = new StudentCourse.StudentCourseBuilder(id,
+        "Javaフルコース").build();
+    StudentCourse mockCourse2 = new StudentCourse.StudentCourseBuilder(id, "AWSフルコース").build();
     List<StudentCourse> mockStudentCourseList = List.of(mockCourse1, mockCourse2);
 
     Mockito.when(studentRepository.selectStudentById(id)).thenReturn(mockStudent);
@@ -111,16 +112,17 @@ class StudentServiceTest {
     // 準備
     Student mockStudent = new Student.StudentBuilder(
         "田中太郎", "taro@test.com", "千葉県市原市", 24).build();
-    List<StudentCourse> mockStudentCourseList = List.of(new StudentCourse());
+    String id = mockStudent.getId();
+    List<StudentCourse> mockStudentCourseList = List.of(
+        new StudentCourse.StudentCourseBuilder(id, "Javaフルコース").build());
     StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
-    StudentCourse mockStudentcourse = mockStudentCourseList.getFirst();
 
     ArgumentCaptor<Student> studentCaptor = ArgumentCaptor.forClass(Student.class);
     ArgumentCaptor<StudentCourse> courseCaptor = ArgumentCaptor.forClass(
         StudentCourse.class);
 
     // 実行
-    StudentDetail result = sut.registerStudent(mockstudentDetail);
+    StudentDetail actual = sut.registerStudent(mockstudentDetail);
 
     // 検証
     Mockito.verify(studentRepository, Mockito.times(1))
@@ -128,33 +130,37 @@ class StudentServiceTest {
     Mockito.verify(studentCourseRepository, Mockito.times(1))
         .createStudentCourse(courseCaptor.capture());
 
-    assertThat(result.getStudent().getFullName()).isEqualTo("田中太郎");
-    assertThat(result.getStudent().getEmail()).isEqualTo("taro@test.com");
-    assertThat(result.getStudent().getCity()).isEqualTo("千葉県市原市");
-    assertThat(result.getStudent().getAge()).isEqualTo(24);
+    assertThat(actual.getStudent().getFullName()).isEqualTo("田中太郎");
+    assertThat(actual.getStudent().getEmail()).isEqualTo("taro@test.com");
+    assertThat(actual.getStudent().getCity()).isEqualTo("千葉県市原市");
+    assertThat(actual.getStudent().getAge()).isEqualTo(24);
+    assertThat(actual.getStudentCourseList().getFirst().getStudentId()).isEqualTo(id);
+    assertThat(actual.getStudentCourseList().getFirst().getCourseName()).isEqualTo(
+        "Javaフルコース");
   }
 
   @Test
   void 受講生更新_適切な受講生IDがわたってくる場合かつ更新前後に差異がある場合StudentRepositoryとStudentCourseRepositoryの処理が適切に呼び出されること()
       throws StudentNotFoundException, StudentCourseNotFoundException {
     // 準備
-    Student mockStudent = new Student.StudentBuilder(
-        "田中太郎", "taro@test.com", "千葉県市原市", 24).remark("テスト").build();
-    String id = mockStudent.getId();
+    String id = UUID.randomUUID().toString();
+    String courseId = UUID.randomUUID().toString();
 
-    StudentCourse mockStudentCourse = new StudentCourse();
-    mockStudentCourse.setStudentId(id);
-    mockStudentCourse.setCourseName("Javaフルコース");
+    Student mockStudent = new Student.StudentBuilder(
+        "田中太郎", "taro@test.com", "千葉県市原市", 24).remark("テスト")
+        .useOnlyTestBuildWithId(id);
+
+    StudentCourse mockStudentCourse = new StudentCourse
+        .StudentCourseBuilder(id, "Javaフルコース").useOnlyTestBuildWithId(courseId);
     List<StudentCourse> mockStudentCourseList = List.of(mockStudentCourse);
 
     StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
 
     Student currentStudent = new Student.StudentBuilder(
-        "田中太郎", "taro@test.com", "千葉県市原市", 24).build();
+        "田中太郎", "taro@test.com", "千葉県市原市", 24).useOnlyTestBuildWithId(id);
 
-    StudentCourse currentStudentCourse = new StudentCourse();
-    currentStudentCourse.setStudentId(id);
-    currentStudentCourse.setCourseName("AWSフルコース");
+    StudentCourse currentStudentCourse = new StudentCourse
+        .StudentCourseBuilder(id, "AWSフルコース").useOnlyTestBuildWithId(courseId);
     List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse);
 
     Mockito.when(studentRepository.selectStudentById(id)).thenReturn(currentStudent);
@@ -180,8 +186,8 @@ class StudentServiceTest {
         "田中太郎", "taro@test.com", "千葉県市原市", 24).build();
     String id = mockStudent.getId();
 
-    StudentCourse mockStudentCourse = new StudentCourse();
-    mockStudentCourse.setStudentId(id);
+    StudentCourse mockStudentCourse = new StudentCourse.StudentCourseBuilder(id,
+        "Javaフルコース").build();
     List<StudentCourse> mockStudentCourseList = List.of(mockStudentCourse);
 
     StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
