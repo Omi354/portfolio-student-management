@@ -8,8 +8,10 @@ import jakarta.validation.constraints.Pattern;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
+@NoArgsConstructor
 @Schema(description = "受講生")
 @Getter
 public class Student {
