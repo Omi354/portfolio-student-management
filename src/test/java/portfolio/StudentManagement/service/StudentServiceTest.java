@@ -111,7 +111,9 @@ class StudentServiceTest {
   void 受講生登録_リクエストボディから必要な情報を取得しStudentRepositoryとStudentCourseRepositoryの処理が適切に呼び出されていること() {
     // 準備
     Student mockStudent = new Student.StudentBuilder(
-        "田中太郎", "taro@test.com", "千葉県市原市", 24).build();
+        "田中太郎", "taro@test.com", "千葉県市原市", 24).kana("タナカタロウ").nickName("たろ")
+        .gender(
+            Gender.valueOf("Male")).build();
     String id = mockStudent.getId();
     List<StudentCourse> mockStudentCourseList = List.of(
         new StudentCourse.StudentCourseBuilder(id, "Javaフルコース").build());
@@ -134,6 +136,9 @@ class StudentServiceTest {
     assertThat(actual.getStudent().getEmail()).isEqualTo("taro@test.com");
     assertThat(actual.getStudent().getCity()).isEqualTo("千葉県市原市");
     assertThat(actual.getStudent().getAge()).isEqualTo(24);
+    assertThat(actual.getStudent().getKana()).isEqualTo("タナカタロウ");
+    assertThat(actual.getStudent().getNickName()).isEqualTo("たろ");
+    assertThat(actual.getStudent().getGender()).isEqualTo(Gender.valueOf("Male"));
     assertThat(actual.getStudentCourseList().getFirst().getStudentId()).isEqualTo(id);
     assertThat(actual.getStudentCourseList().getFirst().getCourseName()).isEqualTo(
         "Javaフルコース");

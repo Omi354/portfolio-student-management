@@ -67,6 +67,8 @@ public class Student {
   private Student(StudentBuilder builder) {
     this.id = UUID.randomUUID().toString();
     this.fullName = builder.fullName;
+    this.kana = builder.kana;
+    this.nickName = builder.nickName;
     this.email = builder.email;
     this.city = builder.city;
     this.age = builder.age;
