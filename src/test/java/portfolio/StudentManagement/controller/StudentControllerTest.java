@@ -101,10 +101,10 @@ class StudentControllerTest {
     String body = """
             {
                 "student": {
-                    "fullName": "バリデーション　テスト",
-                    "kana": "バリデーション　テスト",
-                    "nickName": "バリデ",
-                    "email": "validation-test@co.jp",
+                    "fullName": "田中太郎",
+                    "kana": "タナカタロウ",
+                    "nickName": "たろ",
+                    "email": "taro@test.co.jp",
                     "city": "栃木県宇都宮市",
                     "age": 45,
                     "gender": "NON_BINARY"
@@ -124,6 +124,41 @@ class StudentControllerTest {
 
     // 検証
     verify(service, times(1)).registerStudent(any());
+
+  }
+
+  @Test
+  void 受講生登録_誤ったリクエストボディが送られた場合_400のバリデーションエラーが発生しServiceが呼び出されないこと()
+      throws Exception {
+    // 準備
+    String body = """
+            {
+                "student": {
+                    "fullName": "",
+                    "kana": "田中太郎",
+                    "nickName": "たろ",
+                    "email": "taro.test.co.jp",
+                    "city": "栃木県宇都宮市",
+                    "age": 200,
+                    "gender": "NON_BINARY"
+                },
+                "studentCourseList": [
+                    {
+                        "courseName": ""
+                    }
+                ]
+            }
+        """;
+    // 実行、検証
+    mockMvc.perform(post("/registerStudent")
+            .contentType("application/json")
+            .content(body))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value(
+            "入力された値が無効です。再度ご確認の上、正しい値を入力してください。"));
+
+    // 検証
+    verify(service, times(0)).registerStudent(any());
 
   }
 }
