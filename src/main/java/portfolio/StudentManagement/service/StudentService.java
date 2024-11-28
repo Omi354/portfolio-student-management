@@ -92,7 +92,7 @@ public class StudentService {
 
     studentRepository.createStudent(newStudent);
     studentCourseRepository.createStudentCourse(newStudentCourse);
-    return studentDetail;
+    return new StudentDetail(newStudent, List.of(newStudentCourse));
   }
 
   /**
