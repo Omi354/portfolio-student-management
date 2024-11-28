@@ -1,8 +1,5 @@
 package portfolio.StudentManagement.service;
 
-import static portfolio.StudentManagement.data.Student.initStudent;
-import static portfolio.StudentManagement.data.StudentCourse.initStudentCourse;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import portfolio.StudentManagement.controller.converter.StudentConverter;
 import portfolio.StudentManagement.data.Student;
+import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
@@ -74,12 +72,23 @@ public class StudentService {
    */
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail) {
-    Student newStudent = studentDetail.getStudent();
-    StudentCourse newStudentCourse = studentDetail.getStudentCourseList().getFirst();
+    Student receivedStudent = studentDetail.getStudent();
+    StudentCourse receivedStudentCourse = studentDetail.getStudentCourseList().getFirst();
 
-    initStudent(newStudent);
-    String newStudentId = newStudent.getId();
-    initStudentCourse(newStudentCourse, newStudentId);
+    String fullName = receivedStudent.getFullName();
+    String kana = receivedStudent.getKana();
+    String nickName = receivedStudent.getNickName();
+    String email = receivedStudent.getEmail();
+    String city = receivedStudent.getCity();
+    int age = receivedStudent.getAge();
+    Gender gender = receivedStudent.getGender();
+    Student newStudent = new Student.StudentBuilder(fullName, email, city, age)
+        .kana(kana).nickName(nickName).gender(gender).build();
+
+    String studentId = newStudent.getId();
+    String courseName = receivedStudentCourse.getCourseName();
+    StudentCourse newStudentCourse = new StudentCourse.StudentCourseBuilder(studentId,
+        courseName).build();
 
     studentRepository.createStudent(newStudent);
     studentCourseRepository.createStudentCourse(newStudentCourse);
@@ -111,7 +120,7 @@ public class StudentService {
     }
 
     // リクエストとして受け取った受講生情報・受講生コース情報とDBに登録されている受講生・受講生コース情報に差異がある場合に更新処理を実行します
-    updateStudentDetailIfModified(receivedStudent, currentStudent);
+    updateStudentIfModified(receivedStudent, currentStudent);
     updateStudentCourseIfModified(receivedStudentCourseList, currentStudentCourseList);
   }
 
@@ -151,7 +160,7 @@ public class StudentService {
    * @param receivedStudent リクエストとして受け取った受講生情報
    * @param currentStudent  現時点でDBに登録されている受講生情報
    */
-  private void updateStudentDetailIfModified(Student receivedStudent, Student currentStudent) {
+  private void updateStudentIfModified(Student receivedStudent, Student currentStudent) {
     if (!receivedStudent.equals(currentStudent)) {
       studentRepository.updateStudent(receivedStudent);
     }
