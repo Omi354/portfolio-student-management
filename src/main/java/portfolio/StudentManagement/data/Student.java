@@ -54,7 +54,7 @@ public class Student {
   private Boolean isDeleted;
 
   public enum Gender {
-    Male, Female, Non_binary, Unspecified
+    Male, Female, NON_BINARY, Unspecified
   }
 
   /**
@@ -93,7 +93,6 @@ public class Student {
   /**
    * 受講生ビルダーです。
    */
-  @Schema(description = "受講生のビルダー")
   public static class StudentBuilder {
 
     @Schema(description = "氏名", example = "山田 太郎")
