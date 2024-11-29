@@ -44,26 +44,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">StudentConverter</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/3)
+    (3/3)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/11)
+    (11/11)
   </span>
 </td>
 </tr>
@@ -90,7 +90,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp; */
 &nbsp;
 &nbsp;@Component
-<b class="nc">&nbsp;public class StudentConverter {</b>
+<b class="fc">&nbsp;public class StudentConverter {</b>
 &nbsp;
 &nbsp;  /**
 &nbsp;   * 受講生に紐づく受講生コース情報をマッピングします。 受講生コース情報は受講生に対して複数存在するのでループを回して受講生詳細情報を組み立てます。
@@ -101,18 +101,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;   */
 &nbsp;  public List&lt;StudentDetail&gt; getStudentDetailsList(List&lt;Student&gt; allStudentList,
 &nbsp;      List&lt;StudentCourse&gt; allStudentCourseList) {
-<b class="nc">&nbsp;    List&lt;StudentDetail&gt; studentDetailsList = new ArrayList&lt;&gt;();</b>
-<b class="nc">&nbsp;    allStudentList.forEach(student -&gt; {</b>
-<b class="nc">&nbsp;      StudentDetail studentDetail = new StudentDetail();</b>
-<b class="nc">&nbsp;      studentDetail.setStudent(student);</b>
+<b class="fc">&nbsp;    List&lt;StudentDetail&gt; studentDetailsList = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;    allStudentList.forEach(student -&gt; {</b>
+<b class="fc">&nbsp;      StudentDetail studentDetail = new StudentDetail();</b>
+<b class="fc">&nbsp;      studentDetail.setStudent(student);</b>
 &nbsp;
-<b class="nc">&nbsp;      List&lt;StudentCourse&gt; convertedStudentCoursesList = allStudentCourseList.stream()</b>
-<b class="nc">&nbsp;          .filter(studentCourse -&gt; student.getId().equals(studentCourse.getStudentId()))</b>
-<b class="nc">&nbsp;          .collect(Collectors.toList());</b>
-<b class="nc">&nbsp;      studentDetail.setStudentCourseList(convertedStudentCoursesList);</b>
-<b class="nc">&nbsp;      studentDetailsList.add(studentDetail);</b>
+<b class="fc">&nbsp;      List&lt;StudentCourse&gt; convertedStudentCoursesList = allStudentCourseList.stream()</b>
+<b class="fc">&nbsp;          .filter(studentCourse -&gt; student.getId().equals(studentCourse.getStudentId()))</b>
+<b class="fc">&nbsp;          .collect(Collectors.toList());</b>
+<b class="fc">&nbsp;      studentDetail.setStudentCourseList(convertedStudentCoursesList);</b>
+<b class="fc">&nbsp;      studentDetailsList.add(studentDetail);</b>
 &nbsp;    });
-<b class="nc">&nbsp;    return studentDetailsList;</b>
+<b class="fc">&nbsp;    return studentDetailsList;</b>
 &nbsp;  }
 &nbsp;}
 </code>
@@ -138,7 +138,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-11-29 11:08</div>
+    <div style="float:right;">generated on 2024-11-30 03:58</div>
 </div>
 </body>
 </html>

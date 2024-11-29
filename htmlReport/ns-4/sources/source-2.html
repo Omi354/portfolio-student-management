@@ -45,26 +45,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">Student</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    50%
   </span>
   <span class="absValue">
-    (0/4)
+    (2/4)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    4.2%
   </span>
   <span class="absValue">
-    (0/24)
+    (1/24)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    41.9%
   </span>
   <span class="absValue">
-    (0/31)
+    (13/31)
   </span>
 </td>
 </tr>
@@ -91,18 +91,18 @@ Current scope:     <a href="../../index.html">all classes</a>
     <td class="name">Student$StudentBuilder</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    87.5%
   </span>
   <span class="absValue">
-    (0/8)
+    (7/8)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    95.7%
   </span>
   <span class="absValue">
-    (0/23)
+    (22/23)
   </span>
 </td>
   </tr>
@@ -110,26 +110,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    14.3%
+    78.6%
   </span>
   <span class="absValue">
-    (2/14)
+    (11/14)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    4.2%
   </span>
   <span class="absValue">
-    (0/24)
+    (1/24)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    3.6%
+    66.1%
   </span>
   <span class="absValue">
-    (2/56)
+    (37/56)
   </span>
 </td>
 </tr>
@@ -167,7 +167,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;  @Schema(description = &quot;フリガナ、カタカナと半角・全角スペースのみ許可&quot;, example = &quot;ヤマダ　タロウ&quot;)
 &nbsp;  @Pattern(
-&nbsp;      regexp = &quot;^[ァ-ヶー\\s　]+$&quot;,
+&nbsp;      regexp = &quot;^$|^[ァ-ヶー\\s　]+$&quot;, // 空文字またはカタカナとスペース
 &nbsp;      message = &quot;カタカナとスペースのみを入力してください&quot;
 &nbsp;  )
 &nbsp;  private String kana;
@@ -206,17 +206,17 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;   *
 &nbsp;   * @param builder 受講生ビルダー
 &nbsp;   */
-<b class="nc">&nbsp;  private Student(StudentBuilder builder) {</b>
-<b class="nc">&nbsp;    this.id = UUID.randomUUID().toString();</b>
-<b class="nc">&nbsp;    this.fullName = builder.fullName;</b>
-<b class="nc">&nbsp;    this.kana = builder.kana;</b>
-<b class="nc">&nbsp;    this.nickName = builder.nickName;</b>
-<b class="nc">&nbsp;    this.email = builder.email;</b>
-<b class="nc">&nbsp;    this.city = builder.city;</b>
-<b class="nc">&nbsp;    this.age = builder.age;</b>
-<b class="nc">&nbsp;    this.gender = builder.gender;</b>
-<b class="nc">&nbsp;    this.remark = builder.remark;</b>
-<b class="nc">&nbsp;    this.isDeleted = builder.isDeleted;</b>
+<b class="fc">&nbsp;  private Student(StudentBuilder builder) {</b>
+<b class="fc">&nbsp;    this.id = UUID.randomUUID().toString();</b>
+<b class="fc">&nbsp;    this.fullName = builder.fullName;</b>
+<b class="fc">&nbsp;    this.kana = builder.kana;</b>
+<b class="fc">&nbsp;    this.nickName = builder.nickName;</b>
+<b class="fc">&nbsp;    this.email = builder.email;</b>
+<b class="fc">&nbsp;    this.city = builder.city;</b>
+<b class="fc">&nbsp;    this.age = builder.age;</b>
+<b class="fc">&nbsp;    this.gender = builder.gender;</b>
+<b class="fc">&nbsp;    this.remark = builder.remark;</b>
+<b class="fc">&nbsp;    this.isDeleted = builder.isDeleted;</b>
 &nbsp;  }
 &nbsp;
 &nbsp;  /**
@@ -253,20 +253,20 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @Schema(description = &quot;年齢、0~150までを許可&quot;, example = &quot;32&quot;)
 &nbsp;    private int age;
 &nbsp;
-<b class="nc">&nbsp;    @Schema(description = &quot;フリガナ、カタカナと半角・全角スペースのみ許可&quot;, example = &quot;ヤマダ　タロウ&quot;)</b>
+<b class="fc">&nbsp;    @Schema(description = &quot;フリガナ、カタカナと半角・全角スペースのみ許可&quot;, example = &quot;ヤマダ　タロウ&quot;)</b>
 &nbsp;    private String kana = &quot;&quot;;
 &nbsp;
-<b class="nc">&nbsp;    @Schema(description = &quot;ニックネーム&quot;, example = &quot;たろ&quot;)</b>
+<b class="fc">&nbsp;    @Schema(description = &quot;ニックネーム&quot;, example = &quot;たろ&quot;)</b>
 &nbsp;    private String nickName = &quot;&quot;;
 &nbsp;
-<b class="nc">&nbsp;    @Schema(description = &quot;性別&quot;, example = &quot;Male&quot;)</b>
+<b class="fc">&nbsp;    @Schema(description = &quot;性別&quot;, example = &quot;Male&quot;)</b>
 &nbsp;    private Gender gender = Gender.Unspecified;
 &nbsp;
-<b class="nc">&nbsp;    @Schema(description = &quot;備考&quot;, example = &quot;入院のため利用休止中&quot;)</b>
+<b class="fc">&nbsp;    @Schema(description = &quot;備考&quot;, example = &quot;入院のため利用休止中&quot;)</b>
 &nbsp;    private String remark = &quot;&quot;;
 &nbsp;
-<b class="nc">&nbsp;    @Schema(description = &quot;削除フラグ&quot;, example = &quot;false&quot;)</b>
-<b class="nc">&nbsp;    private Boolean isDeleted = false;</b>
+<b class="fc">&nbsp;    @Schema(description = &quot;削除フラグ&quot;, example = &quot;false&quot;)</b>
+<b class="fc">&nbsp;    private Boolean isDeleted = false;</b>
 &nbsp;
 &nbsp;    /**
 &nbsp;     * 受講生ビルダーのコンストラクターです。 必須情報のフルネーム、メールアドレス、地域、年齢のみ引数に取ります。 それ以外のフィールドについては必要に応じてメソッドから指定します。
@@ -276,40 +276,40 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;     * @param city     地域
 &nbsp;     * @param age      年齢
 &nbsp;     */
-<b class="nc">&nbsp;    public StudentBuilder(String fullName, String email, String city, int age) {</b>
-<b class="nc">&nbsp;      this.fullName = fullName;</b>
-<b class="nc">&nbsp;      this.email = email;</b>
-<b class="nc">&nbsp;      this.city = city;</b>
-<b class="nc">&nbsp;      this.age = age;</b>
+<b class="fc">&nbsp;    public StudentBuilder(String fullName, String email, String city, int age) {</b>
+<b class="fc">&nbsp;      this.fullName = fullName;</b>
+<b class="fc">&nbsp;      this.email = email;</b>
+<b class="fc">&nbsp;      this.city = city;</b>
+<b class="fc">&nbsp;      this.age = age;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public StudentBuilder kana(String kana) {
-<b class="nc">&nbsp;      this.kana = kana;</b>
-<b class="nc">&nbsp;      return this;</b>
+<b class="fc">&nbsp;      this.kana = kana;</b>
+<b class="fc">&nbsp;      return this;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public StudentBuilder nickName(String nickName) {
-<b class="nc">&nbsp;      this.nickName = nickName;</b>
-<b class="nc">&nbsp;      return this;</b>
+<b class="fc">&nbsp;      this.nickName = nickName;</b>
+<b class="fc">&nbsp;      return this;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public StudentBuilder gender(Gender gender) {
-<b class="nc">&nbsp;      this.gender = gender;</b>
-<b class="nc">&nbsp;      return this;</b>
+<b class="fc">&nbsp;      this.gender = gender;</b>
+<b class="fc">&nbsp;      return this;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public StudentBuilder remark(String remark) {
-<b class="nc">&nbsp;      this.remark = remark;</b>
-<b class="nc">&nbsp;      return this;</b>
+<b class="fc">&nbsp;      this.remark = remark;</b>
+<b class="fc">&nbsp;      return this;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public StudentBuilder isDeleted(Boolean isDeleted) {
-<b class="nc">&nbsp;      this.isDeleted = isDeleted;</b>
-<b class="nc">&nbsp;      return this;</b>
+<b class="fc">&nbsp;      this.isDeleted = isDeleted;</b>
+<b class="fc">&nbsp;      return this;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Student build() {
-<b class="nc">&nbsp;      return new Student(this);</b>
+<b class="fc">&nbsp;      return new Student(this);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public Student useOnlyTestBuildWithId(String id) {
@@ -319,8 +319,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;  @Override
 &nbsp;  public boolean equals(Object o) {
-<b class="nc">&nbsp;    if (this == o) {</b>
-<b class="nc">&nbsp;      return true;</b>
+<b class="pc">&nbsp;    if (this == o) {</b>
+<b class="fc">&nbsp;      return true;</b>
 &nbsp;    }
 <b class="nc">&nbsp;    if (o == null || getClass() != o.getClass()) {</b>
 <b class="nc">&nbsp;      return false;</b>
@@ -362,7 +362,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-11-29 11:08</div>
+    <div style="float:right;">generated on 2024-11-30 03:58</div>
 </div>
 </body>
 </html>

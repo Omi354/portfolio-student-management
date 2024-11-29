@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > StudentRepository</title>
+  <title>Coverage Report > StudentCourseRepository</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -22,14 +22,14 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">portfolio.StudentManagement.repository</a>
 </div>
 
-<h1>Coverage Summary for Class: StudentRepository (portfolio.StudentManagement.repository)</h1>
+<h1>Coverage Summary for Class: StudentCourseRepository (portfolio.StudentManagement.repository)</h1>
 
 <table class="coverageStats">
 <tr>
   <th class="name">Class</th>
 </tr>
 <tr>
-  <td class="name">StudentRepository</td>
+  <td class="name">StudentCourseRepository</td>
 </tr>
 
 </table>
@@ -43,45 +43,43 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;import java.util.List;
 &nbsp;import org.apache.ibatis.annotations.Mapper;
-&nbsp;import portfolio.StudentManagement.data.Student;
+&nbsp;import portfolio.StudentManagement.data.StudentCourse;
 &nbsp;
 &nbsp;/**
-&nbsp; * 受講生テーブル情報を扱うリポジトリです。
+&nbsp; * 受講生コーステーブルを扱うリポジトリです。
 &nbsp; */
 &nbsp;@Mapper
-&nbsp;public interface StudentRepository {
+&nbsp;public interface StudentCourseRepository {
 &nbsp;
 &nbsp;  /**
-&nbsp;   * 受講生の全件検索を行います。
+&nbsp;   * 受講生コース情報の全件検索を行います。
 &nbsp;   *
-&nbsp;   * @return 受講生一覧（全件）
+&nbsp;   * @return 受講生コース一覧（全件）
 &nbsp;   */
-&nbsp;  List&lt;Student&gt; selectAllStudentList();
+&nbsp;  List&lt;StudentCourse&gt; selectAllCourseList();
 &nbsp;
 &nbsp;  /**
-&nbsp;   * 受講生の検索を行います。
+&nbsp;   * 受講生コース情報の検索を行います。 任意の受講生のIDを指定し、任意の受講生に紐づく受講生コース情報を検索します。
 &nbsp;   *
-&nbsp;   * @param id 受講生ID
-&nbsp;   * @return 受講生
+&nbsp;   * @param studentId 受講生ID
+&nbsp;   * @return 受講生IDに紐づく受講生コース情報
 &nbsp;   */
-&nbsp;  Student selectStudentById(String id);
+&nbsp;  List&lt;StudentCourse&gt; selectCourseListByStudentId(String studentId);
 &nbsp;
 &nbsp;  /**
-&nbsp;   * 受講生の新規登録を行います。
+&nbsp;   * 受講生コース情報の新規登録を行います。
 &nbsp;   *
-&nbsp;   * @param student 受講生
+&nbsp;   * @param studentCourse 受講生コース情報
 &nbsp;   */
-&nbsp;  void createStudent(Student student);
+&nbsp;  void createStudentCourse(StudentCourse studentCourse);
 &nbsp;
 &nbsp;  /**
-&nbsp;   * 受講生の更新を行います
+&nbsp;   * 受講生コースIDに紐づくコース名の更新を行います。
 &nbsp;   *
-&nbsp;   * @param student 受講生
+&nbsp;   * @param studentCourse 受講生コース情報
 &nbsp;   */
-&nbsp;  void updateStudent(Student student);
+&nbsp;  void updateStudentCourse(StudentCourse studentCourse);
 &nbsp;}
-&nbsp;
-&nbsp;
 </code>
 </pre>
 </div>
@@ -105,7 +103,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-11-29 11:08</div>
+    <div style="float:right;">generated on 2024-11-30 03:58</div>
 </div>
 </body>
 </html>
