@@ -1,0 +1,111 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > StudentRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">portfolio.StudentManagement.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: StudentRepository (portfolio.StudentManagement.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">StudentRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package portfolio.StudentManagement.repository;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import org.apache.ibatis.annotations.Mapper;
+&nbsp;import portfolio.StudentManagement.data.Student;
+&nbsp;
+&nbsp;/**
+&nbsp; * 受講生テーブル情報を扱うリポジトリです。
+&nbsp; */
+&nbsp;@Mapper
+&nbsp;public interface StudentRepository {
+&nbsp;
+&nbsp;  /**
+&nbsp;   * 受講生の全件検索を行います。
+&nbsp;   *
+&nbsp;   * @return 受講生一覧（全件）
+&nbsp;   */
+&nbsp;  List&lt;Student&gt; selectAllStudentList();
+&nbsp;
+&nbsp;  /**
+&nbsp;   * 受講生の検索を行います。
+&nbsp;   *
+&nbsp;   * @param id 受講生ID
+&nbsp;   * @return 受講生
+&nbsp;   */
+&nbsp;  Student selectStudentById(String id);
+&nbsp;
+&nbsp;  /**
+&nbsp;   * 受講生の新規登録を行います。
+&nbsp;   *
+&nbsp;   * @param student 受講生
+&nbsp;   */
+&nbsp;  void createStudent(Student student);
+&nbsp;
+&nbsp;  /**
+&nbsp;   * 受講生の更新を行います
+&nbsp;   *
+&nbsp;   * @param student 受講生
+&nbsp;   */
+&nbsp;  void updateStudent(Student student);
+&nbsp;}
+&nbsp;
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-29 11:08</div>
+</div>
+</body>
+</html>

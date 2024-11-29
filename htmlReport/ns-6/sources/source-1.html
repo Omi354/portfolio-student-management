@@ -1,0 +1,284 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > StudentService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">portfolio.StudentManagement.service</a>
+</div>
+
+<h1>Coverage Summary for Class: StudentService (portfolio.StudentManagement.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StudentService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/52)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package portfolio.StudentManagement.service;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;import portfolio.StudentManagement.controller.converter.StudentConverter;
+&nbsp;import portfolio.StudentManagement.data.Student;
+&nbsp;import portfolio.StudentManagement.data.Student.Gender;
+&nbsp;import portfolio.StudentManagement.data.StudentCourse;
+&nbsp;import portfolio.StudentManagement.domain.StudentDetail;
+&nbsp;import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
+&nbsp;import portfolio.StudentManagement.exception.StudentNotFoundException;
+&nbsp;import portfolio.StudentManagement.repository.StudentCourseRepository;
+&nbsp;import portfolio.StudentManagement.repository.StudentRepository;
+&nbsp;
+&nbsp;/**
+&nbsp; * 受講生情報を取り扱うサービスです。 受講生の検索や登録・更新処理を行います。
+&nbsp; */
+&nbsp;@Service
+&nbsp;public class StudentService {
+&nbsp;
+&nbsp;  private StudentRepository studentRepository;
+&nbsp;  private StudentCourseRepository studentCourseRepository;
+&nbsp;  private StudentConverter converter;
+&nbsp;
+&nbsp;  @Autowired
+&nbsp;  public StudentService(StudentRepository studentRepository,
+<b class="nc">&nbsp;      StudentCourseRepository studentCourseRepository, StudentConverter converter) {</b>
+<b class="nc">&nbsp;    this.studentRepository = studentRepository;</b>
+<b class="nc">&nbsp;    this.studentCourseRepository = studentCourseRepository;</b>
+<b class="nc">&nbsp;    this.converter = converter;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * 受講生検索です。 IDに紐づく任意の受講生の情報を取得したあと、その受講生に紐づく受講生コース情報を取得して設定します。
+&nbsp;   *
+&nbsp;   * @param id 受講生ID
+&nbsp;   * @return 受講生詳細（受講生と受講コース情報）
+&nbsp;   */
+&nbsp;  public StudentDetail getStudentDetailById(String id) throws StudentNotFoundException {
+<b class="nc">&nbsp;    Student student = studentRepository.selectStudentById(id);</b>
+&nbsp;    // 指定したID該当する受講生が存在しない場合、エラーを発生させます
+<b class="nc">&nbsp;    if (student == null) {</b>
+<b class="nc">&nbsp;      throw new StudentNotFoundException();</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    List&lt;StudentCourse&gt; studentCourseList = studentCourseRepository.selectCourseListByStudentId(id);</b>
+<b class="nc">&nbsp;    return new StudentDetail(student, studentCourseList);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * 受講生詳細の一覧検索を行います。
+&nbsp;   *
+&nbsp;   * @return 受講生詳細一覧（全件）
+&nbsp;   */
+&nbsp;  public List&lt;StudentDetail&gt; getAllStudentDetailList() {
+<b class="nc">&nbsp;    List&lt;Student&gt; studentList = studentRepository.selectAllStudentList();</b>
+<b class="nc">&nbsp;    List&lt;StudentCourse&gt; studentCourseList = studentCourseRepository.selectAllCourseList();</b>
+&nbsp;
+<b class="nc">&nbsp;    return converter.getStudentDetailsList(studentList, studentCourseList);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * 受講生情報と受講生コース情報をそれぞれ登録します。 登録前に受講生情報については、デフォルト値としてUUIDをランダム, 備考を空欄、キャンセルフラグをfalseに設定します。
+&nbsp;   * 登録前に受講生コース情報については、デフォルト値としてUUIDをランダム、受講生IDを同時に作成される受講生情報のID、受講開始日をレコード登録日時、受講修了予定日を受講開始日から１年後に設定します。
+&nbsp;   *
+&nbsp;   * @param studentDetail 受講生詳細
+&nbsp;   * @return 新規登録された受講生詳細
+&nbsp;   */
+&nbsp;  @Transactional
+&nbsp;  public StudentDetail registerStudent(StudentDetail studentDetail) {
+<b class="nc">&nbsp;    Student receivedStudent = studentDetail.getStudent();</b>
+<b class="nc">&nbsp;    StudentCourse receivedStudentCourse = studentDetail.getStudentCourseList().getFirst();</b>
+&nbsp;
+<b class="nc">&nbsp;    String fullName = receivedStudent.getFullName();</b>
+<b class="nc">&nbsp;    String kana = receivedStudent.getKana();</b>
+<b class="nc">&nbsp;    String nickName = receivedStudent.getNickName();</b>
+<b class="nc">&nbsp;    String email = receivedStudent.getEmail();</b>
+<b class="nc">&nbsp;    String city = receivedStudent.getCity();</b>
+<b class="nc">&nbsp;    int age = receivedStudent.getAge();</b>
+<b class="nc">&nbsp;    Gender gender = receivedStudent.getGender();</b>
+<b class="nc">&nbsp;    Student newStudent = new Student.StudentBuilder(fullName, email, city, age)</b>
+<b class="nc">&nbsp;        .kana(kana).nickName(nickName).gender(gender).build();</b>
+&nbsp;
+<b class="nc">&nbsp;    String studentId = newStudent.getId();</b>
+<b class="nc">&nbsp;    String courseName = receivedStudentCourse.getCourseName();</b>
+<b class="nc">&nbsp;    StudentCourse newStudentCourse = new StudentCourse.StudentCourseBuilder(studentId,</b>
+<b class="nc">&nbsp;        courseName).build();</b>
+&nbsp;
+<b class="nc">&nbsp;    studentRepository.createStudent(newStudent);</b>
+<b class="nc">&nbsp;    studentCourseRepository.createStudentCourse(newStudentCourse);</b>
+<b class="nc">&nbsp;    return new StudentDetail(newStudent, List.of(newStudentCourse));</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * 受講生情報と受講生コース情報をそれぞれ更新します。
+&nbsp;   * 更新処理前に受け取った受講生情報・受講生コース情報と、登録されている受講生情報・受講生コース情報を比較し、修正点が有る場合のみ処理を実行します。
+&nbsp;   *
+&nbsp;   * @param studentDetail 受講生詳細
+&nbsp;   */
+&nbsp;  @Transactional
+&nbsp;  public void updateStudent(StudentDetail studentDetail)
+&nbsp;      throws StudentNotFoundException, StudentCourseNotFoundException {
+&nbsp;    // リクエストとして受け取った受講生と受講生コース情報を定義します
+<b class="nc">&nbsp;    Student receivedStudent = studentDetail.getStudent();</b>
+<b class="nc">&nbsp;    List&lt;StudentCourse&gt; receivedStudentCourseList = studentDetail.getStudentCourseList();</b>
+&nbsp;
+&nbsp;    // リクエストとして受け取った受講生IDから、現時点でDBに登録されている受講生と受講生コース情報を定義します
+<b class="nc">&nbsp;    String studentId = receivedStudent.getId();</b>
+<b class="nc">&nbsp;    Student currentStudent = studentRepository.selectStudentById(studentId);</b>
+<b class="nc">&nbsp;    List&lt;StudentCourse&gt; currentStudentCourseList = studentCourseRepository</b>
+<b class="nc">&nbsp;        .selectCourseListByStudentId(studentId);</b>
+&nbsp;
+&nbsp;    // リクエストとして受け取った受講生IDに該当する受講生が存在しない場合にエラーを発生させます
+<b class="nc">&nbsp;    if (currentStudent == null) {</b>
+<b class="nc">&nbsp;      throw new StudentNotFoundException();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // リクエストとして受け取った受講生情報・受講生コース情報とDBに登録されている受講生・受講生コース情報に差異がある場合に更新処理を実行します
+<b class="nc">&nbsp;    updateStudentIfModified(receivedStudent, currentStudent);</b>
+<b class="nc">&nbsp;    updateStudentCourseIfModified(receivedStudentCourseList, currentStudentCourseList);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * リクエストとして受け取った受講生コース情報と現時点でDBに登録されている受講生コース情報に差異がある場合に更新処理を実行します。
+&nbsp;   * 受講生コース情報はリスト渡されるため、ループを回して中身の受講生コース情報を取り出して処理します。
+&nbsp;   *
+&nbsp;   * @param receivedStudentCourseList リクエストとして受け取った受講生コース
+&nbsp;   * @param currentStudentCourseList  現時点でDBに登録されている受講生コース情報
+&nbsp;   */
+&nbsp;  private void updateStudentCourseIfModified(List&lt;StudentCourse&gt; receivedStudentCourseList,
+&nbsp;      List&lt;StudentCourse&gt; currentStudentCourseList) throws StudentCourseNotFoundException {
+&nbsp;
+&nbsp;    // currentStudentCourseList　を　{&quot;id&quot;, {studentCourse}} のマップに変換します
+<b class="nc">&nbsp;    Map&lt;String, StudentCourse&gt; currentStudentCourseMap = currentStudentCourseList.stream()</b>
+<b class="nc">&nbsp;        .collect(</b>
+<b class="nc">&nbsp;            Collectors.toMap(StudentCourse::getId, studentCourse -&gt; studentCourse, (a, b) -&gt; b));</b>
+&nbsp;    // receivedStudentCourseListをfor文で回し、中身のreceivedStudentCourseを一つずつ取り出します
+<b class="nc">&nbsp;    for (StudentCourse receivedStudentCourse : receivedStudentCourseList) {</b>
+&nbsp;      // receivedStudentCourseのIDに紐づく、現時点で登録されている受講生コース情報を取得します
+<b class="nc">&nbsp;      StudentCourse currentStudentCourse = currentStudentCourseMap</b>
+<b class="nc">&nbsp;          .get(receivedStudentCourse.getId());</b>
+&nbsp;      // receivedStudentCourseのIDに紐づく受講生コース情報が存在しない場合、エラーを発生させます
+<b class="nc">&nbsp;      if (currentStudentCourse == null) {</b>
+<b class="nc">&nbsp;        throw new StudentCourseNotFoundException();</b>
+&nbsp;      }
+&nbsp;      // 現時点で登録されているコース名と、受け取ったコース名が異なる場合にRepositoryにidと変更後のコース名を渡します
+<b class="nc">&nbsp;      if (!receivedStudentCourse.equals(currentStudentCourse)) {</b>
+<b class="nc">&nbsp;        studentCourseRepository.updateStudentCourse(receivedStudentCourse);</b>
+&nbsp;      }
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * リクエストとして受け取った受講生情報と現時点でDBに登録されている受講生情報に差異がある場合に更新処理を実行します。
+&nbsp;   *
+&nbsp;   * @param receivedStudent リクエストとして受け取った受講生情報
+&nbsp;   * @param currentStudent  現時点でDBに登録されている受講生情報
+&nbsp;   */
+&nbsp;  private void updateStudentIfModified(Student receivedStudent, Student currentStudent) {
+<b class="nc">&nbsp;    if (!receivedStudent.equals(currentStudent)) {</b>
+<b class="nc">&nbsp;      studentRepository.updateStudent(receivedStudent);</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-29 11:08</div>
+</div>
+</body>
+</html>
