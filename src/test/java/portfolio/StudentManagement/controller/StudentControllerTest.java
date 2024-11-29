@@ -1,5 +1,6 @@
 package portfolio.StudentManagement.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -12,16 +13,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import portfolio.StudentManagement.data.Student;
+import portfolio.StudentManagement.data.Student.Gender;
+import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.service.StudentService;
@@ -336,5 +347,109 @@ class StudentControllerTest {
     verify(service, times(1)).updateStudent(any());
 
   }
+
+
+  @ParameterizedTest
+  @MethodSource("studentDataProvider")
+  void 受講生詳細の受講生_入力チェックが適切に動くこと(Student student,
+      String errorPlace, boolean shouldBeValid) {
+    // 実行
+    Set<ConstraintViolation<Student>> violations = validator.validate(student);
+
+    // 検証
+    if (shouldBeValid) {
+      assertThat(violations.size()).isEqualTo(0);
+    } else {
+      assertThat(violations.size()).isEqualTo(1);
+      assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals(errorPlace));
+    }
+
+  }
+
+  static Stream<Arguments> studentDataProvider() {
+    return Stream.of(
+        org.junit.jupiter.params.provider.Arguments.of(
+            new Student.StudentBuilder("田中太郎", "taro@test.com", "千葉県成田市", 30)
+                .kana("タナカタロウ").nickName("たろ").gender(Gender.valueOf("NON_BINARY"))
+                .remark("入力テスト")
+                .isDeleted(false).build(),
+            "", true),
+        org.junit.jupiter.params.provider.Arguments.of(
+            new Student.StudentBuilder("", "taro@test.com", "千葉県成田市", 30)
+                .kana("タナカタロウ").nickName("たろ").gender(Gender.valueOf("NON_BINARY"))
+                .remark("入力テスト")
+                .isDeleted(false).build(),
+            "fullName", false),
+        org.junit.jupiter.params.provider.Arguments.of(
+            new Student.StudentBuilder("田中太郎", "taro.test.com", "千葉県成田市", 30)
+                .kana("タナカタロウ").nickName("たろ").gender(Gender.valueOf("NON_BINARY"))
+                .remark("入力テスト")
+                .isDeleted(false).build(),
+            "email", false),
+        org.junit.jupiter.params.provider.Arguments.of(
+            new Student.StudentBuilder("田中太郎", "", "千葉県成田市", 30)
+                .kana("タナカタロウ").nickName("たろ").gender(Gender.valueOf("NON_BINARY"))
+                .remark("入力テスト")
+                .isDeleted(false).build(),
+            "email", false),
+        org.junit.jupiter.params.provider.Arguments.of(
+            new Student.StudentBuilder("田中太郎", "taro@test.com", "", 30)
+                .kana("タナカタロウ").nickName("たろ").gender(Gender.valueOf("NON_BINARY"))
+                .remark("入力テスト")
+                .isDeleted(false).build(),
+            "city", false),
+        org.junit.jupiter.params.provider.Arguments.of(
+            new Student.StudentBuilder("田中太郎", "taro@test.com", "千葉県成田市", 2000)
+                .kana("タナカタロウ").nickName("たろ").gender(Gender.valueOf("NON_BINARY"))
+                .remark("入力テスト")
+                .isDeleted(false).build(),
+            "age", false),
+        org.junit.jupiter.params.provider.Arguments.of(
+            new Student.StudentBuilder("田中太郎", "taro@test.com", "千葉県成田市", 30)
+                .kana("田中太郎").nickName("たろ").gender(Gender.valueOf("NON_BINARY"))
+                .remark("入力テスト")
+                .isDeleted(false).build(),
+            "kana", false),
+        org.junit.jupiter.params.provider.Arguments.of(
+            new Student.StudentBuilder("田中太郎", "taro@test.com", "千葉県成田市", 30)
+                .kana("たなかたろう").nickName("たろ").gender(Gender.valueOf("NON_BINARY"))
+                .remark("入力テスト")
+                .isDeleted(false).build(),
+            "kana", false)
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("studentCourseDataProvider")
+  void 受講生詳細の受講生コース情報_入力チェックが適切に動くこと(StudentCourse studentCourse,
+      String errorPlace, boolean shouldBeValid) {
+    // 実行
+    Set<ConstraintViolation<StudentCourse>> violations = validator.validate(studentCourse);
+
+    // 検証
+    if (shouldBeValid) {
+      assertThat(violations.size()).isEqualTo(0);
+    } else {
+      assertThat(violations.size()).isEqualTo(1);
+      assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals(errorPlace));
+    }
+
+  }
+
+  static Stream<Arguments> studentCourseDataProvider() {
+    return Stream.of(
+        org.junit.jupiter.params.provider.Arguments.of(
+            new StudentCourse.StudentCourseBuilder("9b1010ec-4e5b-6e5-8c26-9b4b23159b3d",
+                "Javaフルコース").startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusYears(1)).build(),
+            "", true),
+        org.junit.jupiter.params.provider.Arguments.of(
+            new StudentCourse.StudentCourseBuilder("9b1010ec-4e5b-6e5-8c26-9b4b23159b3d",
+                "").startDate(LocalDateTime.now()).endDate(LocalDateTime.now().plusYears(1))
+                .build(),
+            "courseName", false)
+    );
+  }
+
 
 }

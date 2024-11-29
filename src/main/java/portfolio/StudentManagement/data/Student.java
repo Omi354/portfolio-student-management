@@ -25,7 +25,7 @@ public class Student {
 
   @Schema(description = "フリガナ、カタカナと半角・全角スペースのみ許可", example = "ヤマダ　タロウ")
   @Pattern(
-      regexp = "^[ァ-ヶー\\s　]+$",
+      regexp = "^$|^[ァ-ヶー\\s　]+$", // 空文字またはカタカナとスペース
       message = "カタカナとスペースのみを入力してください"
   )
   private String kana;
