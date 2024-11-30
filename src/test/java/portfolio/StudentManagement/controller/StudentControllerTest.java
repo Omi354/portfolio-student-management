@@ -438,12 +438,12 @@ class StudentControllerTest {
 
   static Stream<Arguments> studentCourseDataProvider() {
     return Stream.of(
-        org.junit.jupiter.params.provider.Arguments.of(
+        Arguments.of(
             new StudentCourse.StudentCourseBuilder("9b1010ec-4e5b-6e5-8c26-9b4b23159b3d",
                 "Javaフルコース").startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusYears(1)).build(),
             "", true),
-        org.junit.jupiter.params.provider.Arguments.of(
+        Arguments.of(
             new StudentCourse.StudentCourseBuilder("9b1010ec-4e5b-6e5-8c26-9b4b23159b3d",
                 "").startDate(LocalDateTime.now()).endDate(LocalDateTime.now().plusYears(1))
                 .build(),
