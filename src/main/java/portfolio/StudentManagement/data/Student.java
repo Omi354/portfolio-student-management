@@ -8,8 +8,10 @@ import jakarta.validation.constraints.Pattern;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
+@NoArgsConstructor
 @Schema(description = "受講生")
 @Getter
 public class Student {
@@ -23,7 +25,7 @@ public class Student {
 
   @Schema(description = "フリガナ、カタカナと半角・全角スペースのみ許可", example = "ヤマダ　タロウ")
   @Pattern(
-      regexp = "^[ァ-ヶー\\s　]+$",
+      regexp = "^$|^[ァ-ヶー\\s　]+$", // 空文字またはカタカナとスペース
       message = "カタカナとスペースのみを入力してください"
   )
   private String kana;
@@ -65,6 +67,8 @@ public class Student {
   private Student(StudentBuilder builder) {
     this.id = UUID.randomUUID().toString();
     this.fullName = builder.fullName;
+    this.kana = builder.kana;
+    this.nickName = builder.nickName;
     this.email = builder.email;
     this.city = builder.city;
     this.age = builder.age;

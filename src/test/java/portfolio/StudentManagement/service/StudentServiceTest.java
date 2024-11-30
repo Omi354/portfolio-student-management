@@ -18,6 +18,7 @@ import portfolio.StudentManagement.controller.converter.StudentConverter;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.data.StudentCourse;
+import portfolio.StudentManagement.data.StudentCourse.StudentCourseBuilder;
 import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
@@ -111,10 +112,14 @@ class StudentServiceTest {
   void 受講生登録_リクエストボディから必要な情報を取得しStudentRepositoryとStudentCourseRepositoryの処理が適切に呼び出されていること() {
     // 準備
     Student mockStudent = new Student.StudentBuilder(
-        "田中太郎", "taro@test.com", "千葉県市原市", 24).build();
-    String id = mockStudent.getId();
+        "田中太郎", "taro@test.com", "千葉県市原市", 24).kana("タナカタロウ").nickName("たろ")
+        .gender(
+            Gender.valueOf("Male")).build();
+    String studentId = mockStudent.getId();
+
+    StudentCourse mockStudentCourse = new StudentCourseBuilder(studentId, "Javaフルコース").build();
     List<StudentCourse> mockStudentCourseList = List.of(
-        new StudentCourse.StudentCourseBuilder(id, "Javaフルコース").build());
+        mockStudentCourse);
     StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
 
     ArgumentCaptor<Student> studentCaptor = ArgumentCaptor.forClass(Student.class);
@@ -130,11 +135,17 @@ class StudentServiceTest {
     Mockito.verify(studentCourseRepository, Mockito.times(1))
         .createStudentCourse(courseCaptor.capture());
 
+    assertThat(actual.getStudent().getId()).isNotBlank();
     assertThat(actual.getStudent().getFullName()).isEqualTo("田中太郎");
     assertThat(actual.getStudent().getEmail()).isEqualTo("taro@test.com");
     assertThat(actual.getStudent().getCity()).isEqualTo("千葉県市原市");
     assertThat(actual.getStudent().getAge()).isEqualTo(24);
-    assertThat(actual.getStudentCourseList().getFirst().getStudentId()).isEqualTo(id);
+    assertThat(actual.getStudent().getKana()).isEqualTo("タナカタロウ");
+    assertThat(actual.getStudent().getNickName()).isEqualTo("たろ");
+    assertThat(actual.getStudent().getGender()).isEqualTo(Gender.valueOf("Male"));
+    assertThat(actual.getStudentCourseList().getFirst().getId()).isNotBlank();
+    assertThat(actual.getStudentCourseList().getFirst().getStudentId()).isEqualTo(
+        actual.getStudent().getId());
     assertThat(actual.getStudentCourseList().getFirst().getCourseName()).isEqualTo(
         "Javaフルコース");
   }

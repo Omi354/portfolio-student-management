@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Schema(description = "受講生コース情報")
 @Getter
 public class StudentCourse {
@@ -32,7 +34,7 @@ public class StudentCourse {
    *
    * @param builder 受講生コースビルダー
    */
-  private StudentCourse(StudentCourseBuilder builder) {
+  public StudentCourse(StudentCourseBuilder builder) {
     this.id = UUID.randomUUID().toString();
     this.studentId = builder.studentId;
     this.courseName = builder.courseName;
