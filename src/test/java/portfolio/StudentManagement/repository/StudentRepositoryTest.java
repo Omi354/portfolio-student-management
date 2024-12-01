@@ -63,8 +63,8 @@ class StudentRepositoryTest {
       "'5c95e5f0-5555-5555-5555-555555555555', '山本 大輔', 'ヤマモト ダイスケ', NULL, 'daisuke.yamamoto@example.com', '札幌', 27, 'Male', '努力家', false",
       "'6c96f6g0-6666-6666-6666-666666666666', '伊藤 次郎', 'イトウ ジロウ', 'ジロちゃん', 'jiro.ito@example.com', '仙台', 35, 'Male', '退会済みの学生', true"
   })
-  void 受講生検索_適切なIDが渡された場合_IDに紐づく学生の情報を取得できること(String id,
-      String fullName, String kana, String nickName,
+  void 受講生検索_適切なIDが渡された場合_IDに紐づく学生の情報を取得できること(
+      String id, String fullName, String kana, String nickName,
       String email, String city, int age, Gender gender,
       String remark, boolean isDeleted) {
 
@@ -122,8 +122,8 @@ class StudentRepositoryTest {
       "'5c95e5f0-5555-5555-5555-555555555555', '山本 大輔', 'ヤマモト ダイスケ', NULL, 'daisuke.yamamoto@example.com', '札幌', 27, 'Male', '疲れがち', false",
       "'6c96f6g0-6666-6666-6666-666666666666', '伊藤 次郎', 'イトウ ジロウ', 'ジロちゃん', 'jiro.ito@example.com', '仙台', 35, 'Male', '退会済みの学生', true"
   })
-  void 受講生更新_渡されたStudentオブジェクトのレコードでDBがUPDATEされること(String id,
-      String fullName, String kana, String nickName,
+  void 受講生更新_渡されたStudentオブジェクトのレコードでDBがUPDATEされること(
+      String id, String fullName, String kana, String nickName,
       String email, String city, int age, Gender gender,
       String remark, boolean isDeleted) {
 
