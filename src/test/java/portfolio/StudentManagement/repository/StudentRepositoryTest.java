@@ -65,19 +65,11 @@ class StudentRepositoryTest {
   })
   void 受講生検索_適切なIDが渡された場合_IDに紐づく学生の情報を取得できること(String id,
       String fullName, String kana, String nickName,
-      String email, String city, int age, String gender,
+      String email, String city, int age, Gender gender,
       String remark, boolean isDeleted) {
 
     // 準備
     String actualNickName = nickName.equals("NULL") ? null : nickName;
-
-    Gender actualGender = switch (gender) {
-      case "Male" -> Gender.Male;
-      case "Female" -> Gender.Female;
-      case "NON_BINARY" -> Gender.NON_BINARY;
-      case "Unspecified" -> Gender.Unspecified;
-      default -> throw new IllegalStateException("Unexpected value: " + gender);
-    };
 
     // 実行
     Student actual = sut.selectStudentById(id);
@@ -90,7 +82,7 @@ class StudentRepositoryTest {
     assertThat(actual.getEmail()).isEqualTo(email);
     assertThat(actual.getCity()).isEqualTo(city);
     assertThat(actual.getAge()).isEqualTo(age);
-    assertThat(actual.getGender()).isEqualTo(actualGender);
+    assertThat(actual.getGender()).isEqualTo(gender);
     assertThat(actual.getRemark()).isEqualTo(remark);
     assertThat(actual.getIsDeleted()).isEqualTo(isDeleted);
   }
@@ -119,6 +111,49 @@ class StudentRepositoryTest {
     assertThat(actual.getRemark()).isEqualTo(student.getRemark());
     assertThat(actual.getIsDeleted()).isEqualTo(student.getIsDeleted());
     assertThat(recordCountAfter).isEqualTo(recordCountBefore + 1);
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+      "'1c91a1b0-1111-1111-1111-111111111111', '斎藤 太郎', 'サイトウ タロウ', 'たろ', 'taro.saito@example.com', '埼玉県草加市', 28, 'NON_BINARY', '優秀な社会人です', false",
+      "'2c92b2c0-2222-2222-2222-222222222222', '鈴木 花', 'スズキ ハナ', 'はなちゃん', 'hanako.suzuki@example.com', '大阪', 28, 'Female', 'クリエイティブ志向', false",
+      "'3c93c3d0-3333-3333-3333-333333333333', '高橋 健一', 'タカハシ ケンイチ', NULL, 'kenichi.takahashi@example.co.jp', '愛知県名古屋', 30, 'Male', 'リーダーシップあり', false",
+      "'4c94d4e0-4444-4444-4444-444444444444', '田中 美香', 'タナカ ミカ', 'みか', 'mika.tanaka@example.com', '福岡県福岡市', 21, 'Male', '向上心が強い', false",
+      "'5c95e5f0-5555-5555-5555-555555555555', '山本 大輔', 'ヤマモト ダイスケ', NULL, 'daisuke.yamamoto@example.com', '札幌', 27, 'Male', '疲れがち', false",
+      "'6c96f6g0-6666-6666-6666-666666666666', '伊藤 次郎', 'イトウ ジロウ', 'ジロちゃん', 'jiro.ito@example.com', '仙台', 35, 'Male', '退会済みの学生', true"
+  })
+  void 受講生更新_渡されたStudentオブジェクトのレコードでDBがUPDATEされること(String id,
+      String fullName, String kana, String nickName,
+      String email, String city, int age, Gender gender,
+      String remark, boolean isDeleted) {
+
+    // 準備
+    String actualNickName = nickName.equals("NULL") ? null : nickName;
+
+    Student student = new Student.StudentBuilder(fullName, email, city, age)
+        .kana(kana).nickName(actualNickName).gender(gender).remark(remark)
+        .isDeleted(isDeleted).useOnlyTestBuildWithId(id);
+
+    int recordCountBefore = sut.selectAllStudentList().size();
+
+    // 実行
+    sut.updateStudent(student);
+    Student actual = sut.selectStudentById(id);
+    int recordCountAfter = sut.selectAllStudentList().size();
+
+    // 検証
+    assertThat(actual.getId()).isEqualTo(id);
+    assertThat(actual.getFullName()).isEqualTo(fullName);
+    assertThat(actual.getKana()).isEqualTo(kana);
+    assertThat(actual.getNickName()).isEqualTo(actualNickName);
+    assertThat(actual.getEmail()).isEqualTo(email);
+    assertThat(actual.getCity()).isEqualTo(city);
+    assertThat(actual.getAge()).isEqualTo(age);
+    assertThat(actual.getGender()).isEqualTo(gender);
+    assertThat(actual.getRemark()).isEqualTo(remark);
+    assertThat(actual.getIsDeleted()).isEqualTo(isDeleted);
+    assertThat(recordCountAfter).isEqualTo(recordCountBefore);
+
   }
 
   public static Stream<Student> provideNewStudents() {
