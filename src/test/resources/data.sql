@@ -3,7 +3,8 @@ INSERT INTO students (id, full_name, kana, nick_name, email, city, age, gender, 
   ('2c92b2c0-2222-2222-2222-222222222222', '鈴木 花子', 'スズキ ハナコ', 'はなちゃん', 'hanako.suzuki@example.com', '大阪', 28, 'Female', 'クリエイティブ志向', false),
   ('3c93c3d0-3333-3333-3333-333333333333', '高橋 健一', 'タカハシ ケンイチ', NULL, 'kenichi.takahashi@example.com', '名古屋', 30, 'Male', 'リーダーシップあり', false),
   ('4c94d4e0-4444-4444-4444-444444444444', '田中 美香', 'タナカ ミカ', 'みかりん', 'mika.tanaka@example.com', '福岡', 22, 'Female', '向上心が強い', false),
-  ('5c95e5f0-5555-5555-5555-555555555555', '山本 大輔', 'ヤマモト ダイスケ', NULL, 'daisuke.yamamoto@example.com', '札幌', 27, 'Male', '努力家', false);
+  ('5c95e5f0-5555-5555-5555-555555555555', '山本 大輔', 'ヤマモト ダイスケ', NULL, 'daisuke.yamamoto@example.com', '札幌', 27, 'Male', '努力家', false),
+  ('6c96f6g0-6666-6666-6666-666666666666', '伊藤 次郎', 'イトウ ジロウ', 'ジロちゃん', 'jiro.ito@example.com', '仙台', 35, 'Male', '退会済みの学生', true);
 
 
 INSERT INTO students_courses (id, student_id, course_name, start_date, end_date) VALUES
@@ -16,4 +17,6 @@ INSERT INTO students_courses (id, student_id, course_name, start_date, end_date)
   ('cd9cg9m0-cccc-cccc-cccc-cccccccccccc', '4c94d4e0-4444-4444-4444-444444444444', 'AWSフルコース', '2024-01-01 09:00:00', '2024-06-30 17:00:00'),
   ('dd9dh9n0-dddd-dddd-dddd-dddddddddddd', '4c94d4e0-4444-4444-4444-444444444444', 'Javaフルコース', '2024-07-01 09:00:00', '2024-12-31 17:00:00'),
   ('ed9ei9o0-eeee-eeee-eeee-eeeeeeeeeeee', '5c95e5f0-5555-5555-5555-555555555555', 'デザインコース', '2024-01-01 09:00:00', '2024-06-30 17:00:00'),
-  ('fd9fj9p0-ffff-ffff-ffff-ffffffffffff', '5c95e5f0-5555-5555-5555-555555555555', 'AWSフルコース', '2024-07-01 09:00:00', '2024-12-31 17:00:00');
+  ('fd9fj9p0-ffff-ffff-ffff-ffffffffffff', '5c95e5f0-5555-5555-5555-555555555555', 'AWSフルコース', '2024-07-01 09:00:00', '2024-12-31 17:00:00'),
+  ('gd9gi9q0-gggg-gggg-gggg-gggggggggggg', '6c96f6g0-6666-6666-6666-666666666666', 'Javaフルコース', '2023-01-01 09:00:00', '2023-06-30 17:00:00'),
+  ('hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh', '6c96f6g0-6666-6666-6666-666666666666', 'AWSフルコース', '2023-07-01 09:00:00', '2023-12-31 17:00:00');
