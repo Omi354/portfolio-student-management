@@ -5,9 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import portfolio.StudentManagement.data.StudentCourse;
@@ -101,5 +103,60 @@ class StudentCourseRepositoryTest {
     assertThat(actual).isEmpty();
   }
 
+  @ParameterizedTest
+  @MethodSource("provideNewStudentCourses")
+  void 受講生コース情報登録_渡されたStudentCourseオブジェクトのレコードがDBにINSERTされること(
+      StudentCourse studentCourse) {
+    // 準備
+    String studentId = studentCourse.getStudentId();
+    int recordCountBefore = sut.selectAllCourseList().size();
+
+    // 実行
+    sut.createStudentCourse(studentCourse);
+    StudentCourse actual = sut.selectCourseListByStudentId(studentId).getLast();
+    int recordCountAfter = sut.selectAllCourseList().size();
+
+    //検証
+    assertThat(actual.getId()).isEqualTo(studentCourse.getId());
+    assertThat(actual.getStudentId()).isEqualTo(studentCourse.getStudentId());
+    assertThat(actual.getCourseName()).isEqualTo(studentCourse.getCourseName());
+    assertThat(actual.getStartDate()).isEqualTo(studentCourse.getStartDate());
+    assertThat(actual.getEndDate()).isEqualTo(studentCourse.getEndDate());
+    assertThat(recordCountAfter).isEqualTo(recordCountBefore + 1);
+  }
+
+  public static Stream<StudentCourse> provideNewStudentCourses() {
+    return Stream.of(
+        new StudentCourse.StudentCourseBuilder("1c91a1b0-1111-1111-1111-111111111111",
+            "Javaフルコース")
+            .startDate(LocalDateTime.of(2024, 1, 10, 9, 0, 0, 123456000))
+            .endDate(LocalDateTime.of(2024, 6, 30, 17, 0, 0, 123456000))
+            .build(),
+
+        new StudentCourse.StudentCourseBuilder("2c92b2c0-2222-2222-2222-222222222222",
+            "AWSフルコース")
+            .startDate(LocalDateTime.of(2024, 7, 1, 9, 0, 0, 987654000))
+            .endDate(LocalDateTime.of(2024, 12, 31, 17, 0, 0, 987654000))
+            .build(),
+
+        new StudentCourse.StudentCourseBuilder("3c93c3d0-3333-3333-3333-333333333333",
+            "デザインコース")
+            .startDate(LocalDateTime.of(2024, 1, 10, 9, 0, 0, 111111000))
+            .endDate(LocalDateTime.of(2024, 6, 30, 17, 0, 0, 111111000))
+            .build(),
+
+        new StudentCourse.StudentCourseBuilder("4c94d4e0-4444-4444-4444-444444444444",
+            "データサイエンスコース")
+            .startDate(LocalDateTime.of(2024, 7, 1, 9, 0, 0, 222222000))
+            .endDate(LocalDateTime.of(2025, 1, 31, 17, 0, 0, 222222000))
+            .build(),
+
+        new StudentCourse.StudentCourseBuilder("5c95e5f0-5555-5555-5555-555555555555",
+            "機械学習基礎コース")
+            .startDate(LocalDateTime.of(2024, 3, 1, 9, 0, 0, 333333000))
+            .endDate(LocalDateTime.of(2024, 9, 30, 17, 0, 0, 333333000))
+            .build()
+    );
+  }
 
 }
