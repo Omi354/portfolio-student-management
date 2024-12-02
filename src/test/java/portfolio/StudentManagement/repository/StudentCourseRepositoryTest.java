@@ -58,36 +58,31 @@ class StudentCourseRepositoryTest {
 
   @ParameterizedTest
   @CsvSource({
-      "'6d96a6g0-6666-6666-6666-666666666666', '1c91a1b0-1111-1111-1111-111111111111', 'Javaフルコース', '2024-01-01T09:00:00', '2024-06-30T17:00:00'",
-      "'7d97b7h0-7777-7777-7777-777777777777', '1c91a1b0-1111-1111-1111-111111111111', 'AWSフルコース', '2024-07-01T09:00:00', '2024-12-31T17:00:00'",
-      "'8d98c8i0-8888-8888-8888-888888888888', '2c92b2c0-2222-2222-2222-222222222222', 'デザインコース', '2024-01-01T09:00:00', '2024-06-30T17:00:00'",
-      "'9d99d9j0-9999-9999-9999-999999999999', '2c92b2c0-2222-2222-2222-222222222222', 'AWSフルコース', '2024-07-01T09:00:00', '2024-12-31T17:00:00'",
-      "'ad9ae9k0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '3c93c3d0-3333-3333-3333-333333333333', 'Javaフルコース', '2024-01-01T09:00:00', '2024-06-30T17:00:00'",
-      "'bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '3c93c3d0-3333-3333-3333-333333333333', 'デザインコース', '2024-07-01T09:00:00', '2024-12-31T17:00:00'",
-      "'cd9cg9m0-cccc-cccc-cccc-cccccccccccc', '4c94d4e0-4444-4444-4444-444444444444', 'AWSフルコース', '2024-01-01T09:00:00', '2024-06-30T17:00:00'",
-      "'dd9dh9n0-dddd-dddd-dddd-dddddddddddd', '4c94d4e0-4444-4444-4444-444444444444', 'Javaフルコース', '2024-07-01T09:00:00', '2024-12-31T17:00:00'",
-      "'ed9ei9o0-eeee-eeee-eeee-eeeeeeeeeeee', '5c95e5f0-5555-5555-5555-555555555555', 'デザインコース', '2024-01-01T09:00:00', '2024-06-30T17:00:00'",
-      "'fd9fj9p0-ffff-ffff-ffff-ffffffffffff', '5c95e5f0-5555-5555-5555-555555555555', 'AWSフルコース', '2024-07-01T09:00:00', '2024-12-31T17:00:00'",
-      "'gd9gi9q0-gggg-gggg-gggg-gggggggggggg', '6c96f6g0-6666-6666-6666-666666666666', 'Javaフルコース', '2023-01-01T09:00:00', '2023-06-30T17:00:00'",
-      "'hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh', '6c96f6g0-6666-6666-6666-666666666666', 'AWSフルコース', '2023-07-01T09:00:00', '2023-12-31T17:00:00'"
+      "0, '6d96a6g0-6666-6666-6666-666666666666', '1c91a1b0-1111-1111-1111-111111111111', 'Javaフルコース', '2024-01-01T09:00:00', '2024-06-30T17:00:00'",
+      "0, '8d98c8i0-8888-8888-8888-888888888888', '2c92b2c0-2222-2222-2222-222222222222', 'デザインコース', '2024-01-01T09:00:00', '2024-06-30T17:00:00'",
+      "0, 'ad9ae9k0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '3c93c3d0-3333-3333-3333-333333333333', 'Javaフルコース', '2024-01-01T09:00:00', '2024-06-30T17:00:00'",
+      "0, 'cd9cg9m0-cccc-cccc-cccc-cccccccccccc', '4c94d4e0-4444-4444-4444-444444444444', 'AWSフルコース', '2024-01-01T09:00:00', '2024-06-30T17:00:00'",
+      "0, 'ed9ei9o0-eeee-eeee-eeee-eeeeeeeeeeee', '5c95e5f0-5555-5555-5555-555555555555', 'デザインコース', '2024-01-01T09:00:00', '2024-06-30T17:00:00'",
+      "0, 'gd9gi9q0-gggg-gggg-gggg-gggggggggggg', '6c96f6g0-6666-6666-6666-666666666666', 'Javaフルコース', '2023-01-01T09:00:00', '2023-06-30T17:00:00'",
+      "1, '7d97b7h0-7777-7777-7777-777777777777', '1c91a1b0-1111-1111-1111-111111111111', 'AWSフルコース', '2024-07-01T09:00:00', '2024-12-31T17:00:00'",
+      "1, '9d99d9j0-9999-9999-9999-999999999999', '2c92b2c0-2222-2222-2222-222222222222', 'AWSフルコース', '2024-07-01T09:00:00', '2024-12-31T17:00:00'",
+      "1, 'bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '3c93c3d0-3333-3333-3333-333333333333', 'デザインコース', '2024-07-01T09:00:00', '2024-12-31T17:00:00'",
+      "1, 'dd9dh9n0-dddd-dddd-dddd-dddddddddddd', '4c94d4e0-4444-4444-4444-444444444444', 'Javaフルコース', '2024-07-01T09:00:00', '2024-12-31T17:00:00'",
+      "1, 'fd9fj9p0-ffff-ffff-ffff-ffffffffffff', '5c95e5f0-5555-5555-5555-555555555555', 'AWSフルコース', '2024-07-01T09:00:00', '2024-12-31T17:00:00'",
+      "1, 'hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh', '6c96f6g0-6666-6666-6666-666666666666', 'AWSフルコース', '2023-07-01T09:00:00', '2023-12-31T17:00:00'"
   })
-  void 受講生コース情報検索_適切な受講生IDが渡された場合_受講生IDに紐づく学生の情報を取得できること(
-      String id, String studentId, String courseName, LocalDateTime startDate,
+  void 受講生コース情報検索_適切な受講生IDが渡された場合_受講生IDに紐づく受講生コース情報リストが取得できること(
+      int index, String id, String studentId, String courseName, LocalDateTime startDate,
       LocalDateTime endDate) {
 
     // 実行
     List<StudentCourse> actual = sut.selectCourseListByStudentId(studentId);
 
     // 検証
-    if (actual.get(0).getId().equals(id)) {
-      assertThat(actual.get(0).getCourseName()).isEqualTo(courseName);
-      assertThat(actual.get(0).getStartDate()).isEqualTo(startDate);
-      assertThat(actual.get(0).getEndDate()).isEqualTo(endDate);
-    } else {
-      assertThat(actual.get(1).getCourseName()).isEqualTo(courseName);
-      assertThat(actual.get(1).getStartDate()).isEqualTo(startDate);
-      assertThat(actual.get(1).getEndDate()).isEqualTo(endDate);
-    }
+    assertThat(actual.get(index).getId()).isEqualTo(id);
+    assertThat(actual.get(index).getCourseName()).isEqualTo(courseName);
+    assertThat(actual.get(index).getStartDate()).isEqualTo(startDate);
+    assertThat(actual.get(index).getEndDate()).isEqualTo(endDate);
   }
 
   @Test
@@ -126,21 +121,21 @@ class StudentCourseRepositoryTest {
 
   @ParameterizedTest
   @CsvSource({
-      "'6d96a6g0-6666-6666-6666-666666666666', '1c91a1b0-1111-1111-1111-111111111111', 'デザインコース', '2024-01-01T09:00:00', '2024-06-30T17:00:00'",
-      "'7d97b7h0-7777-7777-7777-777777777777', '1c91a1b0-1111-1111-1111-111111111111', 'Javaフルコース', '2024-07-01T09:00:00', '2024-12-31T17:00:00'",
-      "'8d98c8i0-8888-8888-8888-888888888888', '2c92b2c0-2222-2222-2222-222222222222', 'デザインコース', '2024-05-01T09:00:00', '2024-06-30T17:00:00'",
-      "'9d99d9j0-9999-9999-9999-999999999999', '2c92b2c0-2222-2222-2222-222222222222', 'AWSフルコース', '2024-05-01T09:00:00', '2024-12-31T17:00:00'",
-      "'ad9ae9k0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '3c93c3d0-3333-3333-3333-333333333333', 'Javaフルコース', '2024-01-01T09:00:00', '2025-06-30T17:00:00'",
-      "'bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '3c93c3d0-3333-3333-3333-333333333333', 'デザインコース', '2024-07-01T09:00:00', '2025-12-31T17:00:00'",
-      "'cd9cg9m0-cccc-cccc-cccc-cccccccccccc', '4c94d4e0-4444-4444-4444-444444444444', 'デザインコース', '2024-06-01T09:00:00', '2025-06-30T17:00:00'",
-      "'dd9dh9n0-dddd-dddd-dddd-dddddddddddd', '4c94d4e0-4444-4444-4444-444444444444', 'AWSフルコース', '2024-10-01T09:00:00', '2025-12-31T17:00:00'",
-      "'ed9ei9o0-eeee-eeee-eeee-eeeeeeeeeeee', '5c95e5f0-5555-5555-5555-555555555555', 'Javaフルコース', '2024-02-01T09:00:00', '2024-06-30T17:00:00'",
-      "'fd9fj9p0-ffff-ffff-ffff-ffffffffffff', '5c95e5f0-5555-5555-5555-555555555555', 'デザインコース', '2024-08-01T09:00:00', '2024-12-31T17:00:00'",
-      "'gd9gi9q0-gggg-gggg-gggg-gggggggggggg', '6c96f6g0-6666-6666-6666-666666666666', 'Javaフルコース', '2022-01-01T09:00:00', '2024-06-30T17:00:00'",
-      "'hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh', '6c96f6g0-6666-6666-6666-666666666666', 'AWSフルコース', '2022-07-01T09:00:00', '2024-12-31T17:00:00'"
+      "0, '6d96a6g0-6666-6666-6666-666666666666', '1c91a1b0-1111-1111-1111-111111111111', 'デザインコース', '2024-01-01T09:00:00', '2024-06-30T17:00:00'",
+      "1, '7d97b7h0-7777-7777-7777-777777777777', '1c91a1b0-1111-1111-1111-111111111111', 'Javaフルコース', '2024-07-01T09:00:00', '2024-12-31T17:00:00'",
+      "0, '8d98c8i0-8888-8888-8888-888888888888', '2c92b2c0-2222-2222-2222-222222222222', 'デザインコース', '2024-05-01T09:00:00', '2024-06-30T17:00:00'",
+      "1, '9d99d9j0-9999-9999-9999-999999999999', '2c92b2c0-2222-2222-2222-222222222222', 'AWSフルコース', '2024-05-01T09:00:00', '2024-12-31T17:00:00'",
+      "0, 'ad9ae9k0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '3c93c3d0-3333-3333-3333-333333333333', 'Javaフルコース', '2024-01-01T09:00:00', '2025-06-30T17:00:00'",
+      "1, 'bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '3c93c3d0-3333-3333-3333-333333333333', 'デザインコース', '2024-07-01T09:00:00', '2025-12-31T17:00:00'",
+      "0, 'cd9cg9m0-cccc-cccc-cccc-cccccccccccc', '4c94d4e0-4444-4444-4444-444444444444', 'デザインコース', '2024-06-01T09:00:00', '2025-06-30T17:00:00'",
+      "1, 'dd9dh9n0-dddd-dddd-dddd-dddddddddddd', '4c94d4e0-4444-4444-4444-444444444444', 'AWSフルコース', '2024-10-01T09:00:00', '2025-12-31T17:00:00'",
+      "0, 'ed9ei9o0-eeee-eeee-eeee-eeeeeeeeeeee', '5c95e5f0-5555-5555-5555-555555555555', 'Javaフルコース', '2024-02-01T09:00:00', '2024-06-30T17:00:00'",
+      "1, 'fd9fj9p0-ffff-ffff-ffff-ffffffffffff', '5c95e5f0-5555-5555-5555-555555555555', 'デザインコース', '2024-08-01T09:00:00', '2024-12-31T17:00:00'",
+      "0, 'gd9gi9q0-gggg-gggg-gggg-gggggggggggg', '6c96f6g0-6666-6666-6666-666666666666', 'Javaフルコース', '2022-01-01T09:00:00', '2024-06-30T17:00:00'",
+      "1, 'hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh', '6c96f6g0-6666-6666-6666-666666666666', 'AWSフルコース', '2022-07-01T09:00:00', '2024-12-31T17:00:00'"
   })
   void 受講生コース情報更新_渡されたStudentオブジェクトのレコードでDBがUPDATEされること(
-      String id, String studentId, String courseName, LocalDateTime startDate,
+      int index, String id, String studentId, String courseName, LocalDateTime startDate,
       LocalDateTime endDate) {
 
     // 準備
@@ -155,18 +150,9 @@ class StudentCourseRepositoryTest {
     int recordCountAfter = sut.selectAllCourseList().size();
 
     // 検証
-
-    if (actual.get(0).getId().equals(studentCourse.getId())) {
-      assertThat(actual.get(0).getStudentId()).isEqualTo(studentCourse.getStudentId());
-      assertThat(actual.get(0).getCourseName()).isEqualTo(studentCourse.getCourseName());
-      assertThat(actual.get(0).getStartDate()).isEqualTo(studentCourse.getStartDate());
-      assertThat(actual.get(0).getEndDate()).isEqualTo(studentCourse.getEndDate());
-    } else {
-      assertThat(actual.get(1).getStudentId()).isEqualTo(studentCourse.getStudentId());
-      assertThat(actual.get(1).getCourseName()).isEqualTo(studentCourse.getCourseName());
-      assertThat(actual.get(1).getStartDate()).isEqualTo(studentCourse.getStartDate());
-      assertThat(actual.get(1).getEndDate()).isEqualTo(studentCourse.getEndDate());
-    }
+    assertThat(actual.get(index).getCourseName()).isEqualTo(studentCourse.getCourseName());
+    assertThat(actual.get(index).getStartDate()).isEqualTo(studentCourse.getStartDate());
+    assertThat(actual.get(index).getEndDate()).isEqualTo(studentCourse.getEndDate());
     assertThat(recordCountAfter).isEqualTo(recordCountBefore);
 
   }
