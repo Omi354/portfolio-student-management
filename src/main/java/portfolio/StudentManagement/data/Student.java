@@ -86,6 +86,8 @@ public class Student {
   private Student(String id, StudentBuilder builder) {
     this.id = id;
     this.fullName = builder.fullName;
+    this.kana = builder.kana;
+    this.nickName = builder.nickName;
     this.email = builder.email;
     this.city = builder.city;
     this.age = builder.age;
