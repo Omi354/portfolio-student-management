@@ -24,11 +24,14 @@ INSERT INTO students_courses (id, student_id, course_name, start_date, end_date)
 INSERT INTO enrollment_statuses (id, student_course_id, status, created_at)
 VALUES
   ('6d96a6g0-6666-7b20-8000-000000000001', '6d96a6g0-6666-6666-6666-666666666666', 'PENDING', '2024-01-01 09:00:00'),
+  ('6d96a6g0-6666-7b20-8000-000000000013', '6d96a6g0-6666-6666-6666-666666666666', 'APPROVED', '2024-01-11 09:00:00'),
+  ('6d96a6g0-6666-7b20-8000-000000000014', '6d96a6g0-6666-6666-6666-666666666666', 'IN_PROGRESS', '2024-01-12 09:00:00'),
   ('7d97b7h0-7777-7b20-8000-000000000002', '7d97b7h0-7777-7777-7777-777777777777', 'APPROVED', '2024-07-01 09:00:00'),
   ('8d98c8i0-8888-7b20-8000-000000000003', '8d98c8i0-8888-8888-8888-888888888888', 'IN_PROGRESS', '2024-01-01 09:00:00'),
   ('9d99d9j0-9999-7b20-8000-000000000004', '9d99d9j0-9999-9999-9999-999999999999', 'PENDING', '2024-07-01 09:00:00'),
   ('ad9ae9k0-aaaa-7b20-8000-000000000005', 'ad9ae9k0-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'APPROVED', '2024-01-01 09:00:00'),
   ('bd9bf9l0-bbbb-7b20-8000-000000000006', 'bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'IN_PROGRESS', '2024-07-01 09:00:00'),
+  ('bd9bf9l0-bbbb-7b20-8000-000000000015', 'bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'COMPLETED', '2024-12-01 09:00:00'),
   ('cd9cg9m0-cccc-7b20-8000-000000000007', 'cd9cg9m0-cccc-cccc-cccc-cccccccccccc', 'PENDING', '2024-01-01 09:00:00'),
   ('dd9dh9n0-dddd-7b20-8000-000000000008', 'dd9dh9n0-dddd-dddd-dddd-dddddddddddd', 'IN_PROGRESS', '2024-07-01 09:00:00'),
   ('ed9ei9o0-eeee-7b20-8000-000000000009', 'ed9ei9o0-eeee-eeee-eeee-eeeeeeeeeeee', 'APPROVED', '2024-01-01 09:00:00'),

@@ -24,19 +24,30 @@
 
   <!-- 受講生コース情報の全件検索 -->
   <select id="selectAllCourseList" resultMap="StudentCourseResultMap">
+    WITH RankedStatuses AS (
+    SELECT
+    e.id AS enrollment_status_id,
+    e.student_course_id,
+    e.status,
+    e.created_at,
+    ROW_NUMBER() OVER (PARTITION BY e.student_course_id ORDER BY e.created_at DESC) AS rn
+    FROM enrollment_statuses e
+    )
     SELECT
     s.id AS id,
-    s.student_id AS student_id,
-    s.course_name AS course_name,
-    s.start_date AS start_date,
-    s.end_date AS end_date,
-    e.id AS enrollment_status_id,
-    e.student_course_id AS student_course_id,
-    e.status AS status,
-    e.created_at AS created_at
+    s.student_id,
+    s.course_name,
+    s.start_date,
+    s.end_date,
+    r.enrollment_status_id,
+    r.student_course_id,
+    r.status,
+    r.created_at
     FROM students_courses s
-    INNER JOIN enrollment_statuses e
-    ON s.id = e.student_course_id
+    INNER JOIN RankedStatuses r
+    ON s.id = r.student_course_id
+    WHERE r.rn = 1;
+
   </select>
 
 
