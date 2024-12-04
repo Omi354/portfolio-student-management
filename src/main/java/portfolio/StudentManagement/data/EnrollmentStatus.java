@@ -3,11 +3,15 @@ package portfolio.StudentManagement.data;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EnrollmentStatus {
 
   private String id;
@@ -20,7 +24,7 @@ public class EnrollmentStatus {
     PENDING("仮申込"),
     APPROVED("本申込"),
     IN_PROGRESS("受講中"),
-    COMPLETED("受講終了");
+    COMPLETED("受講修了");
 
     private final String japanese;
 

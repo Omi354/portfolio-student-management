@@ -29,6 +29,9 @@ public class StudentCourse {
   @Schema(description = "受講修了予定日", example = "2025-01-10T00:00:00")
   private LocalDateTime endDate;
 
+  @Schema(description = "コース申込状況のオブジェクト")
+  private EnrollmentStatus enrollmentStatus;
+
   /**
    * 受講生コース情報のコンストラクターです。 UUIDを自動生成し、それ以外のフィールドについては受講生コースビルダーから情報を受け取ります。
    *
@@ -40,6 +43,7 @@ public class StudentCourse {
     this.courseName = builder.courseName;
     this.startDate = builder.startDate;
     this.endDate = builder.endDate;
+    this.enrollmentStatus = builder.enrollmentStatus;
   }
 
   /**
@@ -54,6 +58,7 @@ public class StudentCourse {
     this.courseName = builder.courseName;
     this.startDate = builder.startDate;
     this.endDate = builder.endDate;
+    this.enrollmentStatus = builder.enrollmentStatus;
   }
 
   /**
@@ -75,6 +80,9 @@ public class StudentCourse {
     @Schema(description = "受講修了予定日", example = "2025-01-10T00:00:00")
     private LocalDateTime endDate = LocalDateTime.now().plusYears(1);
 
+    @Schema(description = "コース申込状況のオブジェクト")
+    private EnrollmentStatus enrollmentStatus = null;
+
     /**
      * 受講生コースビルダーのコンストラクターです。 必須の受講生IDと受講コース名を引数に取り、それ以外のフィールドは別途メソッドから設定できます。
      *
@@ -84,6 +92,11 @@ public class StudentCourse {
     public StudentCourseBuilder(String studentId, String courseName) {
       this.studentId = studentId;
       this.courseName = courseName;
+    }
+
+    public StudentCourseBuilder enrollmentStatus(EnrollmentStatus enrollmentStatus) {
+      this.enrollmentStatus = enrollmentStatus;
+      return this;
     }
 
     public StudentCourseBuilder startDate(LocalDateTime startDate) {

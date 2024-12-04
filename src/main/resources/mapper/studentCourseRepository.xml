@@ -4,10 +4,41 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="portfolio.StudentManagement.repository.StudentCourseRepository">
 
+
+  <resultMap id="StudentCourseResultMap" type="portfolio.StudentManagement.data.StudentCourse">
+    <!-- StudentCourseの基本プロパティ -->
+    <id property="id" column="id"/>
+    <result property="studentId" column="student_id"/>
+    <result property="courseName" column="course_name"/>
+    <result property="startDate" column="start_date"/>
+    <result property="endDate" column="end_date"/>
+
+    <!-- EnrollmentStatusのネスト -->
+    <association property="enrollmentStatus">
+      <id property="id" column="enrollment_status_id"/>
+      <result property="studentCourseId" column="student_course_id"/>
+      <result property="status" column="status"/>
+      <result property="createdAt" column="created_at"/>
+    </association>
+  </resultMap>
+
   <!-- 受講生コース情報の全件検索 -->
-  <select id="selectAllCourseList" resultType="portfolio.StudentManagement.data.StudentCourse">
-    SELECT * FROM students_courses
+  <select id="selectAllCourseList" resultMap="StudentCourseResultMap">
+    SELECT
+    s.id AS id,
+    s.student_id AS student_id,
+    s.course_name AS course_name,
+    s.start_date AS start_date,
+    s.end_date AS end_date,
+    e.id AS enrollment_status_id,
+    e.student_course_id AS student_course_id,
+    e.status AS status,
+    e.created_at AS created_at
+    FROM students_courses s
+    INNER JOIN enrollment_statuses e
+    ON s.id = e.student_course_id
   </select>
+
 
   <!-- 受講生コース情報の検索 -->
   <select id="selectCourseListByStudentId" parameterType="String"
