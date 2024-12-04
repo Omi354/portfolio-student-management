@@ -47,12 +47,12 @@ public class StudentCourse {
   }
 
   /**
-   * テスト専用のコンストラクターです。
+   * IDを指定してインスタンス生成する際に使用するコンストラクターです。
    *
    * @param id      ID
    * @param builder 受講生コースビルダー
    */
-  StudentCourse(String id, StudentCourseBuilder builder) {
+  public StudentCourse(String id, StudentCourseBuilder builder) {
     this.id = id;
     this.studentId = builder.studentId;
     this.courseName = builder.courseName;
@@ -113,7 +113,7 @@ public class StudentCourse {
       return new StudentCourse(this);
     }
 
-    public StudentCourse useOnlyTestBuildWithId(String id) {
+    public StudentCourse buildWithId(String id) {
       return new StudentCourse(id, this);
     }
 

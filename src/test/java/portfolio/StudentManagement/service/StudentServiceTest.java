@@ -165,7 +165,7 @@ class StudentServiceTest {
         .remark("変更後").useOnlyTestBuildWithId(id);
 
     StudentCourse receivedStudentCourse = new StudentCourse
-        .StudentCourseBuilder(id, "Javaフルコース").useOnlyTestBuildWithId(courseId);
+        .StudentCourseBuilder(id, "Javaフルコース").buildWithId(courseId);
     List<StudentCourse> receivedStudentCourseList = List.of(receivedStudentCourse);
 
     StudentDetail receivedStudentDetail = new StudentDetail(receivedStudent,
@@ -211,7 +211,7 @@ class StudentServiceTest {
         .remark("変更なし").useOnlyTestBuildWithId(id);
 
     StudentCourse receivedStudentCourse = new StudentCourse
-        .StudentCourseBuilder(id, "Javaフルコース").useOnlyTestBuildWithId(courseId);
+        .StudentCourseBuilder(id, "Javaフルコース").buildWithId(courseId);
     List<StudentCourse> receivedStudentCourseList = List.of(receivedStudentCourse);
 
     StudentDetail receivedStudentDetail = new StudentDetail(receivedStudent,
@@ -258,11 +258,11 @@ class StudentServiceTest {
     StudentCourse receivedStudentCourse1 = new StudentCourse.StudentCourseBuilder(id,
         "Javaフルコース").startDate(
             LocalDateTime.parse("2024-12-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).useOnlyTestBuildWithId(courseId1);
+        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).buildWithId(courseId1);
     StudentCourse receivedStudentCourse2 = new StudentCourse.StudentCourseBuilder(id,
         "AWSフルコース").startDate(
             LocalDateTime.parse("2024-06-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).useOnlyTestBuildWithId(courseId2);
+        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).buildWithId(courseId2);
     List<StudentCourse> receivedStudentCourseList = List.of(receivedStudentCourse1,
         receivedStudentCourse2);
     StudentDetail receivedStudentDetail = new StudentDetail(receivedStudent,
@@ -271,11 +271,11 @@ class StudentServiceTest {
     StudentCourse currentStudentCourse1 = new StudentCourse.StudentCourseBuilder(id,
         "マーケティングコース").startDate(
             LocalDateTime.parse("2025-12-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2026-12-25T18:30:45")).useOnlyTestBuildWithId(courseId1);
+        .endDate(LocalDateTime.parse("2026-12-25T18:30:45")).buildWithId(courseId1);
     StudentCourse currentStudentCourse2 = new StudentCourse.StudentCourseBuilder(id,
         "デザインコース").startDate(
             LocalDateTime.parse("2025-06-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2026-06-25T18:30:45")).useOnlyTestBuildWithId(courseId2);
+        .endDate(LocalDateTime.parse("2026-06-25T18:30:45")).buildWithId(courseId2);
     List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse1,
         currentStudentCourse2);
 
@@ -313,11 +313,11 @@ class StudentServiceTest {
     StudentCourse receivedStudentCourse1 = new StudentCourse.StudentCourseBuilder(id,
         "Javaフルコース").startDate(
             LocalDateTime.parse("2024-12-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).useOnlyTestBuildWithId(courseId1);
+        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).buildWithId(courseId1);
     StudentCourse receivedStudentCourse2 = new StudentCourse.StudentCourseBuilder(id,
         "AWSフルコース").startDate(
             LocalDateTime.parse("2024-06-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).useOnlyTestBuildWithId(courseId2);
+        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).buildWithId(courseId2);
     List<StudentCourse> receivedStudentCourseList = List.of(receivedStudentCourse1,
         receivedStudentCourse2);
     StudentDetail receivedStudentDetail = new StudentDetail(receivedStudent,
@@ -326,11 +326,11 @@ class StudentServiceTest {
     StudentCourse currentStudentCourse1 = new StudentCourse.StudentCourseBuilder(id,
         "マーケティングコース").startDate(
             LocalDateTime.parse("2025-12-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2026-12-25T18:30:45")).useOnlyTestBuildWithId(courseId1);
+        .endDate(LocalDateTime.parse("2026-12-25T18:30:45")).buildWithId(courseId1);
     StudentCourse currentStudentCourse2 = new StudentCourse.StudentCourseBuilder(id,
         "AWSフルコース").startDate(
             LocalDateTime.parse("2024-06-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).useOnlyTestBuildWithId(courseId2);
+        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).buildWithId(courseId2);
     List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse1,
         currentStudentCourse2);
 
@@ -368,11 +368,11 @@ class StudentServiceTest {
     StudentCourse receivedStudentCourse1 = new StudentCourse.StudentCourseBuilder(id,
         "Javaフルコース").startDate(
             LocalDateTime.parse("2024-12-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).useOnlyTestBuildWithId(courseId1);
+        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).buildWithId(courseId1);
     StudentCourse receivedStudentCourse2 = new StudentCourse.StudentCourseBuilder(id,
         "AWSフルコース").startDate(
             LocalDateTime.parse("2024-06-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).useOnlyTestBuildWithId(courseId2);
+        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).buildWithId(courseId2);
     List<StudentCourse> receivedStudentCourseList = List.of(receivedStudentCourse1,
         receivedStudentCourse2);
     StudentDetail receivedStudentDetail = new StudentDetail(receivedStudent,
@@ -381,11 +381,11 @@ class StudentServiceTest {
     StudentCourse currentStudentCourse1 = new StudentCourse.StudentCourseBuilder(id,
         "Javaフルコース").startDate(
             LocalDateTime.parse("2024-12-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).useOnlyTestBuildWithId(courseId1);
+        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).buildWithId(courseId1);
     StudentCourse currentStudentCourse2 = new StudentCourse.StudentCourseBuilder(id,
         "AWSフルコース").startDate(
             LocalDateTime.parse("2024-06-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).useOnlyTestBuildWithId(courseId2);
+        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).buildWithId(courseId2);
     List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse1,
         currentStudentCourse2);
 
@@ -446,7 +446,7 @@ class StudentServiceTest {
         "田中太郎", "taro@test.com", "千葉県市原市", 24).useOnlyTestBuildWithId(id);
 
     StudentCourse mockStudentCourse = new StudentCourse
-        .StudentCourseBuilder(id, "Javaフルコース").useOnlyTestBuildWithId(wrongCourseId);
+        .StudentCourseBuilder(id, "Javaフルコース").buildWithId(wrongCourseId);
     List<StudentCourse> mockStudentCourseList = List.of(mockStudentCourse);
 
     StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
@@ -455,7 +455,7 @@ class StudentServiceTest {
         "田中太郎", "taro@test.com", "千葉県市原市", 24).useOnlyTestBuildWithId(id);
 
     StudentCourse currentStudentCourse = new StudentCourse
-        .StudentCourseBuilder(id, "AWSフルコース").useOnlyTestBuildWithId(courseId);
+        .StudentCourseBuilder(id, "AWSフルコース").buildWithId(courseId);
     List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse);
 
     Mockito.when(studentRepository.selectStudentById(id)).thenReturn(currentStudent);

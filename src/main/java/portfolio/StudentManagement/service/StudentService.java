@@ -1,12 +1,16 @@
 package portfolio.StudentManagement.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import portfolio.StudentManagement.controller.converter.StudentConverter;
+import portfolio.StudentManagement.data.EnrollmentStatus;
+import portfolio.StudentManagement.data.EnrollmentStatus.Status;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.data.StudentCourse;
@@ -74,6 +78,7 @@ public class StudentService {
   public StudentDetail registerStudent(StudentDetail studentDetail) {
     Student receivedStudent = studentDetail.getStudent();
     StudentCourse receivedStudentCourse = studentDetail.getStudentCourseList().getFirst();
+    EnrollmentStatus receivedEnrollmentStatus = receivedStudentCourse.getEnrollmentStatus();
 
     String fullName = receivedStudent.getFullName();
     String kana = receivedStudent.getKana();
@@ -87,8 +92,14 @@ public class StudentService {
 
     String studentId = newStudent.getId();
     String courseName = receivedStudentCourse.getCourseName();
-    StudentCourse newStudentCourse = new StudentCourse.StudentCourseBuilder(studentId,
-        courseName).build();
+    StudentCourse newStudentCourse = new StudentCourse
+        .StudentCourseBuilder(studentId, courseName).build();
+
+    EnrollmentStatus newEnrollmentStatus = EnrollmentStatus.builder()
+        .id(UUID.randomUUID().toString())
+        .studentCourseId(newStudentCourse.getId())
+        .createdAt(LocalDateTime.now()).status(Status.PENDING)
+        .build();
 
     studentRepository.createStudent(newStudent);
     studentCourseRepository.createStudentCourse(newStudentCourse);

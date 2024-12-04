@@ -188,73 +188,73 @@ class StudentCourseRepositoryTest {
             .startDate(LocalDateTime.parse("2024-01-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-06-30T17:00:00"))
             .enrollmentStatus(status1)
-            .useOnlyTestBuildWithId("6d96a6g0-6666-6666-6666-666666666666"),
+            .buildWithId("6d96a6g0-6666-6666-6666-666666666666"),
         new StudentCourse.StudentCourseBuilder("1c91a1b0-1111-1111-1111-111111111111",
             "AWSフルコース")
             .startDate(LocalDateTime.parse("2024-07-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-12-31T17:00:00"))
             .enrollmentStatus(status2)
-            .useOnlyTestBuildWithId("7d97b7h0-7777-7777-7777-777777777777"),
+            .buildWithId("7d97b7h0-7777-7777-7777-777777777777"),
         new StudentCourse.StudentCourseBuilder("2c92b2c0-2222-2222-2222-222222222222",
             "デザインコース")
             .startDate(LocalDateTime.parse("2024-01-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-06-30T17:00:00"))
             .enrollmentStatus(status3)
-            .useOnlyTestBuildWithId("8d98c8i0-8888-8888-8888-888888888888"),
+            .buildWithId("8d98c8i0-8888-8888-8888-888888888888"),
         new StudentCourse.StudentCourseBuilder("2c92b2c0-2222-2222-2222-222222222222",
             "AWSフルコース")
             .startDate(LocalDateTime.parse("2024-07-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-12-31T17:00:00"))
             .enrollmentStatus(status4)
-            .useOnlyTestBuildWithId("9d99d9j0-9999-9999-9999-999999999999"),
+            .buildWithId("9d99d9j0-9999-9999-9999-999999999999"),
         new StudentCourse.StudentCourseBuilder("3c93c3d0-3333-3333-3333-333333333333",
             "Javaフルコース")
             .startDate(LocalDateTime.parse("2024-01-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-06-30T17:00:00"))
             .enrollmentStatus(status5)
-            .useOnlyTestBuildWithId("ad9ae9k0-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+            .buildWithId("ad9ae9k0-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
         new StudentCourse.StudentCourseBuilder("3c93c3d0-3333-3333-3333-333333333333",
             "デザインコース")
             .startDate(LocalDateTime.parse("2024-07-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-12-31T17:00:00"))
             .enrollmentStatus(status6)
-            .useOnlyTestBuildWithId("bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+            .buildWithId("bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
         new StudentCourse.StudentCourseBuilder("4c94d4e0-4444-4444-4444-444444444444",
             "AWSフルコース")
             .startDate(LocalDateTime.parse("2024-01-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-06-30T17:00:00"))
             .enrollmentStatus(status7)
-            .useOnlyTestBuildWithId("cd9cg9m0-cccc-cccc-cccc-cccccccccccc"),
+            .buildWithId("cd9cg9m0-cccc-cccc-cccc-cccccccccccc"),
         new StudentCourse.StudentCourseBuilder("4c94d4e0-4444-4444-4444-444444444444",
             "Javaフルコース")
             .startDate(LocalDateTime.parse("2024-07-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-12-31T17:00:00"))
             .enrollmentStatus(status8)
-            .useOnlyTestBuildWithId("dd9dh9n0-dddd-dddd-dddd-dddddddddddd"),
+            .buildWithId("dd9dh9n0-dddd-dddd-dddd-dddddddddddd"),
         new StudentCourse.StudentCourseBuilder("5c95e5f0-5555-5555-5555-555555555555",
             "デザインコース")
             .startDate(LocalDateTime.parse("2024-01-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-06-30T17:00:00"))
             .enrollmentStatus(status9)
-            .useOnlyTestBuildWithId("ed9ei9o0-eeee-eeee-eeee-eeeeeeeeeeee"),
+            .buildWithId("ed9ei9o0-eeee-eeee-eeee-eeeeeeeeeeee"),
         new StudentCourse.StudentCourseBuilder("5c95e5f0-5555-5555-5555-555555555555",
             "AWSフルコース")
             .startDate(LocalDateTime.parse("2024-07-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-12-31T17:00:00"))
             .enrollmentStatus(status10)
-            .useOnlyTestBuildWithId("fd9fj9p0-ffff-ffff-ffff-ffffffffffff"),
+            .buildWithId("fd9fj9p0-ffff-ffff-ffff-ffffffffffff"),
         new StudentCourse.StudentCourseBuilder("6c96f6g0-6666-6666-6666-666666666666",
             "Javaフルコース")
             .startDate(LocalDateTime.parse("2023-01-01T09:00:00"))
             .endDate(LocalDateTime.parse("2023-06-30T17:00:00"))
             .enrollmentStatus(status11)
-            .useOnlyTestBuildWithId("gd9gi9q0-gggg-gggg-gggg-gggggggggggg"),
+            .buildWithId("gd9gi9q0-gggg-gggg-gggg-gggggggggggg"),
         new StudentCourse.StudentCourseBuilder("6c96f6g0-6666-6666-6666-666666666666",
             "AWSフルコース")
             .startDate(LocalDateTime.parse("2023-07-01T09:00:00"))
             .endDate(LocalDateTime.parse("2023-12-31T17:00:00"))
             .enrollmentStatus(status12)
-            .useOnlyTestBuildWithId("hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh")
+            .buildWithId("hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh")
     );
   }
 
@@ -299,73 +299,73 @@ class StudentCourseRepositoryTest {
             "デザインコース")
             .startDate(LocalDateTime.parse("2024-01-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-06-30T17:00:00"))
-            .useOnlyTestBuildWithId("6d96a6g0-6666-6666-6666-666666666666"),
+            .buildWithId("6d96a6g0-6666-6666-6666-666666666666"),
 
         new StudentCourse.StudentCourseBuilder("1c91a1b0-1111-1111-1111-111111111111",
             "Javaフルコース")
             .startDate(LocalDateTime.parse("2024-07-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-12-31T17:00:00"))
-            .useOnlyTestBuildWithId("7d97b7h0-7777-7777-7777-777777777777"),
+            .buildWithId("7d97b7h0-7777-7777-7777-777777777777"),
 
         new StudentCourse.StudentCourseBuilder("2c92b2c0-2222-2222-2222-222222222222",
             "デザインコース")
             .startDate(LocalDateTime.parse("2024-05-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-06-30T17:00:00"))
-            .useOnlyTestBuildWithId("8d98c8i0-8888-8888-8888-888888888888"),
+            .buildWithId("8d98c8i0-8888-8888-8888-888888888888"),
 
         new StudentCourse.StudentCourseBuilder("2c92b2c0-2222-2222-2222-222222222222",
             "AWSフルコース")
             .startDate(LocalDateTime.parse("2024-05-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-12-31T17:00:00"))
-            .useOnlyTestBuildWithId("9d99d9j0-9999-9999-9999-999999999999"),
+            .buildWithId("9d99d9j0-9999-9999-9999-999999999999"),
 
         new StudentCourse.StudentCourseBuilder("3c93c3d0-3333-3333-3333-333333333333",
             "Javaフルコース")
             .startDate(LocalDateTime.parse("2024-01-01T09:00:00"))
             .endDate(LocalDateTime.parse("2025-06-30T17:00:00"))
-            .useOnlyTestBuildWithId("ad9ae9k0-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+            .buildWithId("ad9ae9k0-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
 
         new StudentCourse.StudentCourseBuilder("3c93c3d0-3333-3333-3333-333333333333",
             "デザインコース")
             .startDate(LocalDateTime.parse("2024-07-01T09:00:00"))
             .endDate(LocalDateTime.parse("2025-12-31T17:00:00"))
-            .useOnlyTestBuildWithId("bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+            .buildWithId("bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
 
         new StudentCourse.StudentCourseBuilder("4c94d4e0-4444-4444-4444-444444444444",
             "デザインコース")
             .startDate(LocalDateTime.parse("2024-06-01T09:00:00"))
             .endDate(LocalDateTime.parse("2025-06-30T17:00:00"))
-            .useOnlyTestBuildWithId("cd9cg9m0-cccc-cccc-cccc-cccccccccccc"),
+            .buildWithId("cd9cg9m0-cccc-cccc-cccc-cccccccccccc"),
 
         new StudentCourse.StudentCourseBuilder("4c94d4e0-4444-4444-4444-444444444444",
             "AWSフルコース")
             .startDate(LocalDateTime.parse("2024-10-01T09:00:00"))
             .endDate(LocalDateTime.parse("2025-12-31T17:00:00"))
-            .useOnlyTestBuildWithId("dd9dh9n0-dddd-dddd-dddd-dddddddddddd"),
+            .buildWithId("dd9dh9n0-dddd-dddd-dddd-dddddddddddd"),
 
         new StudentCourse.StudentCourseBuilder("5c95e5f0-5555-5555-5555-555555555555",
             "Javaフルコース")
             .startDate(LocalDateTime.parse("2024-02-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-06-30T17:00:00"))
-            .useOnlyTestBuildWithId("ed9ei9o0-eeee-eeee-eeee-eeeeeeeeeeee"),
+            .buildWithId("ed9ei9o0-eeee-eeee-eeee-eeeeeeeeeeee"),
 
         new StudentCourse.StudentCourseBuilder("5c95e5f0-5555-5555-5555-555555555555",
             "デザインコース")
             .startDate(LocalDateTime.parse("2024-08-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-12-31T17:00:00"))
-            .useOnlyTestBuildWithId("fd9fj9p0-ffff-ffff-ffff-ffffffffffff"),
+            .buildWithId("fd9fj9p0-ffff-ffff-ffff-ffffffffffff"),
 
         new StudentCourse.StudentCourseBuilder("6c96f6g0-6666-6666-6666-666666666666",
             "Javaフルコース")
             .startDate(LocalDateTime.parse("2022-01-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-06-30T17:00:00"))
-            .useOnlyTestBuildWithId("gd9gi9q0-gggg-gggg-gggg-gggggggggggg"),
+            .buildWithId("gd9gi9q0-gggg-gggg-gggg-gggggggggggg"),
 
         new StudentCourse.StudentCourseBuilder("6c96f6g0-6666-6666-6666-666666666666",
             "AWSフルコース")
             .startDate(LocalDateTime.parse("2022-07-01T09:00:00"))
             .endDate(LocalDateTime.parse("2024-12-31T17:00:00"))
-            .useOnlyTestBuildWithId("hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh")
+            .buildWithId("hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh")
     );
   }
 }
