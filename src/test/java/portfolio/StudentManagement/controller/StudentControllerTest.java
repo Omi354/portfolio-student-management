@@ -25,6 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,6 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.data.StudentCourse;
+import portfolio.StudentManagement.exception.EnrollmentStatusNotFoundException;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.service.StudentService;
@@ -372,6 +374,76 @@ class StudentControllerTest {
 
   }
 
+  @ParameterizedTest
+  @MethodSource("studentCourseDataProvider")
+  void 受講生詳細の受講生コース情報_入力チェックが適切に動くこと(StudentCourse studentCourse,
+      String errorPlace, boolean shouldBeValid) {
+    // 実行
+    Set<ConstraintViolation<StudentCourse>> violations = validator.validate(studentCourse);
+
+    // 検証
+    if (shouldBeValid) {
+      assertThat(violations.size()).isEqualTo(0);
+    } else {
+      assertThat(violations.size()).isEqualTo(1);
+      assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals(errorPlace));
+    }
+
+  }
+
+  @Test
+  void 申込状況更新_適切なRequestBodyが送られた場合_Serviceメソッドが呼び出され200と更新できたメッセージが返ること()
+      throws Exception {
+
+    // 準備
+    String body = """
+        {
+          "studentCourseId": "6d96a6g0-6666-6666-6666-666666666666",
+          "status": "COMPLETED"
+        }
+        """;
+
+    // 実行と検証
+    mockMvc.perform(post("/updateStatus")
+            .contentType("application/json")
+            .content(body))
+        .andExpect(status().isOk())
+        .andExpect(content().string("ステータスの更新に成功しました"));
+
+    // 検証
+    verify(service, times(1)).updateEnrollmentStatus(any());
+
+  }
+
+  @Test
+  void 申込状況更新_studentCourseNotFoundExceptionがスローされた場合_404とエラーメッセージが返ること()
+      throws Exception {
+    // 準備
+    String body = """
+        {
+          "studentCourseId": "6d96a6g0-6666-6666-6666-666666666666",
+          "status": "COMPLETED"
+        }
+        """;
+
+    Mockito.doThrow(new EnrollmentStatusNotFoundException())
+        .when(service).updateEnrollmentStatus(any());
+
+    // 実行と検証
+    mockMvc.perform(post("/updateStatus")
+            .contentType("application/json")
+            .content(body))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.error").value("EnrollmentStatus Not Found"))
+        .andExpect(jsonPath("$.message").value(
+            "指定した受講生コースIDのステータスは見つかりませんでした"));
+
+    // 検証
+    verify(service, times(1)).updateEnrollmentStatus(any());
+
+  }
+
+
   static Stream<Arguments> studentDataProvider() {
     return Stream.of(
         org.junit.jupiter.params.provider.Arguments.of(
@@ -425,23 +497,6 @@ class StudentControllerTest {
     );
   }
 
-  @ParameterizedTest
-  @MethodSource("studentCourseDataProvider")
-  void 受講生詳細の受講生コース情報_入力チェックが適切に動くこと(StudentCourse studentCourse,
-      String errorPlace, boolean shouldBeValid) {
-    // 実行
-    Set<ConstraintViolation<StudentCourse>> violations = validator.validate(studentCourse);
-
-    // 検証
-    if (shouldBeValid) {
-      assertThat(violations.size()).isEqualTo(0);
-    } else {
-      assertThat(violations.size()).isEqualTo(1);
-      assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals(errorPlace));
-    }
-
-  }
-
   static Stream<Arguments> studentCourseDataProvider() {
     return Stream.of(
         Arguments.of(
@@ -456,6 +511,5 @@ class StudentControllerTest {
             "courseName", false)
     );
   }
-
-
+  
 }

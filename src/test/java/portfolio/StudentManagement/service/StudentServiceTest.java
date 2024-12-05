@@ -524,7 +524,7 @@ class StudentServiceTest {
         .thenReturn(mockStatusList);
 
     // 実行
-    sut.updateStatus(enrollmentStatus);
+    sut.updateEnrollmentStatus(enrollmentStatus);
 
     // 検証
     Mockito.verify(enrollmentStatusRepository, Mockito.times(1))
@@ -542,7 +542,7 @@ class StudentServiceTest {
         .build();
 
     // 実行と検証
-    assertThatThrownBy(() -> sut.updateStatus(enrollmentStatus))
+    assertThatThrownBy(() -> sut.updateEnrollmentStatus(enrollmentStatus))
         .isInstanceOf(EnrollmentStatusNotFoundException.class)
         .hasMessageContaining("指定した受講生コースIDのステータスは見つかりませんでした");
 

@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import portfolio.StudentManagement.data.EnrollmentStatus;
 import portfolio.StudentManagement.data.ErrorResponse;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.EnrollmentStatusNotFoundException;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.service.StudentService;
@@ -207,6 +209,14 @@ public class StudentController {
       throws StudentNotFoundException, StudentCourseNotFoundException {
     service.updateStudent(studentDetail);
     return ResponseEntity.ok("更新に成功しました");
+  }
+
+  @PostMapping("/updateStatus")
+  public ResponseEntity<String> updateEnrollmentStatus(
+      @RequestBody EnrollmentStatus enrollmentStatus)
+      throws EnrollmentStatusNotFoundException {
+    service.updateEnrollmentStatus(enrollmentStatus);
+    return ResponseEntity.ok("ステータスの更新に成功しました");
   }
 
 }

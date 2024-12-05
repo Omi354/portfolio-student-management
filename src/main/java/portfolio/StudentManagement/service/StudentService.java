@@ -147,7 +147,7 @@ public class StudentService {
   }
 
 
-  public void updateStatus(EnrollmentStatus receivedEnrollmentStatus)
+  public void updateEnrollmentStatus(EnrollmentStatus receivedEnrollmentStatus)
       throws EnrollmentStatusNotFoundException {
 
     String studentCourseId = receivedEnrollmentStatus.getStudentCourseId();
