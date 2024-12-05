@@ -34,7 +34,6 @@ public class GlobalExceptionHandler {
       EnrollmentStatusNotFoundException ex) {
     ErrorResponse errorResponse = new ErrorResponse("EnrollmentStatus Not Found", ex.getMessage());
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-
   }
 
   @ExceptionHandler(ConstraintViolationException.class)

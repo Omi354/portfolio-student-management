@@ -149,17 +149,18 @@ public class StudentService {
 
   public void updateStatus(EnrollmentStatus receivedEnrollmentStatus)
       throws EnrollmentStatusNotFoundException {
-    String id = receivedEnrollmentStatus.getId();
+
     String studentCourseId = receivedEnrollmentStatus.getStudentCourseId();
     Status status = receivedEnrollmentStatus.getStatus();
 
     EnrollmentStatus newEnrollmentStatus = EnrollmentStatus.builder()
-        .id(id).studentCourseId(studentCourseId).status(status).createdAt(LocalDateTime.now())
+        .id(UUID.randomUUID().toString()).studentCourseId(studentCourseId).status(status)
+        .createdAt(LocalDateTime.now())
         .build();
 
     List<EnrollmentStatus> matchingEnrollmentStatuses = enrollmentStatusRepository.selectAllEnrollmentStatus()
         .stream()
-        .filter(enrollmentStatus -> enrollmentStatus.getId().equals(id))
+        .filter(enrollmentStatus -> enrollmentStatus.getStudentCourseId().equals(studentCourseId))
         .toList();
 
     if (matchingEnrollmentStatuses.isEmpty()) {

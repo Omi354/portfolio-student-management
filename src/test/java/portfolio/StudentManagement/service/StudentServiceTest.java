@@ -2,6 +2,7 @@ package portfolio.StudentManagement.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.data.StudentCourse.StudentCourseBuilder;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.EnrollmentStatusNotFoundException;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.repository.EnrollmentStatusRepository;
@@ -173,7 +175,7 @@ class StudentServiceTest {
         .isEqualTo(Status.PENDING);
     assertThat(actual.getStudentCourseList().getFirst().getEnrollmentStatus().getCreatedAt())
         .isInstanceOf(LocalDateTime.class);
-    
+
   }
 
   @Test
@@ -498,5 +500,54 @@ class StudentServiceTest {
     Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
     Mockito.verify(studentCourseRepository, Mockito.never())
         .updateStudentCourse(mockStudentCourse);
+  }
+
+  @Test
+  void 申込状況更新_適切なEnrollmentStatusオブジェクトが渡された場合_適切にEnrollmentStatusが呼び出されること()
+      throws EnrollmentStatusNotFoundException {
+    // 準備
+    String studentCourseId = UUID.randomUUID().toString();
+
+    EnrollmentStatus enrollmentStatus = EnrollmentStatus.builder()
+        .studentCourseId(studentCourseId).status(Status.IN_PROGRESS)
+        .build();
+
+    List<EnrollmentStatus> mockStatusList = List.of(EnrollmentStatus.builder()
+        .id(UUID.randomUUID().toString()).studentCourseId(studentCourseId)
+        .status(Status.APPROVED).createdAt(LocalDateTime.now()).build()
+    );
+
+    Mockito.when(enrollmentStatusRepository.selectAllEnrollmentStatus()
+            .stream()
+            .filter(v -> v.getStudentCourseId().equals(studentCourseId))
+            .toList())
+        .thenReturn(mockStatusList);
+
+    // 実行
+    sut.updateStatus(enrollmentStatus);
+
+    // 検証
+    Mockito.verify(enrollmentStatusRepository, Mockito.times(1))
+        .createEnrollmentStatus(any());
+  }
+
+  @Test
+  void 申込状況更新_存在しないstudentCourseIdが渡された場合_適切に例外が呼び出されること()
+      throws EnrollmentStatusNotFoundException {
+    // 準備
+    String studentCourseId = UUID.randomUUID().toString();
+
+    EnrollmentStatus enrollmentStatus = EnrollmentStatus.builder()
+        .studentCourseId(studentCourseId).status(Status.IN_PROGRESS)
+        .build();
+
+    // 実行と検証
+    assertThatThrownBy(() -> sut.updateStatus(enrollmentStatus))
+        .isInstanceOf(EnrollmentStatusNotFoundException.class)
+        .hasMessageContaining("指定した受講生コースIDのステータスは見つかりませんでした");
+
+    // 検証
+    Mockito.verify(enrollmentStatusRepository, Mockito.times(0))
+        .createEnrollmentStatus(any());
   }
 }
