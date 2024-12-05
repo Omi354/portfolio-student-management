@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import portfolio.StudentManagement.data.EnrollmentStatus;
 import portfolio.StudentManagement.data.ErrorResponse;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.EnrollmentStatusBadRequestException;
 import portfolio.StudentManagement.exception.EnrollmentStatusNotFoundException;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
@@ -214,7 +215,7 @@ public class StudentController {
   @PostMapping("/updateStatus")
   public ResponseEntity<String> updateEnrollmentStatus(
       @RequestBody EnrollmentStatus enrollmentStatus)
-      throws EnrollmentStatusNotFoundException {
+      throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
     service.updateEnrollmentStatus(enrollmentStatus);
     return ResponseEntity.ok("ステータスの更新に成功しました");
   }

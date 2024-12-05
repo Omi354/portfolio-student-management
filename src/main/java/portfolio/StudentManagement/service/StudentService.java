@@ -15,6 +15,7 @@ import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.EnrollmentStatusBadRequestException;
 import portfolio.StudentManagement.exception.EnrollmentStatusNotFoundException;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
@@ -148,26 +149,49 @@ public class StudentService {
 
 
   public void updateEnrollmentStatus(EnrollmentStatus receivedEnrollmentStatus)
-      throws EnrollmentStatusNotFoundException {
+      throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
 
-    String studentCourseId = receivedEnrollmentStatus.getStudentCourseId();
-    Status status = receivedEnrollmentStatus.getStatus();
+    String receivedStudentCourseId = receivedEnrollmentStatus.getStudentCourseId();
+    Status receivedStatus = receivedEnrollmentStatus.getStatus();
 
     EnrollmentStatus newEnrollmentStatus = EnrollmentStatus.builder()
-        .id(UUID.randomUUID().toString()).studentCourseId(studentCourseId).status(status)
+        .id(UUID.randomUUID().toString()).studentCourseId(receivedStudentCourseId)
+        .status(receivedStatus)
         .createdAt(LocalDateTime.now())
         .build();
 
+    verifyEnrollmentStatus(receivedStudentCourseId, receivedStatus);
+
+    enrollmentStatusRepository.createEnrollmentStatus(newEnrollmentStatus);
+  }
+
+
+  private void verifyEnrollmentStatus(String receivedStudentCourseId, Status receivedStatus)
+      throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
     List<EnrollmentStatus> matchingEnrollmentStatuses = enrollmentStatusRepository.selectAllEnrollmentStatus()
         .stream()
-        .filter(enrollmentStatus -> enrollmentStatus.getStudentCourseId().equals(studentCourseId))
+        .filter(enrollmentStatus -> enrollmentStatus.getStudentCourseId()
+            .equals(receivedStudentCourseId))
         .toList();
 
     if (matchingEnrollmentStatuses.isEmpty()) {
       throw new EnrollmentStatusNotFoundException();
     }
 
-    enrollmentStatusRepository.createEnrollmentStatus(newEnrollmentStatus);
+    Status currentStatus = matchingEnrollmentStatuses.getLast().getStatus();
+    Map<Status, Integer> mapForCompareStatus = Map.of(
+        Status.PENDING, 1,
+        Status.APPROVED, 2,
+        Status.IN_PROGRESS, 3,
+        Status.COMPLETED, 4
+    );
+    Integer receivedStatusNumber = mapForCompareStatus.get(receivedStatus);
+    Integer currentStatusNumber = mapForCompareStatus.get(currentStatus);
+
+    if (currentStatusNumber >= receivedStatusNumber) {
+      throw new EnrollmentStatusBadRequestException(
+          "ステータスを前に戻すことは出来ません。現在のステータス: " + currentStatus.getJapanese());
+    }
   }
 
   /**

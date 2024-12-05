@@ -34,6 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.data.StudentCourse;
+import portfolio.StudentManagement.exception.EnrollmentStatusBadRequestException;
 import portfolio.StudentManagement.exception.EnrollmentStatusNotFoundException;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
@@ -416,7 +417,7 @@ class StudentControllerTest {
   }
 
   @Test
-  void 申込状況更新_studentCourseNotFoundExceptionがスローされた場合_404とエラーメッセージが返ること()
+  void 申込状況更新_EnrollmentStatusNotFoundExceptionがスローされた場合_404とエラーメッセージが返ること()
       throws Exception {
     // 準備
     String body = """
@@ -437,6 +438,35 @@ class StudentControllerTest {
         .andExpect(jsonPath("$.error").value("EnrollmentStatus Not Found"))
         .andExpect(jsonPath("$.message").value(
             "指定した受講生コースIDのステータスは見つかりませんでした"));
+
+    // 検証
+    verify(service, times(1)).updateEnrollmentStatus(any());
+
+  }
+
+  @Test
+  void 申込状況更新_EnrollmentStatusBadRequestExceptionがスローされた場合_400とエラーメッセージが返ること()
+      throws Exception {
+    // 準備
+    String body = """
+        {
+          "studentCourseId": "6d96a6g0-6666-6666-6666-666666666666",
+          "status": "COMPLETED"
+        }
+        """;
+
+    Mockito.doThrow(new EnrollmentStatusBadRequestException(
+            "ステータスを前に戻すことは出来ません。現在のステータス:"))
+        .when(service).updateEnrollmentStatus(any());
+
+    // 実行と検証
+    mockMvc.perform(post("/updateStatus")
+            .contentType("application/json")
+            .content(body))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.error").value("EnrollmentStatus Bad Request"))
+        .andExpect(jsonPath("$.message").value(
+            "ステータスを前に戻すことは出来ません。現在のステータス:"));
 
     // 検証
     verify(service, times(1)).updateEnrollmentStatus(any());
@@ -511,5 +541,5 @@ class StudentControllerTest {
             "courseName", false)
     );
   }
-  
+
 }

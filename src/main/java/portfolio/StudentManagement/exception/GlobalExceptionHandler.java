@@ -36,6 +36,14 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
   }
 
+  @ExceptionHandler(EnrollmentStatusBadRequestException.class)
+  public ResponseEntity<ErrorResponse> handleEnrollmentStatusBadRequestException(
+      EnrollmentStatusBadRequestException ex) {
+    ErrorResponse errorResponse = new ErrorResponse("EnrollmentStatus Bad Request",
+        ex.getMessage());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+  }
+
   @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity<ErrorResponse> handleConstraintViolationException(
       ConstraintViolationException ex) {
