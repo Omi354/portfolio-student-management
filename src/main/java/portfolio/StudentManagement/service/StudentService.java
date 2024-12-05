@@ -180,17 +180,17 @@ public class StudentService {
 
     Status currentStatus = matchingEnrollmentStatuses.getLast().getStatus();
     Map<Status, Integer> mapForCompareStatus = Map.of(
-        Status.PENDING, 1,
-        Status.APPROVED, 2,
-        Status.IN_PROGRESS, 3,
-        Status.COMPLETED, 4
+        Status.仮申込, 1,
+        Status.本申込, 2,
+        Status.受講中, 3,
+        Status.受講終了, 4
     );
     Integer receivedStatusNumber = mapForCompareStatus.get(receivedStatus);
     Integer currentStatusNumber = mapForCompareStatus.get(currentStatus);
 
     if (currentStatusNumber >= receivedStatusNumber) {
       throw new EnrollmentStatusBadRequestException(
-          "ステータスを前に戻すことは出来ません。現在のステータス: " + currentStatus.getJapanese());
+          "ステータスを前に戻すことは出来ません。現在のステータス: " + currentStatus);
     }
   }
 

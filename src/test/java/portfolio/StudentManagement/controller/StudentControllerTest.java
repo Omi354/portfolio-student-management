@@ -130,7 +130,7 @@ class StudentControllerTest {
                     {
                         "courseName": "デザインコース",
                         "enrollmentStatus:": {
-                          "status": "PENDING"
+                          "status": "仮申込"
                         }
                     }
                 ]
@@ -166,7 +166,7 @@ class StudentControllerTest {
                     {
                         "courseName": "",
                         "enrollmentStatus:": {
-                          "status": "PENDING"
+                          "status": "仮申込"
                         }
                     }
                 ]
@@ -400,7 +400,7 @@ class StudentControllerTest {
     String body = """
         {
           "studentCourseId": "6d96a6g0-6666-6666-6666-666666666666",
-          "status": "COMPLETED"
+          "status": "受講終了"
         }
         """;
 
@@ -423,7 +423,7 @@ class StudentControllerTest {
     String body = """
         {
           "studentCourseId": "6d96a6g0-6666-6666-6666-666666666666",
-          "status": "COMPLETED"
+          "status": "受講終了"
         }
         """;
 
@@ -451,7 +451,7 @@ class StudentControllerTest {
     String body = """
         {
           "studentCourseId": "6d96a6g0-6666-6666-6666-666666666666",
-          "status": "COMPLETED"
+          "status": "受講終了"
         }
         """;
 

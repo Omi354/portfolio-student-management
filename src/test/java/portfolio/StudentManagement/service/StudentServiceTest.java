@@ -132,7 +132,7 @@ class StudentServiceTest {
     Student mockStudent = new Student.StudentBuilder(fullName, email, city, age)
         .gender(gender).kana(kana).nickName(nickName).build();
 
-    EnrollmentStatus mockStatus = EnrollmentStatus.builder().status(Status.PENDING).build();
+    EnrollmentStatus mockStatus = EnrollmentStatus.builder().status(Status.仮申込).build();
 
     String studentId = mockStudent.getId();
     StudentCourse mockStudentCourse = new StudentCourseBuilder(studentId, "Javaフルコース")
@@ -173,7 +173,7 @@ class StudentServiceTest {
     assertThat(actual.getStudentCourseList().getFirst().getEnrollmentStatus().getId())
         .isNotBlank();
     assertThat(actual.getStudentCourseList().getFirst().getEnrollmentStatus().getStatus())
-        .isEqualTo(Status.PENDING);
+        .isEqualTo(Status.仮申込);
     assertThat(actual.getStudentCourseList().getFirst().getEnrollmentStatus().getCreatedAt())
         .isInstanceOf(LocalDateTime.class);
 
@@ -510,12 +510,12 @@ class StudentServiceTest {
     String studentCourseId = UUID.randomUUID().toString();
 
     EnrollmentStatus enrollmentStatus = EnrollmentStatus.builder()
-        .studentCourseId(studentCourseId).status(Status.IN_PROGRESS)
+        .studentCourseId(studentCourseId).status(Status.受講中)
         .build();
 
     List<EnrollmentStatus> mockStatusList = List.of(EnrollmentStatus.builder()
         .id(UUID.randomUUID().toString()).studentCourseId(studentCourseId)
-        .status(Status.APPROVED).createdAt(LocalDateTime.now()).build()
+        .status(Status.本申込).createdAt(LocalDateTime.now()).build()
     );
 
     Mockito.when(enrollmentStatusRepository.selectAllEnrollmentStatus()
@@ -539,7 +539,7 @@ class StudentServiceTest {
     String studentCourseId = UUID.randomUUID().toString();
 
     EnrollmentStatus enrollmentStatus = EnrollmentStatus.builder()
-        .studentCourseId(studentCourseId).status(Status.IN_PROGRESS)
+        .studentCourseId(studentCourseId).status(Status.受講中)
         .build();
 
     // 実行と検証
@@ -559,12 +559,12 @@ class StudentServiceTest {
     String studentCourseId = UUID.randomUUID().toString();
 
     EnrollmentStatus enrollmentStatus = EnrollmentStatus.builder()
-        .studentCourseId(studentCourseId).status(Status.IN_PROGRESS)
+        .studentCourseId(studentCourseId).status(Status.受講中)
         .build();
 
     List<EnrollmentStatus> mockStatusList = List.of(EnrollmentStatus.builder()
         .id(UUID.randomUUID().toString()).studentCourseId(studentCourseId)
-        .status(Status.COMPLETED).createdAt(LocalDateTime.now()).build()
+        .status(Status.受講終了).createdAt(LocalDateTime.now()).build()
     );
 
     Mockito.when(enrollmentStatusRepository.selectAllEnrollmentStatus()
@@ -577,7 +577,7 @@ class StudentServiceTest {
     assertThatThrownBy(() -> sut.updateEnrollmentStatus(enrollmentStatus))
         .isInstanceOf(EnrollmentStatusBadRequestException.class)
         .hasMessageContaining("ステータスを前に戻すことは出来ません。現在のステータス: "
-            + mockStatusList.getLast().getStatus().getJapanese());
+            + mockStatusList.getLast().getStatus());
 
     // 検証
     Mockito.verify(enrollmentStatusRepository, Mockito.times(0))

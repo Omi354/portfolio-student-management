@@ -115,71 +115,71 @@ class StudentCourseRepositoryTest {
   private static Stream<StudentCourse> provideExistingStudentCourses() {
     EnrollmentStatus status1 = new EnrollmentStatus("6d96a6g0-6666-7b20-8000-000000000014",
         "6d96a6g0-6666-6666-6666-666666666666",
-        Status.valueOf("IN_PROGRESS"), LocalDateTime.parse("2024-01-12T09:00:00"));
+        Status.valueOf("受講中"), LocalDateTime.parse("2024-01-12T09:00:00"));
 
     EnrollmentStatus status2 = new EnrollmentStatus("7d97b7h0-7777-7b20-8000-000000000002",
         "7d97b7h0-7777-7777-7777-777777777777",
-        Status.valueOf("APPROVED"), LocalDateTime.parse("2024-07-01T09:00:00")
+        Status.valueOf("本申込"), LocalDateTime.parse("2024-07-01T09:00:00")
     );
 
     EnrollmentStatus status3 = new EnrollmentStatus(
         "8d98c8i0-8888-7b20-8000-000000000003",
         "8d98c8i0-8888-8888-8888-888888888888",
-        Status.valueOf("IN_PROGRESS"), LocalDateTime.parse("2024-01-01T09:00:00")
+        Status.valueOf("受講中"), LocalDateTime.parse("2024-01-01T09:00:00")
     );
 
     EnrollmentStatus status4 = new EnrollmentStatus(
         "9d99d9j0-9999-7b20-8000-000000000004",
         "9d99d9j0-9999-9999-9999-999999999999",
-        Status.valueOf("PENDING"), LocalDateTime.parse("2024-07-01T09:00:00")
+        Status.valueOf("仮申込"), LocalDateTime.parse("2024-07-01T09:00:00")
     );
 
     EnrollmentStatus status5 = new EnrollmentStatus(
         "ad9ae9k0-aaaa-7b20-8000-000000000005",
         "ad9ae9k0-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-        Status.valueOf("APPROVED"), LocalDateTime.parse("2024-01-01T09:00:00")
+        Status.valueOf("本申込"), LocalDateTime.parse("2024-01-01T09:00:00")
     );
 
     EnrollmentStatus status6 = new EnrollmentStatus(
         "bd9bf9l0-bbbb-7b20-8000-000000000015",
         "bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
-        Status.valueOf("COMPLETED"), LocalDateTime.parse("2024-12-01T09:00:00")
+        Status.valueOf("受講終了"), LocalDateTime.parse("2024-12-01T09:00:00")
     );
 
     EnrollmentStatus status7 = new EnrollmentStatus(
         "cd9cg9m0-cccc-7b20-8000-000000000007",
         "cd9cg9m0-cccc-cccc-cccc-cccccccccccc",
-        Status.valueOf("PENDING"), LocalDateTime.parse("2024-01-01T09:00:00")
+        Status.valueOf("仮申込"), LocalDateTime.parse("2024-01-01T09:00:00")
     );
 
     EnrollmentStatus status8 = new EnrollmentStatus(
         "dd9dh9n0-dddd-7b20-8000-000000000008",
         "dd9dh9n0-dddd-dddd-dddd-dddddddddddd",
-        Status.valueOf("IN_PROGRESS"), LocalDateTime.parse("2024-07-01T09:00:00")
+        Status.valueOf("受講中"), LocalDateTime.parse("2024-07-01T09:00:00")
     );
 
     EnrollmentStatus status9 = new EnrollmentStatus(
         "ed9ei9o0-eeee-7b20-8000-000000000009",
         "ed9ei9o0-eeee-eeee-eeee-eeeeeeeeeeee",
-        Status.valueOf("APPROVED"), LocalDateTime.parse("2024-01-01T09:00:00")
+        Status.valueOf("本申込"), LocalDateTime.parse("2024-01-01T09:00:00")
     );
 
     EnrollmentStatus status10 = new EnrollmentStatus(
         "fd9fj9p0-ffff-7b20-8000-000000000010",
         "fd9fj9p0-ffff-ffff-ffff-ffffffffffff",
-        Status.valueOf("PENDING"), LocalDateTime.parse("2024-07-01T09:00:00")
+        Status.valueOf("仮申込"), LocalDateTime.parse("2024-07-01T09:00:00")
     );
 
     EnrollmentStatus status11 = new EnrollmentStatus(
         "gd9gi9q0-gggg-7b20-8000-000000000011",
         "gd9gi9q0-gggg-gggg-gggg-gggggggggggg",
-        Status.valueOf("IN_PROGRESS"), LocalDateTime.parse("2023-01-01T09:00:00")
+        Status.valueOf("受講中"), LocalDateTime.parse("2023-01-01T09:00:00")
     );
 
     EnrollmentStatus status12 = new EnrollmentStatus(
         "hd9hj9r0-hhhh-7b20-8000-000000000012",
         "hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh",
-        Status.valueOf("COMPLETED"), LocalDateTime.parse("2023-07-01T09:00:00")
+        Status.valueOf("受講終了"), LocalDateTime.parse("2023-07-01T09:00:00")
     );
 
     return Stream.of(

@@ -19,18 +19,9 @@ public class EnrollmentStatus {
   private Status status;
   private LocalDateTime createdAt;
 
-  @Getter
   public enum Status {
-    PENDING("仮申込"),
-    APPROVED("本申込"),
-    IN_PROGRESS("受講中"),
-    COMPLETED("受講修了");
+    仮申込, 本申込, 受講中, 受講終了;
 
-    private final String japanese;
-
-    Status(String japanese) {
-      this.japanese = japanese;
-    }
   }
 
   @Override
