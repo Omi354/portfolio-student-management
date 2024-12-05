@@ -15,6 +15,7 @@ import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.EnrollmentStatusNotFoundException;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.repository.EnrollmentStatusRepository;
@@ -143,6 +144,29 @@ public class StudentService {
     // リクエストとして受け取った受講生情報・受講生コース情報とDBに登録されている受講生・受講生コース情報に差異がある場合に更新処理を実行します
     updateStudentIfModified(receivedStudent, currentStudent);
     updateStudentCourseIfModified(receivedStudentCourseList, currentStudentCourseList);
+  }
+
+
+  public void updateStatus(EnrollmentStatus receivedEnrollmentStatus)
+      throws EnrollmentStatusNotFoundException {
+    String id = receivedEnrollmentStatus.getId();
+    String studentCourseId = receivedEnrollmentStatus.getStudentCourseId();
+    Status status = receivedEnrollmentStatus.getStatus();
+
+    EnrollmentStatus newEnrollmentStatus = EnrollmentStatus.builder()
+        .id(id).studentCourseId(studentCourseId).status(status).createdAt(LocalDateTime.now())
+        .build();
+
+    List<EnrollmentStatus> matchingEnrollmentStatuses = enrollmentStatusRepository.selectAllEnrollmentStatus()
+        .stream()
+        .filter(enrollmentStatus -> enrollmentStatus.getId().equals(id))
+        .toList();
+
+    if (matchingEnrollmentStatuses.isEmpty()) {
+      throw new EnrollmentStatusNotFoundException();
+    }
+
+    enrollmentStatusRepository.createEnrollmentStatus(newEnrollmentStatus);
   }
 
   /**
