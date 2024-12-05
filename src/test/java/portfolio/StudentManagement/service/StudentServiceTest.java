@@ -15,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import portfolio.StudentManagement.controller.converter.StudentConverter;
+import portfolio.StudentManagement.data.EnrollmentStatus;
+import portfolio.StudentManagement.data.EnrollmentStatus.Status;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.data.StudentCourse;
@@ -116,20 +118,28 @@ class StudentServiceTest {
   @Test
   void 受講生登録_リクエストボディから必要な情報を取得しStudentRepositoryとStudentCourseRepositoryの処理が適切に呼び出されていること() {
     // 準備
-    Student mockStudent = new Student.StudentBuilder(
-        "田中太郎", "taro@test.com", "千葉県市原市", 24).kana("タナカタロウ").nickName("たろ")
-        .gender(
-            Gender.valueOf("Male")).build();
-    String studentId = mockStudent.getId();
+    String fullName = "田中太郎";
+    String kana = "タナカタロウ";
+    String nickName = "たろ";
+    int age = 22;
+    String email = "taro@test.com";
+    String city = "千葉県市原市";
+    Gender gender = Gender.Male;
 
-    StudentCourse mockStudentCourse = new StudentCourseBuilder(studentId, "Javaフルコース").build();
-    List<StudentCourse> mockStudentCourseList = List.of(
-        mockStudentCourse);
+    Student mockStudent = new Student.StudentBuilder(fullName, email, city, age)
+        .gender(gender).kana(kana).nickName(nickName).build();
+
+    EnrollmentStatus mockStatus = EnrollmentStatus.builder().status(Status.PENDING).build();
+
+    String studentId = mockStudent.getId();
+    StudentCourse mockStudentCourse = new StudentCourseBuilder(studentId, "Javaフルコース")
+        .enrollmentStatus(mockStatus).build();
+    List<StudentCourse> mockStudentCourseList = List.of(mockStudentCourse);
     StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
 
     ArgumentCaptor<Student> studentCaptor = ArgumentCaptor.forClass(Student.class);
-    ArgumentCaptor<StudentCourse> courseCaptor = ArgumentCaptor.forClass(
-        StudentCourse.class);
+    ArgumentCaptor<StudentCourse> courseCaptor = ArgumentCaptor.forClass(StudentCourse.class);
+    ArgumentCaptor<EnrollmentStatus> statusCaptor = ArgumentCaptor.forClass(EnrollmentStatus.class);
 
     // 実行
     StudentDetail actual = sut.registerStudent(mockstudentDetail);
@@ -139,20 +149,31 @@ class StudentServiceTest {
         .createStudent(studentCaptor.capture());
     Mockito.verify(studentCourseRepository, Mockito.times(1))
         .createStudentCourse(courseCaptor.capture());
+    Mockito.verify(enrollmentStatusRepository, Mockito.times(1))
+        .createEnrollmentStatus(statusCaptor.capture());
 
     assertThat(actual.getStudent().getId()).isNotBlank();
-    assertThat(actual.getStudent().getFullName()).isEqualTo("田中太郎");
-    assertThat(actual.getStudent().getEmail()).isEqualTo("taro@test.com");
-    assertThat(actual.getStudent().getCity()).isEqualTo("千葉県市原市");
-    assertThat(actual.getStudent().getAge()).isEqualTo(24);
-    assertThat(actual.getStudent().getKana()).isEqualTo("タナカタロウ");
-    assertThat(actual.getStudent().getNickName()).isEqualTo("たろ");
-    assertThat(actual.getStudent().getGender()).isEqualTo(Gender.valueOf("Male"));
+    assertThat(actual.getStudent().getFullName()).isEqualTo(fullName);
+    assertThat(actual.getStudent().getEmail()).isEqualTo(email);
+    assertThat(actual.getStudent().getCity()).isEqualTo(city);
+    assertThat(actual.getStudent().getAge()).isEqualTo(age);
+    assertThat(actual.getStudent().getKana()).isEqualTo(kana);
+    assertThat(actual.getStudent().getNickName()).isEqualTo(nickName);
+    assertThat(actual.getStudent().getGender()).isEqualTo(Gender.Male);
     assertThat(actual.getStudentCourseList().getFirst().getId()).isNotBlank();
     assertThat(actual.getStudentCourseList().getFirst().getStudentId()).isEqualTo(
         actual.getStudent().getId());
     assertThat(actual.getStudentCourseList().getFirst().getCourseName()).isEqualTo(
         "Javaフルコース");
+    assertThat(actual.getStudentCourseList().getFirst().getEnrollmentStatus().getStudentCourseId())
+        .isNotBlank();
+    assertThat(actual.getStudentCourseList().getFirst().getEnrollmentStatus().getId())
+        .isNotBlank();
+    assertThat(actual.getStudentCourseList().getFirst().getEnrollmentStatus().getStatus())
+        .isEqualTo(Status.PENDING);
+    assertThat(actual.getStudentCourseList().getFirst().getEnrollmentStatus().getCreatedAt())
+        .isInstanceOf(LocalDateTime.class);
+    
   }
 
   @Test
