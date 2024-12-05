@@ -125,7 +125,10 @@ class StudentControllerTest {
                 },
                 "studentCourseList": [
                     {
-                        "courseName": "デザインコース"
+                        "courseName": "デザインコース",
+                        "enrollmentStatus:": {
+                          "status": "PENDING"
+                        }
                     }
                 ]
             }
@@ -158,7 +161,10 @@ class StudentControllerTest {
                 },
                 "studentCourseList": [
                     {
-                        "courseName": ""
+                        "courseName": "",
+                        "enrollmentStatus:": {
+                          "status": "PENDING"
+                        }
                     }
                 ]
             }
