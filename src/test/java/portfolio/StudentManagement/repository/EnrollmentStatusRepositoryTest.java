@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import portfolio.StudentManagement.data.EnrollmentStatus;
@@ -30,8 +32,30 @@ class EnrollmentStatusRepositoryTest {
         .hasSize(12)
         .usingRecursiveFieldByFieldElementComparator()
         .isEqualTo(expected);
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideNewEnrollmentStatus")
+  void 受講生コース情報登録_渡されたStudentCourseオブジェクトのレコードがDBにINSERTされること(
+      EnrollmentStatus enrollmentStatus) {
+
+    // 準備
+    int recordCountBefore = sut.selectAllEnrollmentStatus().size();
+
+    // 実行
+    sut.createEnrollmentStatus(enrollmentStatus);
+    int recordCountAfter = sut.selectAllEnrollmentStatus().size();
+    EnrollmentStatus actual = sut.selectAllEnrollmentStatus().getLast();
+
+    // 検証
+    assertThat(recordCountAfter).isEqualTo(recordCountBefore + 1);
+    assertThat(actual)
+        .usingRecursiveComparison()
+        .isEqualTo(enrollmentStatus);
+
 
   }
+
 
   private Stream<EnrollmentStatus> provideExistingStatusList() {
     return Stream.of(
@@ -106,6 +130,47 @@ class EnrollmentStatusRepositoryTest {
             .studentCourseId("hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh")
             .status(Status.COMPLETED)
             .createdAt(LocalDateTime.parse("2023-07-01T09:00:00"))
+            .build()
+    );
+  }
+
+  private static Stream<EnrollmentStatus> provideNewEnrollmentStatus() {
+    return Stream.of(
+        EnrollmentStatus.builder()
+            .id("1a1a1a1a-1111-7b20-8000-000000000013") // 新しいユニークなID
+            .studentCourseId("6d96a6g0-6666-6666-6666-666666666666") // 既存のStudentCourseId
+            .status(Status.IN_PROGRESS) // 適切なステータス
+            .createdAt(LocalDateTime.parse("2024-03-01T10:00:00"))
+            .build(),
+        EnrollmentStatus.builder()
+            .id("2b2b2b2b-2222-7b20-8000-000000000014") // 新しいユニークなID
+            .studentCourseId("7d97b7h0-7777-7777-7777-777777777777") // 既存のStudentCourseId
+            .status(Status.PENDING)
+            .createdAt(LocalDateTime.parse("2024-06-01T11:00:00"))
+            .build(),
+        EnrollmentStatus.builder()
+            .id("3c3c3c3c-3333-7b20-8000-000000000015") // 新しいユニークなID
+            .studentCourseId("8d98c8i0-8888-8888-8888-888888888888") // 既存のStudentCourseId
+            .status(Status.APPROVED)
+            .createdAt(LocalDateTime.parse("2024-09-01T12:00:00"))
+            .build(),
+        EnrollmentStatus.builder()
+            .id("4d4d4d4d-4444-7b20-8000-000000000016") // 新しいユニークなID
+            .studentCourseId("ad9ae9k0-aaaa-aaaa-aaaa-aaaaaaaaaaaa") // 既存のStudentCourseId
+            .status(Status.COMPLETED)
+            .createdAt(LocalDateTime.parse("2023-05-01T08:00:00"))
+            .build(),
+        EnrollmentStatus.builder()
+            .id("5e5e5e5e-5555-7b20-8000-000000000017") // 新しいユニークなID
+            .studentCourseId("bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb") // 既存のStudentCourseId
+            .status(Status.IN_PROGRESS)
+            .createdAt(LocalDateTime.parse("2024-02-01T13:00:00"))
+            .build(),
+        EnrollmentStatus.builder()
+            .id("6f6f6f6f-6666-7b20-8000-000000000018") // 新しいユニークなID
+            .studentCourseId("cd9cg9m0-cccc-cccc-cccc-cccccccccccc") // 既存のStudentCourseId
+            .status(Status.PENDING)
+            .createdAt(LocalDateTime.parse("2024-04-01T14:00:00"))
             .build()
     );
   }

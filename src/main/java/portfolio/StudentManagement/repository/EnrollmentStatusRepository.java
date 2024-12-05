@@ -12,7 +12,7 @@ public interface EnrollmentStatusRepository {
   @Select("SELECT * FROM enrollment_statuses")
   List<EnrollmentStatus> selectAllEnrollmentStatus();
 
-  @Insert("")
+  @Insert("INSERT INTO enrollment_statuses (id, student_course_id, status, created_at) VALUES (#{id}, #{studentCourseId}, #{status}, #{createdAt}) ")
   void createEnrollmentStatus(EnrollmentStatus enrollmentStatus);
 
 }
