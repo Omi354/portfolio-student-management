@@ -17,6 +17,7 @@ import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
+import portfolio.StudentManagement.repository.EnrollmentStatusRepository;
 import portfolio.StudentManagement.repository.StudentCourseRepository;
 import portfolio.StudentManagement.repository.StudentRepository;
 
@@ -28,13 +29,17 @@ public class StudentService {
 
   private StudentRepository studentRepository;
   private StudentCourseRepository studentCourseRepository;
+  private EnrollmentStatusRepository enrollmentStatusRepository;
   private StudentConverter converter;
 
   @Autowired
   public StudentService(StudentRepository studentRepository,
-      StudentCourseRepository studentCourseRepository, StudentConverter converter) {
+      StudentCourseRepository studentCourseRepository,
+      EnrollmentStatusRepository enrollmentStatusRepository,
+      StudentConverter converter) {
     this.studentRepository = studentRepository;
     this.studentCourseRepository = studentCourseRepository;
+    this.enrollmentStatusRepository = enrollmentStatusRepository;
     this.converter = converter;
   }
 
@@ -90,19 +95,24 @@ public class StudentService {
     Student newStudent = new Student.StudentBuilder(fullName, email, city, age)
         .kana(kana).nickName(nickName).gender(gender).build();
 
-    String studentId = newStudent.getId();
-    String courseName = receivedStudentCourse.getCourseName();
-    StudentCourse newStudentCourse = new StudentCourse
-        .StudentCourseBuilder(studentId, courseName).build();
+    String courseId = UUID.randomUUID().toString();
+    Status status = receivedEnrollmentStatus.getStatus();
 
     EnrollmentStatus newEnrollmentStatus = EnrollmentStatus.builder()
         .id(UUID.randomUUID().toString())
-        .studentCourseId(newStudentCourse.getId())
-        .createdAt(LocalDateTime.now()).status(Status.PENDING)
+        .studentCourseId(courseId)
+        .createdAt(LocalDateTime.now()).status(status)
         .build();
+
+    String studentId = newStudent.getId();
+    String courseName = receivedStudentCourse.getCourseName();
+    StudentCourse newStudentCourse = new StudentCourse
+        .StudentCourseBuilder(studentId, courseName).enrollmentStatus(newEnrollmentStatus)
+        .buildWithId(courseId);
 
     studentRepository.createStudent(newStudent);
     studentCourseRepository.createStudentCourse(newStudentCourse);
+    enrollmentStatusRepository.createEnrollmentStatus(newEnrollmentStatus);
     return new StudentDetail(newStudent, List.of(newStudentCourse));
   }
 

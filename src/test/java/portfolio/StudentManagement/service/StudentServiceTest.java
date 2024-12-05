@@ -22,6 +22,7 @@ import portfolio.StudentManagement.data.StudentCourse.StudentCourseBuilder;
 import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
+import portfolio.StudentManagement.repository.EnrollmentStatusRepository;
 import portfolio.StudentManagement.repository.StudentCourseRepository;
 import portfolio.StudentManagement.repository.StudentRepository;
 
@@ -35,6 +36,9 @@ class StudentServiceTest {
   StudentCourseRepository studentCourseRepository;
 
   @Mock
+  EnrollmentStatusRepository enrollmentStatusRepository;
+
+  @Mock
   StudentConverter converter;
 
   @Mock
@@ -42,7 +46,8 @@ class StudentServiceTest {
 
   @BeforeEach
   void before() {
-    sut = new StudentService(studentRepository, studentCourseRepository, converter);
+    sut = new StudentService(studentRepository, studentCourseRepository, enrollmentStatusRepository,
+        converter);
   }
 
   @Test
