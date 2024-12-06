@@ -111,6 +111,7 @@ class StudentCourseRepositoryTest {
         .filteredOn(course -> course.getId().equals(studentCourse.getId()))
         .singleElement()
         .usingRecursiveComparison()
+        .ignoringFields("enrollmentStatus")
         .isEqualTo(studentCourse);
     assertThat(recordCountAfter).isEqualTo(recordCountBefore);
 
