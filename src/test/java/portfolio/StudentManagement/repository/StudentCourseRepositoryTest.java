@@ -21,6 +21,9 @@ class StudentCourseRepositoryTest {
   @Autowired
   StudentCourseRepository sut;
 
+  @Autowired
+  EnrollmentStatusRepository enrollmentStatusRepository;
+
   @Test
   void 受講生コース情報全件検索_受講生コース情報を全件取得できること() {
     // 準備
@@ -75,9 +78,11 @@ class StudentCourseRepositoryTest {
     // 準備
     String studentId = studentCourse.getStudentId();
     int recordCountBefore = sut.selectAllCourseList().size();
+    EnrollmentStatus enrollmentStatus = studentCourse.getEnrollmentStatus();
 
     // 実行
     sut.createStudentCourse(studentCourse);
+    enrollmentStatusRepository.createEnrollmentStatus(enrollmentStatus);
     StudentCourse actual = sut.selectCourseListByStudentId(studentId).getLast();
     int recordCountAfter = sut.selectAllCourseList().size();
 
@@ -258,40 +263,70 @@ class StudentCourseRepositoryTest {
     );
   }
 
-
   public static Stream<StudentCourse> provideNewStudentCourses() {
     return Stream.of(
         new StudentCourse.StudentCourseBuilder("1c91a1b0-1111-1111-1111-111111111111",
             "Javaフルコース")
             .startDate(LocalDateTime.of(2024, 1, 10, 9, 0, 0, 123456000))
             .endDate(LocalDateTime.of(2024, 6, 30, 17, 0, 0, 123456000))
-            .build(),
+            .enrollmentStatus(new EnrollmentStatus(
+                "6f96a6g0-6666-7b20-8000-000000000014",
+                "1b1c1d00-1111-2222-3333-444444444444",
+                Status.受講中,
+                LocalDateTime.parse("2024-01-12T09:00:00")
+            ))
+            .buildWithId("1b1c1d00-1111-2222-3333-444444444444"),
 
         new StudentCourse.StudentCourseBuilder("2c92b2c0-2222-2222-2222-222222222222",
             "AWSフルコース")
             .startDate(LocalDateTime.of(2024, 7, 1, 9, 0, 0, 987654000))
             .endDate(LocalDateTime.of(2024, 12, 31, 17, 0, 0, 987654000))
-            .build(),
+            .enrollmentStatus(new EnrollmentStatus(
+                "7f96b7g0-7777-7b20-8000-000000000014",
+                "2b2c2d00-2222-3333-4444-555555555555",
+                Status.本申込,
+                LocalDateTime.parse("2024-07-01T09:00:00")
+            ))
+            .buildWithId("2b2c2d00-2222-3333-4444-555555555555"),
 
         new StudentCourse.StudentCourseBuilder("3c93c3d0-3333-3333-3333-333333333333",
             "デザインコース")
             .startDate(LocalDateTime.of(2024, 1, 10, 9, 0, 0, 111111000))
             .endDate(LocalDateTime.of(2024, 6, 30, 17, 0, 0, 111111000))
-            .build(),
+            .enrollmentStatus(new EnrollmentStatus(
+                "8f96c8g0-8888-7b20-8000-000000000014",
+                "3b3c3d00-3333-4444-5555-666666666666",
+                Status.仮申込,
+                LocalDateTime.parse("2024-01-10T09:00:00")
+            ))
+            .buildWithId("3b3c3d00-3333-4444-5555-666666666666"),
 
         new StudentCourse.StudentCourseBuilder("4c94d4e0-4444-4444-4444-444444444444",
             "データサイエンスコース")
             .startDate(LocalDateTime.of(2024, 7, 1, 9, 0, 0, 222222000))
             .endDate(LocalDateTime.of(2025, 1, 31, 17, 0, 0, 222222000))
-            .build(),
+            .enrollmentStatus(new EnrollmentStatus(
+                "9f96d9g0-9999-7b20-8000-000000000014",
+                "4b4c4d00-4444-5555-6666-777777777777",
+                Status.受講中,
+                LocalDateTime.parse("2024-07-01T09:00:00")
+            ))
+            .buildWithId("4b4c4d00-4444-5555-6666-777777777777"),
 
         new StudentCourse.StudentCourseBuilder("5c95e5f0-5555-5555-5555-555555555555",
             "機械学習基礎コース")
             .startDate(LocalDateTime.of(2024, 3, 1, 9, 0, 0, 333333000))
             .endDate(LocalDateTime.of(2024, 9, 30, 17, 0, 0, 333333000))
-            .build()
+            .enrollmentStatus(new EnrollmentStatus(
+                "af96e9g0-aaaa-7b20-8000-000000000014",
+                "5b5c5d00-5555-6666-7777-888888888888",
+                Status.受講中,
+                LocalDateTime.parse("2024-03-01T09:00:00")
+            ))
+            .buildWithId("5b5c5d00-5555-6666-7777-888888888888")
     );
   }
+
 
   public static Stream<StudentCourse> provideUpdatedStudentCourses() {
     return Stream.of(

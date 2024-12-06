@@ -29,7 +29,7 @@ class EnrollmentStatusRepositoryTest {
 
     // 検証
     assertThat(actual)
-        .hasSize(12)
+        .hasSize(15)
         .usingRecursiveFieldByFieldElementComparator()
         .isEqualTo(expected);
   }
@@ -66,6 +66,18 @@ class EnrollmentStatusRepositoryTest {
             .createdAt(LocalDateTime.parse("2024-01-01T09:00:00"))
             .build(),
         EnrollmentStatus.builder()
+            .id("6d96a6g0-6666-7b20-8000-000000000013")
+            .studentCourseId("6d96a6g0-6666-6666-6666-666666666666")
+            .status(Status.本申込)
+            .createdAt(LocalDateTime.parse("2024-01-11T09:00:00"))
+            .build(),
+        EnrollmentStatus.builder()
+            .id("6d96a6g0-6666-7b20-8000-000000000014")
+            .studentCourseId("6d96a6g0-6666-6666-6666-666666666666")
+            .status(Status.受講中)
+            .createdAt(LocalDateTime.parse("2024-01-12T09:00:00"))
+            .build(),
+        EnrollmentStatus.builder()
             .id("7d97b7h0-7777-7b20-8000-000000000002")
             .studentCourseId("7d97b7h0-7777-7777-7777-777777777777")
             .status(Status.本申込)
@@ -94,6 +106,12 @@ class EnrollmentStatusRepositoryTest {
             .studentCourseId("bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb")
             .status(Status.受講中)
             .createdAt(LocalDateTime.parse("2024-07-01T09:00:00"))
+            .build(),
+        EnrollmentStatus.builder()
+            .id("bd9bf9l0-bbbb-7b20-8000-000000000015")
+            .studentCourseId("bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb")
+            .status(Status.受講終了)
+            .createdAt(LocalDateTime.parse("2024-12-01T09:00:00"))
             .build(),
         EnrollmentStatus.builder()
             .id("cd9cg9m0-cccc-7b20-8000-000000000007")
@@ -133,6 +151,7 @@ class EnrollmentStatusRepositoryTest {
             .build()
     );
   }
+
 
   private static Stream<EnrollmentStatus> provideNewEnrollmentStatus() {
     return Stream.of(
