@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import portfolio.StudentManagement.data.EnrollmentStatus;
+import portfolio.StudentManagement.data.EnrollmentStatus.Status;
 import portfolio.StudentManagement.data.ErrorResponse;
 import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.exception.EnrollmentStatusBadRequestException;
@@ -64,6 +66,11 @@ public class StudentController {
   @GetMapping("/studentList")
   public List<StudentDetail> getStudentList() {
     return service.getAllStudentDetailList();
+  }
+
+  @GetMapping("/studentListWithStatus")
+  public List<StudentDetail> getStudentDetailListByStatus(@RequestParam Status status) {
+    return service.getStudentDetailListByStatus(status);
   }
 
   /**
@@ -124,7 +131,6 @@ public class StudentController {
    * @param studentDetail 受講生詳細
    * @return 処理結果
    */
-
   @Operation(
       summary = "受講生登録",
       description = "受講生を登録します",

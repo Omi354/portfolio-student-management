@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import portfolio.StudentManagement.data.EnrollmentStatus.Status;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.data.StudentCourse;
@@ -64,6 +66,22 @@ class StudentControllerTest {
     // 検証
     verify(service, times(1)).getAllStudentDetailList();
   }
+
+  @ParameterizedTest
+  @EnumSource(Status.class)
+  void 受講生詳細申込状況検索_適切なリクエストパラメーターが渡された場合_serviceが呼び出され200番と空のリストが返ること(
+      Status status)
+      throws Exception {
+    // 実行と検証
+    mockMvc.perform(get("/studentListWithStatus")
+            .param("status", status.name()))
+        .andExpect(status().isOk())
+        .andExpect(content().json("[]"));
+
+    // 検証
+    verify(service, times(1)).getStudentDetailListByStatus(status);
+  }
+
 
   @Test
   void 受講生検索_存在するIDが渡された場合_受講生検索が実行され200が返ってくること()
