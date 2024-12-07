@@ -76,8 +76,45 @@
     FROM students_courses s
     INNER JOIN RankedStatuses r
     ON s.id = r.student_course_id
-    WHERE r.rn = 1 AND student_id = #{studentId}
+    WHERE r.rn = 1 AND s.student_id = #{studentId}
     ;
+  </select>
+
+
+  <!-- 受講生コース情報の申込状況検索 -->
+  <select id="selectCourseListWithLatestStatus"
+    parameterType="portfolio.StudentManagement.data.EnrollmentStatus$Status"
+    resultMap="StudentCourseResultMap"
+  >
+    SELECT
+    sc.id AS id,
+    sc.student_id AS student_id,
+    sc.course_name AS course_name,
+    sc.start_date AS start_date,
+    sc.end_date AS end_date,
+    es.id AS enrollment_status_id,
+    es.student_course_id AS student_course_id,
+    es.status AS status,
+    es.created_at AS created_at
+    FROM
+    students_courses sc
+    INNER JOIN
+    (
+    SELECT
+    student_course_id,
+    MAX(created_at) AS latest_created_at
+    FROM
+    enrollment_statuses
+    GROUP BY
+    student_course_id
+    ) latest_statuses
+    ON sc.id = latest_statuses.student_course_id
+    INNER JOIN
+    enrollment_statuses es
+    ON sc.id = es.student_course_id
+    AND es.created_at = latest_statuses.latest_created_at
+    WHERE
+    es.status = #{status};
   </select>
 
 

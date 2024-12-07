@@ -2,6 +2,7 @@ package portfolio.StudentManagement.repository;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
+import portfolio.StudentManagement.data.EnrollmentStatus.Status;
 import portfolio.StudentManagement.data.StudentCourse;
 
 /**
@@ -24,6 +25,8 @@ public interface StudentCourseRepository {
    * @return 受講生IDに紐づく受講生コース情報
    */
   List<StudentCourse> selectCourseListByStudentId(String studentId);
+
+  List<StudentCourse> selectCourseListWithLatestStatus(Status status);
 
   /**
    * 受講生コース情報の新規登録を行います。

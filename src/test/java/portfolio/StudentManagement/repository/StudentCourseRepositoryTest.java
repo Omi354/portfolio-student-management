@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,6 +115,26 @@ class StudentCourseRepositoryTest {
         .ignoringFields("enrollmentStatus")
         .isEqualTo(studentCourse);
     assertThat(recordCountAfter).isEqualTo(recordCountBefore);
+
+  }
+
+  @ParameterizedTest
+  @EnumSource(EnrollmentStatus.Status.class)
+  void 受講生コース申込状況検索_適切な申込状況が渡された場合_申込状況と合致するレコードが取得できること(
+      Status status) {
+
+    // 準備
+    List<StudentCourse> expected = provideExistingStudentCourses()
+        .filter(v -> v.getEnrollmentStatus().getStatus().equals(status))
+        .toList();
+
+    // 実行
+    List<StudentCourse> actual = sut.selectCourseListWithLatestStatus(status);
+
+    // 検証
+    assertThat(actual)
+        .usingRecursiveFieldByFieldElementComparator()
+        .isEqualTo(expected);
 
   }
 
