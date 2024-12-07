@@ -165,6 +165,14 @@ public class StudentService {
     enrollmentStatusRepository.createEnrollmentStatus(newEnrollmentStatus);
   }
 
+  public List<StudentDetail> getStudentDetailListByStatus(Status status) {
+    List<StudentCourse> studentCourseList = studentCourseRepository
+        .selectCourseListWithLatestStatus(status);
+    List<Student> studentList = studentCourseList.stream()
+        .map(studentCourse -> studentRepository.selectStudentById(studentCourse.getStudentId()))
+        .toList();
+    return converter.getStudentDetailsList(studentList, studentCourseList);
+  }
 
   private void verifyEnrollmentStatus(String receivedStudentCourseId, Status receivedStatus)
       throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
