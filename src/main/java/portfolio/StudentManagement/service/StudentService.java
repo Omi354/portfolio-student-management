@@ -46,6 +46,18 @@ public class StudentService {
   }
 
   /**
+   * 受講生詳細の一覧検索を行います。
+   *
+   * @return 受講生詳細一覧（全件）
+   */
+  public List<StudentDetail> getAllStudentDetailList() {
+    List<Student> studentList = studentRepository.selectAllStudentList();
+    List<StudentCourse> studentCourseList = studentCourseRepository.selectAllCourseList();
+
+    return converter.getStudentDetailsList(studentList, studentCourseList);
+  }
+
+  /**
    * 受講生検索です。 IDに紐づく任意の受講生の情報を取得したあと、その受講生に紐づく受講生コース情報を取得して設定します。
    *
    * @param id 受講生ID
@@ -63,20 +75,24 @@ public class StudentService {
   }
 
   /**
-   * 受講生詳細の一覧検索を行います。
+   * 申込状況を指定して受講生詳細を検索します。 引数に受け取った申込状況に合致する受講生コース情報リストを取得し、受講生コース情報に紐づく受講生を取得します。
    *
-   * @return 受講生詳細一覧（全件）
+   * @param status 申込状況のステータス
+   * @return 受講生詳細
    */
-  public List<StudentDetail> getAllStudentDetailList() {
-    List<Student> studentList = studentRepository.selectAllStudentList();
-    List<StudentCourse> studentCourseList = studentCourseRepository.selectAllCourseList();
-
+  public List<StudentDetail> getStudentDetailListByStatus(Status status) {
+    List<StudentCourse> studentCourseList = studentCourseRepository
+        .selectCourseListWithLatestStatus(status);
+    List<Student> studentList = studentCourseList.stream()
+        .map(studentCourse -> studentRepository.selectStudentById(studentCourse.getStudentId()))
+        .toList();
     return converter.getStudentDetailsList(studentList, studentCourseList);
   }
 
   /**
-   * 受講生情報と受講生コース情報をそれぞれ登録します。 登録前に受講生情報については、デフォルト値としてUUIDをランダム, 備考を空欄、キャンセルフラグをfalseに設定します。
+   * 受講生情報と受講生コース情報と申込状況をそれぞれ登録します。 登録前に受講生情報については、デフォルト値としてUUIDをランダム, 備考を空欄、キャンセルフラグをfalseに設定します。
    * 登録前に受講生コース情報については、デフォルト値としてUUIDをランダム、受講生IDを同時に作成される受講生情報のID、受講開始日をレコード登録日時、受講修了予定日を受講開始日から１年後に設定します。
+   * 登録前に申込状況については、デフォルト値としてUUIDをランダム、受講生コースIDを同時に作成される受講生コース情報のID、作成日を登録日時に設定します。
    *
    * @param studentDetail 受講生詳細
    * @return 新規登録された受講生詳細
@@ -148,11 +164,21 @@ public class StudentService {
   }
 
 
+  /**
+   * 申込状況を更新します。後ろに戻るようなステータス更新や適切に受講生コース情報に紐づいていない場合にはエラーを投げます。
+   * 分析に使用できるよう、受け取った申込状況オブジェクトを元に新しい申込状況オブジェクトを生成して新規登録します。
+   *
+   * @param receivedEnrollmentStatus 更新希望の申込状況オブジェクト
+   * @throws EnrollmentStatusNotFoundException   　更新対象の申込状況に紐づく受講生コース情報がない場合に投げられるエラー
+   * @throws EnrollmentStatusBadRequestException 　申込状況が後ろに戻るような場合に投げられるエラー
+   */
   public void updateEnrollmentStatus(EnrollmentStatus receivedEnrollmentStatus)
       throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
 
     String receivedStudentCourseId = receivedEnrollmentStatus.getStudentCourseId();
     Status receivedStatus = receivedEnrollmentStatus.getStatus();
+
+    verifyEnrollmentStatus(receivedEnrollmentStatus);
 
     EnrollmentStatus newEnrollmentStatus = EnrollmentStatus.builder()
         .id(UUID.randomUUID().toString()).studentCourseId(receivedStudentCourseId)
@@ -160,32 +186,37 @@ public class StudentService {
         .createdAt(LocalDateTime.now())
         .build();
 
-    verifyEnrollmentStatus(receivedStudentCourseId, receivedStatus);
-
     enrollmentStatusRepository.createEnrollmentStatus(newEnrollmentStatus);
   }
 
-  public List<StudentDetail> getStudentDetailListByStatus(Status status) {
-    List<StudentCourse> studentCourseList = studentCourseRepository
-        .selectCourseListWithLatestStatus(status);
-    List<Student> studentList = studentCourseList.stream()
-        .map(studentCourse -> studentRepository.selectStudentById(studentCourse.getStudentId()))
-        .toList();
-    return converter.getStudentDetailsList(studentList, studentCourseList);
-  }
-
-  private void verifyEnrollmentStatus(String receivedStudentCourseId, Status receivedStatus)
+  /**
+   * 更新希望の申込状況が更新可能か検証します。 与えられた申込状況に紐づく受講生コース情報がない場合にはエラーを投げます。
+   * また、申込状況は不可逆であるため、後ろに戻るような変更が渡された場合エラーを投げます。 検証に通った場合には、何も返さず、このメソッドの後続の処理が実行できます。
+   *
+   * @param receivedEnrollmentStatus 更新対象の申込状況オブジェクト
+   * @throws EnrollmentStatusNotFoundException   更新対象の申込状況に紐づく受講生コース情報がない場合に投げられるエラー
+   * @throws EnrollmentStatusBadRequestException 申込状況が後ろに戻るような場合に投げられるエラー
+   */
+  private void verifyEnrollmentStatus(EnrollmentStatus receivedEnrollmentStatus)
       throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
+
+    // 引数のEnrollmentStatusオブジェクトから受講生コース情報IDとステータスを取得
+    String receivedStudentCourseId = receivedEnrollmentStatus.getStudentCourseId();
+    Status receivedStatus = receivedEnrollmentStatus.getStatus();
+
+    // 全申込状況から受講生コース情報IDにマッチするものをリスト化
     List<EnrollmentStatus> matchingEnrollmentStatuses = enrollmentStatusRepository.selectAllEnrollmentStatus()
         .stream()
         .filter(enrollmentStatus -> enrollmentStatus.getStudentCourseId()
             .equals(receivedStudentCourseId))
         .toList();
 
+    // リストが空だった場合＝受講生コース情報IDに紐づく申込状況がない場合にエラーを投げる
     if (matchingEnrollmentStatuses.isEmpty()) {
       throw new EnrollmentStatusNotFoundException();
     }
 
+    // ステータスの不可逆チェックのためのマップを作成
     Status currentStatus = matchingEnrollmentStatuses.getLast().getStatus();
     Map<Status, Integer> mapForCompareStatus = Map.of(
         Status.仮申込, 1,
@@ -193,9 +224,12 @@ public class StudentService {
         Status.受講中, 3,
         Status.受講終了, 4
     );
+
+    // マップを元にステータスに応じた数値を定義
     Integer receivedStatusNumber = mapForCompareStatus.get(receivedStatus);
     Integer currentStatusNumber = mapForCompareStatus.get(currentStatus);
 
+    // 現在のステータスのほうが更新希望のステータスよりも進んでいる、あるいは同じ場合、エラーを投げる
     if (currentStatusNumber >= receivedStatusNumber) {
       throw new EnrollmentStatusBadRequestException(
           "ステータスを前に戻すことは出来ません。現在のステータス: " + currentStatus);
