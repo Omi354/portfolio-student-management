@@ -68,11 +68,6 @@ public class StudentController {
     return service.getAllStudentDetailList();
   }
 
-  @GetMapping("/studentListWithStatus")
-  public List<StudentDetail> getStudentDetailListByStatus(@RequestParam Status status) {
-    return service.getStudentDetailListByStatus(status);
-  }
-
   /**
    * 受講生検索です IDに紐づく任意の受講生の情報を取得します。 IDに紐づく受講生が存在しない場合エラーを発生させます。
    *
@@ -123,6 +118,17 @@ public class StudentController {
   String id)
       throws StudentNotFoundException {
     return service.getStudentDetailById(id);
+  }
+
+  /**
+   * 申込状況のステータスを指定して受講生詳細を検索します。
+   *
+   * @param status 申込状況のステータス
+   * @return 指定したステータスの受講生詳細
+   */
+  @GetMapping("/studentListWithStatus")
+  public List<StudentDetail> getStudentDetailListByStatus(@RequestParam Status status) {
+    return service.getStudentDetailListByStatus(status);
   }
 
   /**
@@ -218,6 +224,14 @@ public class StudentController {
     return ResponseEntity.ok("更新に成功しました");
   }
 
+  /**
+   * 申込状況を更新します。 後ろに戻るような更新の場合や、受講生コース情報と正しく紐づいていない場合にはエラーをなげます
+   *
+   * @param enrollmentStatus
+   * @return 処理結果
+   * @throws EnrollmentStatusNotFoundException   受講生コースと正しく紐づいていない場合の例外処理
+   * @throws EnrollmentStatusBadRequestException 後ろに戻るような更新の場合の例外処理
+   */
   @PostMapping("/updateStatus")
   public ResponseEntity<String> updateEnrollmentStatus(
       @RequestBody EnrollmentStatus enrollmentStatus)
