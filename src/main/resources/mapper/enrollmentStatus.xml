@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="portfolio.StudentManagement.repository.EnrollmentStatusRepository">
+
+  <!-- 申込状況の全件検索 -->
+  <select id="selectAllEnrollmentStatus"
+    resultType="portfolio.StudentManagement.data.EnrollmentStatus">
+    SELECT * FROM enrollment_statuses
+  </select>
+
+  <!-- 申込状況の新規登録 -->
+  <insert id="createEnrollmentStatus"
+    parameterType="portfolio.StudentManagement.data.EnrollmentStatus">
+    INSERT INTO enrollment_statuses
+    (id, student_course_id, status, created_at)
+    VALUES (#{id}, #{studentCourseId}, #{status}, #{createdAt})
+  </insert>
+
+</mapper>
