@@ -147,7 +147,7 @@ class StudentControllerTest {
                 "studentCourseList": [
                     {
                         "courseName": "デザインコース",
-                        "enrollmentStatus:": {
+                        "enrollmentStatus": {
                           "status": "仮申込"
                         }
                     }
