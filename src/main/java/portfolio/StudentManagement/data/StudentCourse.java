@@ -1,6 +1,7 @@
 package portfolio.StudentManagement.data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -29,6 +30,7 @@ public class StudentCourse {
   @Schema(description = "受講修了予定日", example = "2025-01-10T00:00:00")
   private LocalDateTime endDate;
 
+  @Valid
   @Schema(description = "コース申込状況のオブジェクト")
   private EnrollmentStatus enrollmentStatus;
 

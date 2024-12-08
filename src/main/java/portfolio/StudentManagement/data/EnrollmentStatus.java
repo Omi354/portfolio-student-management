@@ -1,6 +1,7 @@
 package portfolio.StudentManagement.data;
 
 
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ public class EnrollmentStatus {
 
   private String id;
   private String studentCourseId;
+  @NotNull
   private Status status;
   private LocalDateTime createdAt;
 

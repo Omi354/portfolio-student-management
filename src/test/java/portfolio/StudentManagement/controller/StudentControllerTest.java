@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import portfolio.StudentManagement.data.EnrollmentStatus;
 import portfolio.StudentManagement.data.EnrollmentStatus.Status;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.Student.Gender;
@@ -375,41 +376,6 @@ class StudentControllerTest {
 
   }
 
-
-  @ParameterizedTest
-  @MethodSource("studentDataProvider")
-  void 受講生詳細の受講生_入力チェックが適切に動くこと(Student student,
-      String errorPlace, boolean shouldBeValid) {
-    // 実行
-    Set<ConstraintViolation<Student>> violations = validator.validate(student);
-
-    // 検証
-    if (shouldBeValid) {
-      assertThat(violations.size()).isEqualTo(0);
-    } else {
-      assertThat(violations.size()).isEqualTo(1);
-      assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals(errorPlace));
-    }
-
-  }
-
-  @ParameterizedTest
-  @MethodSource("studentCourseDataProvider")
-  void 受講生詳細の受講生コース情報_入力チェックが適切に動くこと(StudentCourse studentCourse,
-      String errorPlace, boolean shouldBeValid) {
-    // 実行
-    Set<ConstraintViolation<StudentCourse>> violations = validator.validate(studentCourse);
-
-    // 検証
-    if (shouldBeValid) {
-      assertThat(violations.size()).isEqualTo(0);
-    } else {
-      assertThat(violations.size()).isEqualTo(1);
-      assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals(errorPlace));
-    }
-
-  }
-
   @Test
   void 申込状況更新_適切なRequestBodyが送られた場合_Serviceメソッドが呼び出され200と更新できたメッセージが返ること()
       throws Exception {
@@ -492,6 +458,58 @@ class StudentControllerTest {
   }
 
 
+  @ParameterizedTest
+  @MethodSource("studentDataProvider")
+  void 受講生詳細の受講生_入力チェックが適切に動くこと(Student student,
+      String errorPlace, boolean shouldBeValid) {
+    // 実行
+    Set<ConstraintViolation<Student>> violations = validator.validate(student);
+
+    // 検証
+    if (shouldBeValid) {
+      assertThat(violations.size()).isEqualTo(0);
+    } else {
+      assertThat(violations.size()).isEqualTo(1);
+      assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals(errorPlace));
+    }
+
+  }
+
+  @ParameterizedTest
+  @MethodSource("studentCourseDataProvider")
+  void 受講生詳細の受講生コース情報_入力チェックが適切に動くこと(StudentCourse studentCourse,
+      String errorPlace, boolean shouldBeValid) {
+    // 実行
+    Set<ConstraintViolation<StudentCourse>> violations = validator.validate(studentCourse);
+
+    // 検証
+    if (shouldBeValid) {
+      assertThat(violations.size()).isEqualTo(0);
+    } else {
+      assertThat(violations.size()).isEqualTo(1);
+      assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals(errorPlace));
+    }
+
+  }
+
+  @ParameterizedTest
+  @MethodSource("enrollmentStatusDataProvider")
+  void 受講生詳細の申込状況_入力チェックが適切に動くこと(EnrollmentStatus enrollmentStatus,
+      String errorPlace, boolean shouldBeValid) {
+    // 実行
+    Set<ConstraintViolation<EnrollmentStatus>> violations = validator.validate(enrollmentStatus);
+
+    // 検証
+    if (shouldBeValid) {
+      assertThat(violations.size()).isEqualTo(0);
+    } else {
+      assertThat(violations.size()).isEqualTo(1);
+      assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals(errorPlace));
+    }
+
+  }
+
+
   static Stream<Arguments> studentDataProvider() {
     return Stream.of(
         org.junit.jupiter.params.provider.Arguments.of(
@@ -557,6 +575,21 @@ class StudentControllerTest {
                 "").startDate(LocalDateTime.now()).endDate(LocalDateTime.now().plusYears(1))
                 .build(),
             "courseName", false)
+    );
+  }
+
+  static Stream<Arguments> enrollmentStatusDataProvider() {
+    return Stream.of(
+        Arguments.of(
+            EnrollmentStatus.builder().id(UUID.randomUUID().toString())
+                .studentCourseId("6d96a6g0-6666-6666-6666-666666666666").status(Status.受講終了)
+                .createdAt(LocalDateTime.now())
+                .build(),
+            "", true),
+        Arguments.of(
+            EnrollmentStatus.builder().status(Status.受講終了).build(),
+            "", true),
+        Arguments.of(new EnrollmentStatus(), "status", false)
     );
   }
 
