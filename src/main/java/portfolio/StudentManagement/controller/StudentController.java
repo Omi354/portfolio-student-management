@@ -18,9 +18,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import portfolio.StudentManagement.data.EnrollmentStatus;
+import portfolio.StudentManagement.data.EnrollmentStatus.Status;
 import portfolio.StudentManagement.data.ErrorResponse;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.EnrollmentStatusBadRequestException;
+import portfolio.StudentManagement.exception.EnrollmentStatusNotFoundException;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.service.StudentService;
@@ -116,12 +121,22 @@ public class StudentController {
   }
 
   /**
+   * 申込状況のステータスを指定して受講生詳細を検索します。
+   *
+   * @param status 申込状況のステータス
+   * @return 指定したステータスの受講生詳細
+   */
+  @GetMapping("/studentListWithStatus")
+  public List<StudentDetail> getStudentDetailListByStatus(@RequestParam Status status) {
+    return service.getStudentDetailListByStatus(status);
+  }
+
+  /**
    * 受講生詳細を新規登録します。
    *
    * @param studentDetail 受講生詳細
    * @return 処理結果
    */
-
   @Operation(
       summary = "受講生登録",
       description = "受講生を登録します",
@@ -207,6 +222,22 @@ public class StudentController {
       throws StudentNotFoundException, StudentCourseNotFoundException {
     service.updateStudent(studentDetail);
     return ResponseEntity.ok("更新に成功しました");
+  }
+
+  /**
+   * 申込状況を更新します。 後ろに戻るような更新の場合や、受講生コース情報と正しく紐づいていない場合にはエラーをなげます
+   *
+   * @param enrollmentStatus
+   * @return 処理結果
+   * @throws EnrollmentStatusNotFoundException   受講生コースと正しく紐づいていない場合の例外処理
+   * @throws EnrollmentStatusBadRequestException 後ろに戻るような更新の場合の例外処理
+   */
+  @PostMapping("/updateStatus")
+  public ResponseEntity<String> updateEnrollmentStatus(
+      @RequestBody EnrollmentStatus enrollmentStatus)
+      throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
+    service.updateEnrollmentStatus(enrollmentStatus);
+    return ResponseEntity.ok("ステータスの更新に成功しました");
   }
 
 }

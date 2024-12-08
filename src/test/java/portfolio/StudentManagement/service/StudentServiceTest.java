@@ -2,6 +2,10 @@ package portfolio.StudentManagement.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,18 +14,25 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import portfolio.StudentManagement.controller.converter.StudentConverter;
+import portfolio.StudentManagement.data.EnrollmentStatus;
+import portfolio.StudentManagement.data.EnrollmentStatus.Status;
 import portfolio.StudentManagement.data.Student;
 import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.data.StudentCourse;
 import portfolio.StudentManagement.data.StudentCourse.StudentCourseBuilder;
 import portfolio.StudentManagement.domain.StudentDetail;
+import portfolio.StudentManagement.exception.EnrollmentStatusBadRequestException;
+import portfolio.StudentManagement.exception.EnrollmentStatusNotFoundException;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
+import portfolio.StudentManagement.repository.EnrollmentStatusRepository;
 import portfolio.StudentManagement.repository.StudentCourseRepository;
 import portfolio.StudentManagement.repository.StudentRepository;
 
@@ -35,6 +46,9 @@ class StudentServiceTest {
   StudentCourseRepository studentCourseRepository;
 
   @Mock
+  EnrollmentStatusRepository enrollmentStatusRepository;
+
+  @Mock
   StudentConverter converter;
 
   @Mock
@@ -42,7 +56,8 @@ class StudentServiceTest {
 
   @BeforeEach
   void before() {
-    sut = new StudentService(studentRepository, studentCourseRepository, converter);
+    sut = new StudentService(studentRepository, studentCourseRepository, enrollmentStatusRepository,
+        converter);
   }
 
   @Test
@@ -50,16 +65,16 @@ class StudentServiceTest {
     // 事前準備
     List<Student> studentList = new ArrayList<>();
     List<StudentCourse> studentCourseList = new ArrayList<>();
-    Mockito.when(studentRepository.selectAllStudentList()).thenReturn(studentList);
-    Mockito.when(studentCourseRepository.selectAllCourseList()).thenReturn(studentCourseList);
+    when(studentRepository.selectAllStudentList()).thenReturn(studentList);
+    when(studentCourseRepository.selectAllCourseList()).thenReturn(studentCourseList);
 
     // 実行
     sut.getAllStudentDetailList();
 
     // 検証
-    Mockito.verify(studentRepository, Mockito.times(1)).selectAllStudentList();
-    Mockito.verify(studentCourseRepository, Mockito.times(1)).selectAllCourseList();
-    Mockito.verify(converter, Mockito.times(1))
+    verify(studentRepository, times(1)).selectAllStudentList();
+    verify(studentCourseRepository, times(1)).selectAllCourseList();
+    verify(converter, times(1))
         .getStudentDetailsList(studentList, studentCourseList);
   }
 
@@ -77,16 +92,16 @@ class StudentServiceTest {
     StudentCourse mockCourse2 = new StudentCourse.StudentCourseBuilder(id, "AWSフルコース").build();
     List<StudentCourse> mockStudentCourseList = List.of(mockCourse1, mockCourse2);
 
-    Mockito.when(studentRepository.selectStudentById(id)).thenReturn(mockStudent);
-    Mockito.when(studentCourseRepository.selectCourseListByStudentId(id))
+    when(studentRepository.selectStudentById(id)).thenReturn(mockStudent);
+    when(studentCourseRepository.selectCourseListByStudentId(id))
         .thenReturn(mockStudentCourseList);
 
     // 実行
     sut.getStudentDetailById(id);
 
     // 検証
-    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
-    Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
+    verify(studentRepository, times(1)).selectStudentById(id);
+    verify(studentCourseRepository, times(1)).selectCourseListByStudentId(id);
   }
 
   @Test
@@ -95,7 +110,7 @@ class StudentServiceTest {
     // 準備
     String wrongId = UUID.randomUUID().toString();
 
-    Mockito.when(studentRepository.selectStudentById(wrongId)).thenReturn(null);
+    when(studentRepository.selectStudentById(wrongId)).thenReturn(null);
 
     // 実行と検証
     assertThatThrownBy(() -> sut.getStudentDetailById(wrongId))
@@ -103,51 +118,70 @@ class StudentServiceTest {
         .hasMessageContaining("指定したIDの受講生が見つかりませんでした");
 
     // 検証
-    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(wrongId);
-    Mockito.verify(studentCourseRepository, Mockito.never())
+    verify(studentRepository, times(1)).selectStudentById(wrongId);
+    verify(studentCourseRepository, Mockito.never())
         .selectCourseListByStudentId(Mockito.anyString());
   }
 
   @Test
   void 受講生登録_リクエストボディから必要な情報を取得しStudentRepositoryとStudentCourseRepositoryの処理が適切に呼び出されていること() {
     // 準備
-    Student mockStudent = new Student.StudentBuilder(
-        "田中太郎", "taro@test.com", "千葉県市原市", 24).kana("タナカタロウ").nickName("たろ")
-        .gender(
-            Gender.valueOf("Male")).build();
-    String studentId = mockStudent.getId();
+    String fullName = "田中太郎";
+    String kana = "タナカタロウ";
+    String nickName = "たろ";
+    int age = 22;
+    String email = "taro@test.com";
+    String city = "千葉県市原市";
+    Gender gender = Gender.Male;
 
-    StudentCourse mockStudentCourse = new StudentCourseBuilder(studentId, "Javaフルコース").build();
-    List<StudentCourse> mockStudentCourseList = List.of(
-        mockStudentCourse);
+    Student mockStudent = new Student.StudentBuilder(fullName, email, city, age)
+        .gender(gender).kana(kana).nickName(nickName).build();
+
+    EnrollmentStatus mockStatus = EnrollmentStatus.builder().status(Status.仮申込).build();
+
+    String studentId = mockStudent.getId();
+    StudentCourse mockStudentCourse = new StudentCourseBuilder(studentId, "Javaフルコース")
+        .enrollmentStatus(mockStatus).build();
+    List<StudentCourse> mockStudentCourseList = List.of(mockStudentCourse);
     StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
 
     ArgumentCaptor<Student> studentCaptor = ArgumentCaptor.forClass(Student.class);
-    ArgumentCaptor<StudentCourse> courseCaptor = ArgumentCaptor.forClass(
-        StudentCourse.class);
+    ArgumentCaptor<StudentCourse> courseCaptor = ArgumentCaptor.forClass(StudentCourse.class);
+    ArgumentCaptor<EnrollmentStatus> statusCaptor = ArgumentCaptor.forClass(EnrollmentStatus.class);
 
     // 実行
     StudentDetail actual = sut.registerStudent(mockstudentDetail);
 
     // 検証
-    Mockito.verify(studentRepository, Mockito.times(1))
+    verify(studentRepository, times(1))
         .createStudent(studentCaptor.capture());
-    Mockito.verify(studentCourseRepository, Mockito.times(1))
+    verify(studentCourseRepository, times(1))
         .createStudentCourse(courseCaptor.capture());
+    verify(enrollmentStatusRepository, times(1))
+        .createEnrollmentStatus(statusCaptor.capture());
 
     assertThat(actual.getStudent().getId()).isNotBlank();
-    assertThat(actual.getStudent().getFullName()).isEqualTo("田中太郎");
-    assertThat(actual.getStudent().getEmail()).isEqualTo("taro@test.com");
-    assertThat(actual.getStudent().getCity()).isEqualTo("千葉県市原市");
-    assertThat(actual.getStudent().getAge()).isEqualTo(24);
-    assertThat(actual.getStudent().getKana()).isEqualTo("タナカタロウ");
-    assertThat(actual.getStudent().getNickName()).isEqualTo("たろ");
-    assertThat(actual.getStudent().getGender()).isEqualTo(Gender.valueOf("Male"));
+    assertThat(actual.getStudent().getFullName()).isEqualTo(fullName);
+    assertThat(actual.getStudent().getEmail()).isEqualTo(email);
+    assertThat(actual.getStudent().getCity()).isEqualTo(city);
+    assertThat(actual.getStudent().getAge()).isEqualTo(age);
+    assertThat(actual.getStudent().getKana()).isEqualTo(kana);
+    assertThat(actual.getStudent().getNickName()).isEqualTo(nickName);
+    assertThat(actual.getStudent().getGender()).isEqualTo(Gender.Male);
     assertThat(actual.getStudentCourseList().getFirst().getId()).isNotBlank();
     assertThat(actual.getStudentCourseList().getFirst().getStudentId()).isEqualTo(
         actual.getStudent().getId());
     assertThat(actual.getStudentCourseList().getFirst().getCourseName()).isEqualTo(
         "Javaフルコース");
+    assertThat(actual.getStudentCourseList().getFirst().getEnrollmentStatus().getStudentCourseId())
+        .isNotBlank();
+    assertThat(actual.getStudentCourseList().getFirst().getEnrollmentStatus().getId())
+        .isNotBlank();
+    assertThat(actual.getStudentCourseList().getFirst().getEnrollmentStatus().getStatus())
+        .isEqualTo(Status.仮申込);
+    assertThat(actual.getStudentCourseList().getFirst().getEnrollmentStatus().getCreatedAt())
+        .isInstanceOf(LocalDateTime.class);
+
   }
 
   @Test
@@ -165,7 +199,7 @@ class StudentServiceTest {
         .remark("変更後").useOnlyTestBuildWithId(id);
 
     StudentCourse receivedStudentCourse = new StudentCourse
-        .StudentCourseBuilder(id, "Javaフルコース").useOnlyTestBuildWithId(courseId);
+        .StudentCourseBuilder(id, "Javaフルコース").buildWithId(courseId);
     List<StudentCourse> receivedStudentCourseList = List.of(receivedStudentCourse);
 
     StudentDetail receivedStudentDetail = new StudentDetail(receivedStudent,
@@ -181,18 +215,18 @@ class StudentServiceTest {
     StudentCourse currentStudentCourse = receivedStudentCourse;
     List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse);
 
-    Mockito.when(studentRepository.selectStudentById(id)).thenReturn(currentStudent);
-    Mockito.when(studentCourseRepository.selectCourseListByStudentId(id))
+    when(studentRepository.selectStudentById(id)).thenReturn(currentStudent);
+    when(studentCourseRepository.selectCourseListByStudentId(id))
         .thenReturn(currentStudentCourseList);
 
     // 実行
     sut.updateStudent(receivedStudentDetail);
 
     // 検証
-    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
-    Mockito.verify(studentRepository, Mockito.times(1)).updateStudent(receivedStudent);
-    Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
-    Mockito.verify(studentCourseRepository, Mockito.never())
+    verify(studentRepository, times(1)).selectStudentById(id);
+    verify(studentRepository, times(1)).updateStudent(receivedStudent);
+    verify(studentCourseRepository, times(1)).selectCourseListByStudentId(id);
+    verify(studentCourseRepository, Mockito.never())
         .updateStudentCourse(receivedStudentCourse);
   }
 
@@ -211,7 +245,7 @@ class StudentServiceTest {
         .remark("変更なし").useOnlyTestBuildWithId(id);
 
     StudentCourse receivedStudentCourse = new StudentCourse
-        .StudentCourseBuilder(id, "Javaフルコース").useOnlyTestBuildWithId(courseId);
+        .StudentCourseBuilder(id, "Javaフルコース").buildWithId(courseId);
     List<StudentCourse> receivedStudentCourseList = List.of(receivedStudentCourse);
 
     StudentDetail receivedStudentDetail = new StudentDetail(receivedStudent,
@@ -227,18 +261,18 @@ class StudentServiceTest {
     StudentCourse currentStudentCourse = receivedStudentCourse;
     List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse);
 
-    Mockito.when(studentRepository.selectStudentById(id)).thenReturn(currentStudent);
-    Mockito.when(studentCourseRepository.selectCourseListByStudentId(id))
+    when(studentRepository.selectStudentById(id)).thenReturn(currentStudent);
+    when(studentCourseRepository.selectCourseListByStudentId(id))
         .thenReturn(currentStudentCourseList);
 
     // 実行
     sut.updateStudent(receivedStudentDetail);
 
     // 検証
-    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
-    Mockito.verify(studentRepository, Mockito.never()).updateStudent(receivedStudent);
-    Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
-    Mockito.verify(studentCourseRepository, Mockito.never())
+    verify(studentRepository, times(1)).selectStudentById(id);
+    verify(studentRepository, Mockito.never()).updateStudent(receivedStudent);
+    verify(studentCourseRepository, times(1)).selectCourseListByStudentId(id);
+    verify(studentCourseRepository, Mockito.never())
         .updateStudentCourse(receivedStudentCourse);
   }
 
@@ -258,11 +292,11 @@ class StudentServiceTest {
     StudentCourse receivedStudentCourse1 = new StudentCourse.StudentCourseBuilder(id,
         "Javaフルコース").startDate(
             LocalDateTime.parse("2024-12-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).useOnlyTestBuildWithId(courseId1);
+        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).buildWithId(courseId1);
     StudentCourse receivedStudentCourse2 = new StudentCourse.StudentCourseBuilder(id,
         "AWSフルコース").startDate(
             LocalDateTime.parse("2024-06-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).useOnlyTestBuildWithId(courseId2);
+        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).buildWithId(courseId2);
     List<StudentCourse> receivedStudentCourseList = List.of(receivedStudentCourse1,
         receivedStudentCourse2);
     StudentDetail receivedStudentDetail = new StudentDetail(receivedStudent,
@@ -271,29 +305,29 @@ class StudentServiceTest {
     StudentCourse currentStudentCourse1 = new StudentCourse.StudentCourseBuilder(id,
         "マーケティングコース").startDate(
             LocalDateTime.parse("2025-12-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2026-12-25T18:30:45")).useOnlyTestBuildWithId(courseId1);
+        .endDate(LocalDateTime.parse("2026-12-25T18:30:45")).buildWithId(courseId1);
     StudentCourse currentStudentCourse2 = new StudentCourse.StudentCourseBuilder(id,
         "デザインコース").startDate(
             LocalDateTime.parse("2025-06-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2026-06-25T18:30:45")).useOnlyTestBuildWithId(courseId2);
+        .endDate(LocalDateTime.parse("2026-06-25T18:30:45")).buildWithId(courseId2);
     List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse1,
         currentStudentCourse2);
 
-    Mockito.when(studentRepository.selectStudentById(id))
+    when(studentRepository.selectStudentById(id))
         .thenReturn(currentStudent);
-    Mockito.when(studentCourseRepository.selectCourseListByStudentId(id))
+    when(studentCourseRepository.selectCourseListByStudentId(id))
         .thenReturn(currentStudentCourseList);
 
     // 実行
     sut.updateStudent(receivedStudentDetail);
 
     // 検証
-    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
-    Mockito.verify(studentRepository, Mockito.never()).updateStudent(receivedStudent);
-    Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
-    Mockito.verify(studentCourseRepository, Mockito.times(1))
+    verify(studentRepository, times(1)).selectStudentById(id);
+    verify(studentRepository, Mockito.never()).updateStudent(receivedStudent);
+    verify(studentCourseRepository, times(1)).selectCourseListByStudentId(id);
+    verify(studentCourseRepository, times(1))
         .updateStudentCourse(receivedStudentCourse1);
-    Mockito.verify(studentCourseRepository, Mockito.times(1))
+    verify(studentCourseRepository, times(1))
         .updateStudentCourse(receivedStudentCourse2);
   }
 
@@ -313,11 +347,11 @@ class StudentServiceTest {
     StudentCourse receivedStudentCourse1 = new StudentCourse.StudentCourseBuilder(id,
         "Javaフルコース").startDate(
             LocalDateTime.parse("2024-12-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).useOnlyTestBuildWithId(courseId1);
+        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).buildWithId(courseId1);
     StudentCourse receivedStudentCourse2 = new StudentCourse.StudentCourseBuilder(id,
         "AWSフルコース").startDate(
             LocalDateTime.parse("2024-06-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).useOnlyTestBuildWithId(courseId2);
+        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).buildWithId(courseId2);
     List<StudentCourse> receivedStudentCourseList = List.of(receivedStudentCourse1,
         receivedStudentCourse2);
     StudentDetail receivedStudentDetail = new StudentDetail(receivedStudent,
@@ -326,29 +360,29 @@ class StudentServiceTest {
     StudentCourse currentStudentCourse1 = new StudentCourse.StudentCourseBuilder(id,
         "マーケティングコース").startDate(
             LocalDateTime.parse("2025-12-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2026-12-25T18:30:45")).useOnlyTestBuildWithId(courseId1);
+        .endDate(LocalDateTime.parse("2026-12-25T18:30:45")).buildWithId(courseId1);
     StudentCourse currentStudentCourse2 = new StudentCourse.StudentCourseBuilder(id,
         "AWSフルコース").startDate(
             LocalDateTime.parse("2024-06-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).useOnlyTestBuildWithId(courseId2);
+        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).buildWithId(courseId2);
     List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse1,
         currentStudentCourse2);
 
-    Mockito.when(studentRepository.selectStudentById(id))
+    when(studentRepository.selectStudentById(id))
         .thenReturn(currentStudent);
-    Mockito.when(studentCourseRepository.selectCourseListByStudentId(id))
+    when(studentCourseRepository.selectCourseListByStudentId(id))
         .thenReturn(currentStudentCourseList);
 
     // 実行
     sut.updateStudent(receivedStudentDetail);
 
     // 検証
-    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
-    Mockito.verify(studentRepository, Mockito.never()).updateStudent(receivedStudent);
-    Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
-    Mockito.verify(studentCourseRepository, Mockito.times(1))
+    verify(studentRepository, times(1)).selectStudentById(id);
+    verify(studentRepository, Mockito.never()).updateStudent(receivedStudent);
+    verify(studentCourseRepository, times(1)).selectCourseListByStudentId(id);
+    verify(studentCourseRepository, times(1))
         .updateStudentCourse(receivedStudentCourse1);
-    Mockito.verify(studentCourseRepository, Mockito.never())
+    verify(studentCourseRepository, Mockito.never())
         .updateStudentCourse(receivedStudentCourse2);
   }
 
@@ -368,11 +402,11 @@ class StudentServiceTest {
     StudentCourse receivedStudentCourse1 = new StudentCourse.StudentCourseBuilder(id,
         "Javaフルコース").startDate(
             LocalDateTime.parse("2024-12-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).useOnlyTestBuildWithId(courseId1);
+        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).buildWithId(courseId1);
     StudentCourse receivedStudentCourse2 = new StudentCourse.StudentCourseBuilder(id,
         "AWSフルコース").startDate(
             LocalDateTime.parse("2024-06-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).useOnlyTestBuildWithId(courseId2);
+        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).buildWithId(courseId2);
     List<StudentCourse> receivedStudentCourseList = List.of(receivedStudentCourse1,
         receivedStudentCourse2);
     StudentDetail receivedStudentDetail = new StudentDetail(receivedStudent,
@@ -381,29 +415,29 @@ class StudentServiceTest {
     StudentCourse currentStudentCourse1 = new StudentCourse.StudentCourseBuilder(id,
         "Javaフルコース").startDate(
             LocalDateTime.parse("2024-12-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).useOnlyTestBuildWithId(courseId1);
+        .endDate(LocalDateTime.parse("2025-12-25T18:30:45")).buildWithId(courseId1);
     StudentCourse currentStudentCourse2 = new StudentCourse.StudentCourseBuilder(id,
         "AWSフルコース").startDate(
             LocalDateTime.parse("2024-06-25T18:30:45"))
-        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).useOnlyTestBuildWithId(courseId2);
+        .endDate(LocalDateTime.parse("2025-06-25T18:30:45")).buildWithId(courseId2);
     List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse1,
         currentStudentCourse2);
 
-    Mockito.when(studentRepository.selectStudentById(id))
+    when(studentRepository.selectStudentById(id))
         .thenReturn(currentStudent);
-    Mockito.when(studentCourseRepository.selectCourseListByStudentId(id))
+    when(studentCourseRepository.selectCourseListByStudentId(id))
         .thenReturn(currentStudentCourseList);
 
     // 実行
     sut.updateStudent(receivedStudentDetail);
 
     // 検証
-    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
-    Mockito.verify(studentRepository, Mockito.never()).updateStudent(receivedStudent);
-    Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
-    Mockito.verify(studentCourseRepository, Mockito.never())
+    verify(studentRepository, times(1)).selectStudentById(id);
+    verify(studentRepository, Mockito.never()).updateStudent(receivedStudent);
+    verify(studentCourseRepository, times(1)).selectCourseListByStudentId(id);
+    verify(studentCourseRepository, Mockito.never())
         .updateStudentCourse(receivedStudentCourse1);
-    Mockito.verify(studentCourseRepository, Mockito.never())
+    verify(studentCourseRepository, Mockito.never())
         .updateStudentCourse(receivedStudentCourse2);
   }
 
@@ -421,7 +455,7 @@ class StudentServiceTest {
 
     StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
 
-    Mockito.when(studentRepository.selectStudentById(id)).thenReturn(null);
+    when(studentRepository.selectStudentById(id)).thenReturn(null);
 
     // 実行と検証
     assertThatThrownBy(() -> sut.updateStudent(mockstudentDetail))
@@ -429,10 +463,10 @@ class StudentServiceTest {
         .hasMessageContaining("指定したIDの受講生が見つかりませんでした");
 
     // 検証
-    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
-    Mockito.verify(studentRepository, Mockito.never()).updateStudent(mockStudent);
-    Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
-    Mockito.verify(studentCourseRepository, Mockito.never()).updateStudentCourse(mockStudentCourse);
+    verify(studentRepository, times(1)).selectStudentById(id);
+    verify(studentRepository, Mockito.never()).updateStudent(mockStudent);
+    verify(studentCourseRepository, times(1)).selectCourseListByStudentId(id);
+    verify(studentCourseRepository, Mockito.never()).updateStudentCourse(mockStudentCourse);
   }
 
   @Test
@@ -446,7 +480,7 @@ class StudentServiceTest {
         "田中太郎", "taro@test.com", "千葉県市原市", 24).useOnlyTestBuildWithId(id);
 
     StudentCourse mockStudentCourse = new StudentCourse
-        .StudentCourseBuilder(id, "Javaフルコース").useOnlyTestBuildWithId(wrongCourseId);
+        .StudentCourseBuilder(id, "Javaフルコース").buildWithId(wrongCourseId);
     List<StudentCourse> mockStudentCourseList = List.of(mockStudentCourse);
 
     StudentDetail mockstudentDetail = new StudentDetail(mockStudent, mockStudentCourseList);
@@ -455,11 +489,11 @@ class StudentServiceTest {
         "田中太郎", "taro@test.com", "千葉県市原市", 24).useOnlyTestBuildWithId(id);
 
     StudentCourse currentStudentCourse = new StudentCourse
-        .StudentCourseBuilder(id, "AWSフルコース").useOnlyTestBuildWithId(courseId);
+        .StudentCourseBuilder(id, "AWSフルコース").buildWithId(courseId);
     List<StudentCourse> currentStudentCourseList = List.of(currentStudentCourse);
 
-    Mockito.when(studentRepository.selectStudentById(id)).thenReturn(currentStudent);
-    Mockito.when(studentCourseRepository.selectCourseListByStudentId(id))
+    when(studentRepository.selectStudentById(id)).thenReturn(currentStudent);
+    when(studentCourseRepository.selectCourseListByStudentId(id))
         .thenReturn(currentStudentCourseList);
 
     // 実行と検証
@@ -468,9 +502,119 @@ class StudentServiceTest {
         .hasMessageContaining("指定したIDの受講生コースが見つかりませんでした");
 
     // 検証
-    Mockito.verify(studentRepository, Mockito.times(1)).selectStudentById(id);
-    Mockito.verify(studentCourseRepository, Mockito.times(1)).selectCourseListByStudentId(id);
-    Mockito.verify(studentCourseRepository, Mockito.never())
+    verify(studentRepository, times(1)).selectStudentById(id);
+    verify(studentCourseRepository, times(1)).selectCourseListByStudentId(id);
+    verify(studentCourseRepository, Mockito.never())
         .updateStudentCourse(mockStudentCourse);
   }
+
+  @Test
+  void 申込状況更新_適切なEnrollmentStatusオブジェクトが渡された場合_適切にEnrollmentStatusが呼び出されること()
+      throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
+    // 準備
+    String studentCourseId = UUID.randomUUID().toString();
+
+    EnrollmentStatus enrollmentStatus = EnrollmentStatus.builder()
+        .studentCourseId(studentCourseId).status(Status.受講中)
+        .build();
+
+    List<EnrollmentStatus> mockStatusList = List.of(EnrollmentStatus.builder()
+        .id(UUID.randomUUID().toString()).studentCourseId(studentCourseId)
+        .status(Status.本申込).createdAt(LocalDateTime.now()).build()
+    );
+
+    when(enrollmentStatusRepository.selectAllEnrollmentStatus()
+        .stream()
+        .filter(v -> v.getStudentCourseId().equals(studentCourseId))
+        .toList())
+        .thenReturn(mockStatusList);
+
+    // 実行
+    sut.updateEnrollmentStatus(enrollmentStatus);
+
+    // 検証
+    verify(enrollmentStatusRepository, times(1))
+        .createEnrollmentStatus(any());
+  }
+
+  @Test
+  void 申込状況更新_存在しないstudentCourseIdが渡された場合_適切に例外が呼び出されること()
+      throws EnrollmentStatusNotFoundException {
+    // 準備
+    String studentCourseId = UUID.randomUUID().toString();
+
+    EnrollmentStatus enrollmentStatus = EnrollmentStatus.builder()
+        .studentCourseId(studentCourseId).status(Status.受講中)
+        .build();
+
+    // 実行と検証
+    assertThatThrownBy(() -> sut.updateEnrollmentStatus(enrollmentStatus))
+        .isInstanceOf(EnrollmentStatusNotFoundException.class)
+        .hasMessageContaining("指定した受講生コースIDのステータスは見つかりませんでした");
+
+    // 検証
+    verify(enrollmentStatusRepository, times(0))
+        .createEnrollmentStatus(any());
+  }
+
+  @Test
+  void 申込状況更新_ステータスが戻るようなオブジェクトが渡された場合_適切に例外が呼び出されること()
+      throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
+    // 準備
+    String studentCourseId = UUID.randomUUID().toString();
+
+    EnrollmentStatus enrollmentStatus = EnrollmentStatus.builder()
+        .studentCourseId(studentCourseId).status(Status.受講中)
+        .build();
+
+    List<EnrollmentStatus> mockStatusList = List.of(EnrollmentStatus.builder()
+        .id(UUID.randomUUID().toString()).studentCourseId(studentCourseId)
+        .status(Status.受講終了).createdAt(LocalDateTime.now()).build()
+    );
+
+    when(enrollmentStatusRepository.selectAllEnrollmentStatus()
+        .stream()
+        .filter(v -> v.getStudentCourseId().equals(studentCourseId))
+        .toList())
+        .thenReturn(mockStatusList);
+
+    // 実行、検証
+    assertThatThrownBy(() -> sut.updateEnrollmentStatus(enrollmentStatus))
+        .isInstanceOf(EnrollmentStatusBadRequestException.class)
+        .hasMessageContaining("ステータスを前に戻すことは出来ません。現在のステータス: "
+            + mockStatusList.getLast().getStatus());
+
+    // 検証
+    verify(enrollmentStatusRepository, times(0))
+        .createEnrollmentStatus(any());
+  }
+
+  @ParameterizedTest
+  @EnumSource(Status.class)
+  void 受講生詳細申込状況検索_指定した申込状況に合致する(Status status) {
+    // 準備
+    List<StudentCourse> mockedCourseList = new ArrayList<>();
+
+    for (int i = 0; i < 5; i++) {
+      String courseId = UUID.randomUUID().toString();
+      EnrollmentStatus enrollmentStatus = new EnrollmentStatus(
+          UUID.randomUUID().toString(), courseId, status, LocalDateTime.now());
+      mockedCourseList.add(
+          new StudentCourse.StudentCourseBuilder(UUID.randomUUID().toString(), "Javaフルコース")
+              .enrollmentStatus(enrollmentStatus).buildWithId(courseId));
+    }
+
+    when(studentCourseRepository.selectCourseListWithLatestStatus(status))
+        .thenReturn(mockedCourseList);
+
+    // 実行
+    sut.getStudentDetailListByStatus(status);
+
+    //検証
+    verify(studentCourseRepository, times(1))
+        .selectCourseListWithLatestStatus(status);
+    verify(studentRepository, times(5)).selectStudentById(any());
+  }
+
 }
+

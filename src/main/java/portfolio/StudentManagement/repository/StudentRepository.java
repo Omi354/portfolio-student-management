@@ -11,7 +11,7 @@ import portfolio.StudentManagement.data.Student;
 public interface StudentRepository {
 
   /**
-   * 受講生の全件検索を行います。
+   * 受講生の全件検索を行います。論理削除されたレコードは対象外とします。
    *
    * @return 受講生一覧（全件）
    */
