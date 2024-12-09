@@ -18,7 +18,7 @@ public interface EnrollmentStatusRepository {
   List<EnrollmentStatus> selectAllEnrollmentStatus();
 
   /**
-   * 申込状況を新規登録を行います
+   * 申込状況の新規登録を行います
    *
    * @param enrollmentStatus 申込状況
    */
