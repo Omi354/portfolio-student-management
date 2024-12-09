@@ -11,11 +11,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -53,6 +55,7 @@ class StudentServiceTest {
 
   @Mock
   StudentService sut;
+
 
   @BeforeEach
   void before() {
@@ -508,19 +511,21 @@ class StudentServiceTest {
         .updateStudentCourse(mockStudentCourse);
   }
 
-  @Test
-  void 申込状況更新_適切なEnrollmentStatusオブジェクトが渡された場合_適切にEnrollmentStatusが呼び出されること()
+  @ParameterizedTest
+  @MethodSource("provideStatuses")
+  void 申込状況更新_適切なステータスが渡された場合にはRepositoryが呼び出され_後戻りするようなステータスが渡された場合には例外が呼び出されること(
+      TestCaseForVerifyStatus testCaseForVerifyStatus)
       throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
     // 準備
     String studentCourseId = UUID.randomUUID().toString();
 
-    EnrollmentStatus enrollmentStatus = EnrollmentStatus.builder()
-        .studentCourseId(studentCourseId).status(Status.受講中)
+    EnrollmentStatus recievedEenrollmentStatus = EnrollmentStatus.builder()
+        .studentCourseId(studentCourseId).status(testCaseForVerifyStatus.recievedStatus)
         .build();
 
     List<EnrollmentStatus> mockStatusList = List.of(EnrollmentStatus.builder()
         .id(UUID.randomUUID().toString()).studentCourseId(studentCourseId)
-        .status(Status.本申込).createdAt(LocalDateTime.now()).build()
+        .status(testCaseForVerifyStatus.currentStatus).createdAt(LocalDateTime.now()).build()
     );
 
     when(enrollmentStatusRepository.selectAllEnrollmentStatus()
@@ -529,12 +534,25 @@ class StudentServiceTest {
         .toList())
         .thenReturn(mockStatusList);
 
-    // 実行
-    sut.updateEnrollmentStatus(enrollmentStatus);
+    if (testCaseForVerifyStatus.shouldBeValid) {
+      // 実行
+      sut.updateEnrollmentStatus(recievedEenrollmentStatus);
 
-    // 検証
-    verify(enrollmentStatusRepository, times(1))
-        .createEnrollmentStatus(any());
+      // 検証
+      verify(enrollmentStatusRepository, times(1))
+          .createEnrollmentStatus(any());
+
+    } else {
+      // 実行、検証
+      assertThatThrownBy(() -> sut.updateEnrollmentStatus(recievedEenrollmentStatus))
+          .isInstanceOf(EnrollmentStatusBadRequestException.class)
+          .hasMessageContaining("ステータスを前に戻すことは出来ません。現在のステータス: "
+              + mockStatusList.getLast().getStatus());
+
+      // 検証
+      verify(enrollmentStatusRepository, times(0))
+          .createEnrollmentStatus(any());
+    }
   }
 
   @Test
@@ -551,38 +569,6 @@ class StudentServiceTest {
     assertThatThrownBy(() -> sut.updateEnrollmentStatus(enrollmentStatus))
         .isInstanceOf(EnrollmentStatusNotFoundException.class)
         .hasMessageContaining("指定した受講生コースIDのステータスは見つかりませんでした");
-
-    // 検証
-    verify(enrollmentStatusRepository, times(0))
-        .createEnrollmentStatus(any());
-  }
-
-  @Test
-  void 申込状況更新_ステータスが戻るようなオブジェクトが渡された場合_適切に例外が呼び出されること()
-      throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
-    // 準備
-    String studentCourseId = UUID.randomUUID().toString();
-
-    EnrollmentStatus enrollmentStatus = EnrollmentStatus.builder()
-        .studentCourseId(studentCourseId).status(Status.受講中)
-        .build();
-
-    List<EnrollmentStatus> mockStatusList = List.of(EnrollmentStatus.builder()
-        .id(UUID.randomUUID().toString()).studentCourseId(studentCourseId)
-        .status(Status.受講終了).createdAt(LocalDateTime.now()).build()
-    );
-
-    when(enrollmentStatusRepository.selectAllEnrollmentStatus()
-        .stream()
-        .filter(v -> v.getStudentCourseId().equals(studentCourseId))
-        .toList())
-        .thenReturn(mockStatusList);
-
-    // 実行、検証
-    assertThatThrownBy(() -> sut.updateEnrollmentStatus(enrollmentStatus))
-        .isInstanceOf(EnrollmentStatusBadRequestException.class)
-        .hasMessageContaining("ステータスを前に戻すことは出来ません。現在のステータス: "
-            + mockStatusList.getLast().getStatus());
 
     // 検証
     verify(enrollmentStatusRepository, times(0))
@@ -616,5 +602,39 @@ class StudentServiceTest {
     verify(studentRepository, times(5)).selectStudentById(any());
   }
 
+  private static class TestCaseForVerifyStatus {
+
+    private Status currentStatus;
+    private Status recievedStatus;
+    private boolean shouldBeValid;
+
+    public TestCaseForVerifyStatus(Status currentStatus, Status recievedStatus,
+        boolean shouldBeValid) {
+      this.currentStatus = currentStatus;
+      this.recievedStatus = recievedStatus;
+      this.shouldBeValid = shouldBeValid;
+    }
+  }
+
+  private static Stream<TestCaseForVerifyStatus> provideStatuses() {
+    return Stream.of(
+        new TestCaseForVerifyStatus(Status.仮申込, Status.仮申込, false),
+        new TestCaseForVerifyStatus(Status.仮申込, Status.本申込, true),
+        new TestCaseForVerifyStatus(Status.仮申込, Status.受講中, true),
+        new TestCaseForVerifyStatus(Status.仮申込, Status.受講終了, true),
+        new TestCaseForVerifyStatus(Status.本申込, Status.仮申込, false),
+        new TestCaseForVerifyStatus(Status.本申込, Status.本申込, false),
+        new TestCaseForVerifyStatus(Status.本申込, Status.受講中, true),
+        new TestCaseForVerifyStatus(Status.本申込, Status.受講終了, true),
+        new TestCaseForVerifyStatus(Status.受講中, Status.仮申込, false),
+        new TestCaseForVerifyStatus(Status.受講中, Status.本申込, false),
+        new TestCaseForVerifyStatus(Status.受講中, Status.受講中, false),
+        new TestCaseForVerifyStatus(Status.受講中, Status.受講終了, true),
+        new TestCaseForVerifyStatus(Status.受講終了, Status.仮申込, false),
+        new TestCaseForVerifyStatus(Status.受講終了, Status.本申込, false),
+        new TestCaseForVerifyStatus(Status.受講終了, Status.受講中, false),
+        new TestCaseForVerifyStatus(Status.受講終了, Status.受講終了, false)
+    );
+  }
 }
 
