@@ -224,7 +224,7 @@ public class StudentController {
    * @throws EnrollmentStatusNotFoundException   受講生コースと正しく紐づいていない場合の例外処理
    * @throws EnrollmentStatusBadRequestException 後ろに戻るような更新の場合の例外処理
    */
-  @PostMapping("/updateStatus")
+  @PostMapping("/updateEnrollmentStatus")
   public ResponseEntity<String> updateEnrollmentStatus(
       @RequestBody EnrollmentStatus enrollmentStatus)
       throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
