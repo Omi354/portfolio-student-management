@@ -50,18 +50,41 @@ public class StudentController {
   }
 
   /**
-   * 受講生詳細一覧の全件検索です。 全件検索を行うので、条件指定は行いません。
+   * 受講生詳細検索。クエリパラメータを使用しない場合は全件検索を行います。 statusパラメータとして申込状況を指定すると、該当する申込状況の受講生詳細を検索します。
    *
-   * @return 受講生詳細一覧（全件）
+   * @param status 申込状況のステータス（例: "仮申込", "本申込", "受講中", "受講終了"）、非必須
+   * @return 受講生詳細のリスト
    */
   @Operation(
-      summary = "受講生詳細一覧の検索",
-      description = "受講生詳細の一覧を検索します。全件検索を行うので、条件指定は行いません。",
-      responses = {@ApiResponse(
-          content = @Content(mediaType = "application/json",
-              array = @ArraySchema(schema = @Schema(implementation = StudentDetail.class))
+      summary = "受講生詳細の検索",
+      description = "受講生詳細の一覧を検索します。クエリパラメータ `status` を指定しない場合、全件検索を行います。"
+          +
+          "クエリパラメータ `status` を指定すると、そのステータスに該当する受講生詳細を検索します。",
+      parameters = {
+          @Parameter(
+              name = "status",
+              description = "申込状況のステータス（例: \"仮申込\", \"本申込\", \"受講中\", \"受講終了\"）。指定しない場合、全件を返します。",
+              required = false,
+              schema = @Schema(implementation = Status.class)
           )
-      )}
+      },
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "検索結果としての受講生詳細のリスト",
+              content = @Content(mediaType = "application/json",
+                  array = @ArraySchema(schema = @Schema(implementation = StudentDetail.class))
+              )
+          ),
+          @ApiResponse(
+              responseCode = "400",
+              description = "不正なクエリパラメータ",
+              content = @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ErrorResponse.class)
+              )
+          )
+      }
   )
   @GetMapping("/studentList")
   public List<StudentDetail> getStudentList(@RequestParam(required = false) Status status) {
@@ -149,7 +172,7 @@ public class StudentController {
           )
       },
       requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-          description = "新規登録したい受講生詳細　※受講生のid,remark,isDeleted、受講生コース情報のid,studentId,startDate,endDateは自動付与されるためリクエストボディに含まれません",
+          description = "新規登録したい受講生詳細　※受講生のid,remark,isDeleted、受講生コース情報のid,studentId,startDate,endDate、申込状況のid,studentCourseId,cratedAtは自動付与されるためリクエストボディに含まれません",
           required = true,
           content = @Content(
               schema = @Schema(implementation = StudentDetail.class)
@@ -202,7 +225,7 @@ public class StudentController {
           ),
       },
       requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-          description = "更新したい受講生詳細",
+          description = "更新したい受講生詳細※受講生コース情報にネストされている申込状況については指定できません、別途\"/updateEnrollmentStatus\"を使用して更新します",
           required = true,
           content = @Content(
               schema = @Schema(implementation = StudentDetail.class)
@@ -219,11 +242,47 @@ public class StudentController {
   /**
    * 申込状況を更新します。 後ろに戻るような更新の場合や、受講生コース情報と正しく紐づいていない場合にはエラーをなげます
    *
-   * @param enrollmentStatus
+   * @param enrollmentStatus 　申込状況
    * @return 処理結果
    * @throws EnrollmentStatusNotFoundException   受講生コースと正しく紐づいていない場合の例外処理
    * @throws EnrollmentStatusBadRequestException 後ろに戻るような更新の場合の例外処理
    */
+  @Operation(
+      summary = "申込状況更新",
+      description = "申込状況を更新します。実際には同じ受講生コース情報に紐づく申込状況を作成し、過去の申込状況をDB上に保持できるようにしています。",
+      responses = {
+          @ApiResponse(
+              responseCode = "200", description = "ok",
+              content = @Content(
+                  mediaType = "text/plain;charset=UTF-8",
+                  schema = @Schema(
+                      type = "string",
+                      example = "更新に成功しました"
+                  )
+              )
+          ),
+          @ApiResponse(
+              responseCode = "400", description = "申込状況のステータスが後ろに戻るようなリクエストの場合に発生する例外処理",
+              content = @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ErrorResponse.class)
+              )
+          ),
+          @ApiResponse(
+              responseCode = "404", description = "リクエストの申込状況オブジェクトが受講生コースと正しく紐づいていない場合の例外処理",
+              content = @Content(
+                  mediaType = "application/json",
+                  schema = @Schema(implementation = ErrorResponse.class)
+              )
+          )
+      },
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+          description = "更新したい申込状況　※id, createdAt は自動付与されるためリクエストボディに含まれません",
+          required = true,
+          content = @Content(
+              schema = @Schema(implementation = EnrollmentStatus.class)
+          )
+      ))
   @PostMapping("/updateEnrollmentStatus")
   public ResponseEntity<String> updateEnrollmentStatus(
       @RequestBody EnrollmentStatus enrollmentStatus)
