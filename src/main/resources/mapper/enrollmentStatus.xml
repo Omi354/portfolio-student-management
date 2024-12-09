@@ -13,9 +13,18 @@
   <!-- 申込状況の新規登録 -->
   <insert id="createEnrollmentStatus"
     parameterType="portfolio.StudentManagement.data.EnrollmentStatus">
-    INSERT INTO enrollment_statuses
-    (id, student_course_id, status, created_at)
-    VALUES (#{id}, #{studentCourseId}, #{status}, #{createdAt})
+    INSERT INTO enrollment_statuses (
+      id,
+      student_course_id,
+      status,
+      created_at
+    )
+    VALUES (
+      #{id},
+      #{studentCourseId},
+      #{status},
+      #{createdAt}
+    )
   </insert>
 
 </mapper>

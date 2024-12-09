@@ -4,7 +4,6 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="portfolio.StudentManagement.repository.StudentCourseRepository">
 
-
   <resultMap id="StudentCourseResultMap" type="portfolio.StudentManagement.data.StudentCourse">
     <!-- StudentCourseの基本プロパティ -->
     <id property="id" column="id"/>
@@ -24,60 +23,73 @@
 
   <!-- 受講生コース情報の全件検索 -->
   <select id="selectAllCourseList" resultMap="StudentCourseResultMap">
-    WITH RankedStatuses AS (
-    SELECT
-    e.id AS enrollment_status_id,
-    e.student_course_id,
-    e.status,
-    e.created_at,
-    ROW_NUMBER() OVER (PARTITION BY e.student_course_id ORDER BY e.created_at DESC) AS rn
-    FROM enrollment_statuses e
+    WITH ranked_statuses AS (
+      SELECT
+        e.id AS enrollment_status_id,
+        e.student_course_id,
+        e.status,
+        e.created_at,
+        ROW_NUMBER() OVER (
+          PARTITION BY e.student_course_id
+          ORDER BY e.created_at DESC
+        ) AS rn
+      FROM
+        enrollment_statuses e
     )
     SELECT
-    s.id AS id,
-    s.student_id,
-    s.course_name,
-    s.start_date,
-    s.end_date,
-    r.enrollment_status_id,
-    r.student_course_id,
-    r.status,
-    r.created_at
-    FROM students_courses s
-    INNER JOIN RankedStatuses r
-    ON s.id = r.student_course_id
-    WHERE r.rn = 1;
-
+      s.id AS id,
+      s.student_id,
+      s.course_name,
+      s.start_date,
+      s.end_date,
+      r.enrollment_status_id,
+      r.student_course_id,
+      r.status,
+      r.created_at
+    FROM
+      students_courses s
+    INNER JOIN
+      ranked_statuses r
+      ON s.id = r.student_course_id
+    WHERE
+      r.rn = 1
   </select>
 
 
   <!-- 受講生コース情報の検索 -->
   <select id="selectCourseListByStudentId" parameterType="String"
     resultMap="StudentCourseResultMap">
-    WITH RankedStatuses AS (
-    SELECT
-    e.id AS enrollment_status_id,
-    e.student_course_id,
-    e.status,
-    e.created_at,
-    ROW_NUMBER() OVER (PARTITION BY e.student_course_id ORDER BY e.created_at DESC) AS rn
-    FROM enrollment_statuses e
+    WITH ranked_statuses AS (
+      SELECT
+        e.id AS enrollment_status_id,
+        e.student_course_id,
+        e.status,
+        e.created_at,
+        ROW_NUMBER() OVER (
+          PARTITION BY e.student_course_id
+          ORDER BY e.created_at DESC
+        ) AS rn
+      FROM
+      enrollment_statuses e
     )
     SELECT
-    s.id AS id,
-    s.student_id,
-    s.course_name,
-    s.start_date,
-    s.end_date,
-    r.enrollment_status_id,
-    r.student_course_id,
-    r.status,
-    r.created_at
-    FROM students_courses s
-    INNER JOIN RankedStatuses r
-    ON s.id = r.student_course_id
-    WHERE r.rn = 1 AND s.student_id = #{studentId}
-    ;
+      s.id AS id,
+      s.student_id,
+      s.course_name,
+      s.start_date,
+      s.end_date,
+      r.enrollment_status_id,
+      r.student_course_id,
+      r.status,
+      r.created_at
+    FROM
+      students_courses s
+    INNER JOIN
+      ranked_statuses r
+      ON s.id = r.student_course_id
+    WHERE
+      r.rn = 1
+      AND s.student_id = #{studentId}
   </select>
 
 
@@ -87,49 +99,60 @@
     resultMap="StudentCourseResultMap"
   >
     SELECT
-    sc.id AS id,
-    sc.student_id AS student_id,
-    sc.course_name AS course_name,
-    sc.start_date AS start_date,
-    sc.end_date AS end_date,
-    es.id AS enrollment_status_id,
-    es.student_course_id AS student_course_id,
-    es.status AS status,
-    es.created_at AS created_at
+      sc.id AS id,
+      sc.student_id AS student_id,
+      sc.course_name AS course_name,
+      sc.start_date AS start_date,
+      sc.end_date AS end_date,
+      es.id AS enrollment_status_id,
+      es.student_course_id AS student_course_id,
+      es.status AS status,
+      es.created_at AS created_at
     FROM
-    students_courses sc
-    INNER JOIN
-    (
-    SELECT
-    student_course_id,
-    MAX(created_at) AS latest_created_at
-    FROM
-    enrollment_statuses
-    GROUP BY
-    student_course_id
+      students_courses sc
+    INNER JOIN (
+      SELECT
+        student_course_id,
+        MAX(created_at) AS latest_created_at
+      FROM
+        enrollment_statuses
+      GROUP BY
+        student_course_id
     ) latest_statuses
-    ON sc.id = latest_statuses.student_course_id
+      ON sc.id = latest_statuses.student_course_id
     INNER JOIN
-    enrollment_statuses es
-    ON sc.id = es.student_course_id
-    AND es.created_at = latest_statuses.latest_created_at
+      enrollment_statuses es
+      ON sc.id = es.student_course_id
+      AND es.created_at = latest_statuses.latest_created_at
     WHERE
-    es.status = #{status};
+      es.status = #{status}
   </select>
 
 
   <!-- 受講生コース情報の新規登録 -->
   <insert id="createStudentCourse" parameterType="portfolio.StudentManagement.data.StudentCourse">
-    INSERT INTO students_courses (id, student_id, course_name, start_date, end_date)
-    VALUES (#{id}, #{studentId}, #{courseName}, #{startDate}, #{endDate} )
+    INSERT INTO students_courses (
+      id,
+      student_id,
+      course_name,
+      start_date,
+      end_date
+    )
+    VALUES (
+      #{id},
+      #{studentId},
+      #{courseName},
+      #{startDate},
+      #{endDate}
+    )
   </insert>
 
   <!-- 受講生コース情報の更新 -->
   <insert id="updateStudentCourse" parameterType="portfolio.StudentManagement.data.StudentCourse">
     UPDATE students_courses SET
-    course_name = #{courseName},
-    start_date = #{startDate},
-    end_date = #{endDate}
+      course_name = #{courseName},
+      start_date = #{startDate},
+      end_date = #{endDate}
     WHERE id = #{id}
   </insert>
 
