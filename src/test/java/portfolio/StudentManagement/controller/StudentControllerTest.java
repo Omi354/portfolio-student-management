@@ -74,7 +74,7 @@ class StudentControllerTest {
       Status status)
       throws Exception {
     // 実行と検証
-    mockMvc.perform(get("/studentListWithStatus")
+    mockMvc.perform(get("/studentList")
             .param("status", status.name()))
         .andExpect(status().isOk())
         .andExpect(content().json("[]"));

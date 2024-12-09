@@ -64,7 +64,10 @@ public class StudentController {
       )}
   )
   @GetMapping("/studentList")
-  public List<StudentDetail> getStudentList() {
+  public List<StudentDetail> getStudentList(@RequestParam(required = false) Status status) {
+    if (status != null) {
+      return service.getStudentDetailListByStatus(status);
+    }
     return service.getAllStudentDetailList();
   }
 
@@ -118,17 +121,6 @@ public class StudentController {
   String id)
       throws StudentNotFoundException {
     return service.getStudentDetailById(id);
-  }
-
-  /**
-   * 申込状況のステータスを指定して受講生詳細を検索します。
-   *
-   * @param status 申込状況のステータス
-   * @return 指定したステータスの受講生詳細
-   */
-  @GetMapping("/studentListWithStatus")
-  public List<StudentDetail> getStudentDetailListByStatus(@RequestParam Status status) {
-    return service.getStudentDetailListByStatus(status);
   }
 
   /**
