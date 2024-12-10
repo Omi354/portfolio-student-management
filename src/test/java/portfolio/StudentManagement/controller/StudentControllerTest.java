@@ -156,7 +156,7 @@ class StudentControllerTest {
             }
         """;
     // 実行、検証
-    mockMvc.perform(post("/registerStudent")
+    mockMvc.perform(post("/student")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isOk());
@@ -192,7 +192,7 @@ class StudentControllerTest {
             }
         """;
     // 実行、検証
-    mockMvc.perform(post("/registerStudent")
+    mockMvc.perform(post("/student")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isBadRequest())
@@ -234,7 +234,7 @@ class StudentControllerTest {
         """;
 
     // 実行と検証
-    mockMvc.perform(put("/updateStudent")
+    mockMvc.perform(put("/student")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isOk())
@@ -276,7 +276,7 @@ class StudentControllerTest {
         """;
 
     // 実行と検証
-    mockMvc.perform(put("/updateStudent")
+    mockMvc.perform(put("/student")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isBadRequest())
@@ -321,7 +321,7 @@ class StudentControllerTest {
         .when(service).updateStudent(any());
 
     // 実行と検証
-    mockMvc.perform(put("/updateStudent")
+    mockMvc.perform(put("/student")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isNotFound())
@@ -365,7 +365,7 @@ class StudentControllerTest {
         .when(service).updateStudent(any());
 
     // 実行と検証
-    mockMvc.perform(put("/updateStudent")
+    mockMvc.perform(put("/student")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isNotFound())
@@ -389,7 +389,7 @@ class StudentControllerTest {
         """;
 
     // 実行と検証
-    mockMvc.perform(post("/updateEnrollmentStatus")
+    mockMvc.perform(post("/enrollmentStatus")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isOk())
@@ -415,7 +415,7 @@ class StudentControllerTest {
         .when(service).updateEnrollmentStatus(any());
 
     // 実行と検証
-    mockMvc.perform(post("/updateEnrollmentStatus")
+    mockMvc.perform(post("/enrollmentStatus")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isNotFound())
@@ -444,7 +444,7 @@ class StudentControllerTest {
         .when(service).updateEnrollmentStatus(any());
 
     // 実行と検証
-    mockMvc.perform(post("/updateEnrollmentStatus")
+    mockMvc.perform(post("/enrollmentStatus")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isBadRequest())

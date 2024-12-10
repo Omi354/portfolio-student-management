@@ -179,7 +179,7 @@ public class StudentController {
           )
       )
   )
-  @PostMapping("/registerStudent")
+  @PostMapping("/student")
   public ResponseEntity<StudentDetail> registerStudent(
       @RequestBody @Valid StudentDetail studentDetail) {
     StudentDetail registeredStudentDetail = service.registerStudent(studentDetail);
@@ -225,19 +225,20 @@ public class StudentController {
           ),
       },
       requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-          description = "更新したい受講生詳細※受講生コース情報にネストされている申込状況については指定できません、別途\"/updateEnrollmentStatus\"を使用して更新します",
+          description = "更新したい受講生詳細※受講生コース情報にネストされている申込状況については指定できません、別途\"/enrollmentStatus\"を使用して更新します",
           required = true,
           content = @Content(
               schema = @Schema(implementation = StudentDetail.class)
           )
       )
   )
-  @PutMapping("/updateStudent")
+  @PutMapping("/student")
   public ResponseEntity<String> updateStudent(@RequestBody @Valid StudentDetail studentDetail)
       throws StudentNotFoundException, StudentCourseNotFoundException {
     service.updateStudent(studentDetail);
     return ResponseEntity.ok("更新に成功しました");
   }
+
 
   /**
    * 申込状況を更新します。 後ろに戻るような更新の場合や、受講生コース情報と正しく紐づいていない場合にはエラーをなげます
@@ -283,7 +284,7 @@ public class StudentController {
               schema = @Schema(implementation = EnrollmentStatus.class)
           )
       ))
-  @PostMapping("/updateEnrollmentStatus")
+  @PostMapping("/enrollmentStatus")
   public ResponseEntity<String> updateEnrollmentStatus(
       @RequestBody EnrollmentStatus enrollmentStatus)
       throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {
