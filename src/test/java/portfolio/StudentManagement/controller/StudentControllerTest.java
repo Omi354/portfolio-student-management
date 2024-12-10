@@ -59,13 +59,25 @@ class StudentControllerTest {
   @Test
   void 受講生詳細一覧検索_リクエストに対して200番と空のリストが返りserviceが適切に呼び出されること()
       throws Exception {
+    // 準備
+    String fullName = "";
+    String kana = "";
+    String nickName = "";
+    String email = "";
+    String city = "";
+    Integer minAge = null;
+    Integer maxAge = null;
+    Gender gender = null;
+    String remark = "";
+
     // 実行、検証
     mockMvc.perform(get("/students"))
         .andExpect(status().isOk())
         .andExpect(content().json("[]"));
 
     // 検証
-    verify(service, times(1)).getAllStudentDetailList();
+    verify(service, times(1)).getStudentDetailList(fullName, kana, nickName, email,
+        city, minAge, maxAge, gender, remark);
   }
 
   @ParameterizedTest

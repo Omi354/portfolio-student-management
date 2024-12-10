@@ -50,8 +50,12 @@ public class StudentService {
    *
    * @return 受講生詳細一覧（全件）
    */
-  public List<StudentDetail> getAllStudentDetailList() {
-    List<Student> studentList = studentRepository.selectAllStudentList();
+  public List<StudentDetail> getStudentDetailList(String fullName, String kana,
+      String nickName, String email,
+      String city, Integer minAge, Integer maxAge,
+      Gender gender, String remark) {
+    List<Student> studentList = studentRepository.selectStudents(fullName, kana, nickName, email,
+        city, minAge, maxAge, gender, remark);
     List<StudentCourse> studentCourseList = studentCourseRepository.selectAllCourseList();
 
     return converter.getStudentDetailsList(studentList, studentCourseList);

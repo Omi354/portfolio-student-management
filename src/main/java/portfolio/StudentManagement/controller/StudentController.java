@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import portfolio.StudentManagement.data.EnrollmentStatus;
 import portfolio.StudentManagement.data.EnrollmentStatus.Status;
 import portfolio.StudentManagement.data.ErrorResponse;
+import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.exception.EnrollmentStatusBadRequestException;
 import portfolio.StudentManagement.exception.EnrollmentStatusNotFoundException;
@@ -87,11 +88,21 @@ public class StudentController {
       }
   )
   @GetMapping("/students")
-  public List<StudentDetail> getStudentList(@RequestParam(required = false) Status status) {
+  public List<StudentDetail> getStudentList(@RequestParam(required = false) Status status,
+      @RequestParam(required = false) String fullName,
+      @RequestParam(required = false) String kana,
+      @RequestParam(required = false) String nickName,
+      @RequestParam(required = false) String email,
+      @RequestParam(required = false) String city,
+      @RequestParam(required = false) Integer minAge,
+      @RequestParam(required = false) Integer maxAge,
+      @RequestParam(required = false) Gender gender,
+      @RequestParam(required = false) String remark) {
     if (status != null) {
       return service.getStudentDetailListByStatus(status);
     }
-    return service.getAllStudentDetailList();
+    return service.getStudentDetailList(fullName, kana, nickName, email, city, minAge, maxAge,
+        gender, remark);
   }
 
   /**
