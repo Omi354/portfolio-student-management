@@ -284,7 +284,7 @@ public class StudentController {
               schema = @Schema(implementation = EnrollmentStatus.class)
           )
       ))
-  @PostMapping("/enrollment-status")
+  @PostMapping("/students/courses/enrollment-status")
   public ResponseEntity<String> updateEnrollmentStatus(
       @RequestBody EnrollmentStatus enrollmentStatus)
       throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {

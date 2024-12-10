@@ -389,7 +389,7 @@ class StudentControllerTest {
         """;
 
     // 実行と検証
-    mockMvc.perform(post("/enrollment-status")
+    mockMvc.perform(post("/students/courses/enrollment-status")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isOk())
@@ -415,7 +415,7 @@ class StudentControllerTest {
         .when(service).updateEnrollmentStatus(any());
 
     // 実行と検証
-    mockMvc.perform(post("/enrollment-status")
+    mockMvc.perform(post("/students/courses/enrollment-status")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isNotFound())
@@ -444,7 +444,7 @@ class StudentControllerTest {
         .when(service).updateEnrollmentStatus(any());
 
     // 実行と検証
-    mockMvc.perform(post("/enrollment-status")
+    mockMvc.perform(post("/students/courses/enrollment-status")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isBadRequest())
