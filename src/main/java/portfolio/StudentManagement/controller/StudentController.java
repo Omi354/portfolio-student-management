@@ -86,7 +86,7 @@ public class StudentController {
           )
       }
   )
-  @GetMapping("/studentList")
+  @GetMapping("/students")
   public List<StudentDetail> getStudentList(@RequestParam(required = false) Status status) {
     if (status != null) {
       return service.getStudentDetailListByStatus(status);
@@ -138,7 +138,7 @@ public class StudentController {
               )
           )}
   )
-  @GetMapping("/student/{id}")
+  @GetMapping("/students/{id}")
   public StudentDetail getStudent(@PathVariable @Pattern(
       regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
   String id)
@@ -179,7 +179,7 @@ public class StudentController {
           )
       )
   )
-  @PostMapping("/student")
+  @PostMapping("/students")
   public ResponseEntity<StudentDetail> registerStudent(
       @RequestBody @Valid StudentDetail studentDetail) {
     StudentDetail registeredStudentDetail = service.registerStudent(studentDetail);
@@ -225,14 +225,14 @@ public class StudentController {
           ),
       },
       requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-          description = "更新したい受講生詳細※受講生コース情報にネストされている申込状況については指定できません、別途\"/enrollmentStatus\"を使用して更新します",
+          description = "更新したい受講生詳細※受講生コース情報にネストされている申込状況については指定できません、別途\"/enrollment-status\"を使用して更新します",
           required = true,
           content = @Content(
               schema = @Schema(implementation = StudentDetail.class)
           )
       )
   )
-  @PutMapping("/student")
+  @PutMapping("/students")
   public ResponseEntity<String> updateStudent(@RequestBody @Valid StudentDetail studentDetail)
       throws StudentNotFoundException, StudentCourseNotFoundException {
     service.updateStudent(studentDetail);
@@ -284,7 +284,7 @@ public class StudentController {
               schema = @Schema(implementation = EnrollmentStatus.class)
           )
       ))
-  @PostMapping("/enrollmentStatus")
+  @PostMapping("/enrollment-status")
   public ResponseEntity<String> updateEnrollmentStatus(
       @RequestBody EnrollmentStatus enrollmentStatus)
       throws EnrollmentStatusNotFoundException, EnrollmentStatusBadRequestException {

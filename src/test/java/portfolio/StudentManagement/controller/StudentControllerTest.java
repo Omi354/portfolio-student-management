@@ -60,7 +60,7 @@ class StudentControllerTest {
   void 受講生詳細一覧検索_リクエストに対して200番と空のリストが返りserviceが適切に呼び出されること()
       throws Exception {
     // 実行、検証
-    mockMvc.perform(get("/studentList"))
+    mockMvc.perform(get("/students"))
         .andExpect(status().isOk())
         .andExpect(content().json("[]"));
 
@@ -74,7 +74,7 @@ class StudentControllerTest {
       Status status)
       throws Exception {
     // 実行と検証
-    mockMvc.perform(get("/studentList")
+    mockMvc.perform(get("/students")
             .param("status", status.name()))
         .andExpect(status().isOk())
         .andExpect(content().json("[]"));
@@ -91,7 +91,7 @@ class StudentControllerTest {
     String id = UUID.randomUUID().toString();
 
     // 実行、検証
-    mockMvc.perform(get("/student/{id}", id))
+    mockMvc.perform(get("/students/{id}", id))
         .andExpect(status().isOk());
 
     // 検証
@@ -106,7 +106,7 @@ class StudentControllerTest {
     when(service.getStudentDetailById(id)).thenThrow(new StudentNotFoundException());
 
     // 実行、検証
-    mockMvc.perform(get("/student/{id}", id))
+    mockMvc.perform(get("/students/{id}", id))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.message").value("指定したIDの受講生が見つかりませんでした"));
 
@@ -121,7 +121,7 @@ class StudentControllerTest {
     String wrongId = "aaa";
 
     // 実行、検証
-    mockMvc.perform(get("/student/{id}", wrongId))
+    mockMvc.perform(get("/students/{id}", wrongId))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value(
             "入力された値が無効です。再度ご確認の上、正しい値を入力してください。"));
@@ -156,7 +156,7 @@ class StudentControllerTest {
             }
         """;
     // 実行、検証
-    mockMvc.perform(post("/student")
+    mockMvc.perform(post("/students")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isOk());
@@ -192,7 +192,7 @@ class StudentControllerTest {
             }
         """;
     // 実行、検証
-    mockMvc.perform(post("/student")
+    mockMvc.perform(post("/students")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isBadRequest())
@@ -234,7 +234,7 @@ class StudentControllerTest {
         """;
 
     // 実行と検証
-    mockMvc.perform(put("/student")
+    mockMvc.perform(put("/students")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isOk())
@@ -276,7 +276,7 @@ class StudentControllerTest {
         """;
 
     // 実行と検証
-    mockMvc.perform(put("/student")
+    mockMvc.perform(put("/students")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isBadRequest())
@@ -321,7 +321,7 @@ class StudentControllerTest {
         .when(service).updateStudent(any());
 
     // 実行と検証
-    mockMvc.perform(put("/student")
+    mockMvc.perform(put("/students")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isNotFound())
@@ -365,7 +365,7 @@ class StudentControllerTest {
         .when(service).updateStudent(any());
 
     // 実行と検証
-    mockMvc.perform(put("/student")
+    mockMvc.perform(put("/students")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isNotFound())
@@ -389,7 +389,7 @@ class StudentControllerTest {
         """;
 
     // 実行と検証
-    mockMvc.perform(post("/enrollmentStatus")
+    mockMvc.perform(post("/enrollment-status")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isOk())
@@ -415,7 +415,7 @@ class StudentControllerTest {
         .when(service).updateEnrollmentStatus(any());
 
     // 実行と検証
-    mockMvc.perform(post("/enrollmentStatus")
+    mockMvc.perform(post("/enrollment-status")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isNotFound())
@@ -444,7 +444,7 @@ class StudentControllerTest {
         .when(service).updateEnrollmentStatus(any());
 
     // 実行と検証
-    mockMvc.perform(post("/enrollmentStatus")
+    mockMvc.perform(post("/enrollment-status")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isBadRequest())
