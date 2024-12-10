@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import portfolio.StudentManagement.data.ErrorResponse;
 
 @RestControllerAdvice
@@ -25,8 +26,43 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(StudentCourseNotFoundException.class)
   public ResponseEntity<ErrorResponse> handleStudentCourseNotFoundException(
       StudentCourseNotFoundException ex) {
-    ErrorResponse errorResponse = new ErrorResponse("Student Not Found", ex.getMessage());
+    ErrorResponse errorResponse = new ErrorResponse("StudentCourse Not Found", ex.getMessage());
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+  }
+
+  @ExceptionHandler(EnrollmentStatusNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleEnrollmentStatusNotFoundException(
+      EnrollmentStatusNotFoundException ex) {
+    ErrorResponse errorResponse = new ErrorResponse("EnrollmentStatus Not Found", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+  }
+
+  @ExceptionHandler(EnrollmentStatusBadRequestException.class)
+  public ResponseEntity<ErrorResponse> handleEnrollmentStatusBadRequestException(
+      EnrollmentStatusBadRequestException ex) {
+    ErrorResponse errorResponse = new ErrorResponse("EnrollmentStatus Bad Request",
+        ex.getMessage());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<ErrorResponse> handleTypeMismatchException(
+      MethodArgumentTypeMismatchException ex) {
+    // パラメータ名が "status" の場合のみ特別な処理をする
+    if ("status".equals(ex.getName())) {
+      ErrorResponse errorResponse = new ErrorResponse("EnrollmentStatus Bad Request",
+          "ステータスは右記のいずれかを指定してください： '仮申込','本申込','受講中','受講終了' ");
+      return ResponseEntity
+          .status(HttpStatus.BAD_REQUEST)
+          .body(errorResponse);
+    }
+
+    // それ以外は通常のエラーレスポンスを返す
+    ErrorResponse errorResponse = new ErrorResponse("Bad Request",
+        "Invalid parameter: " + ex.getName());
+    return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .body(errorResponse);
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
