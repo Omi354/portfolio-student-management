@@ -17,6 +17,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -55,6 +56,7 @@ class StudentControllerTest {
   private StudentService service;
 
   private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
 
   @Test
   void 受講生詳細検索_クエリパラメーターが渡されなかった場合_リクエストに対して200番と空のリストが返りserviceが適切に呼び出されること()
@@ -198,8 +200,11 @@ class StudentControllerTest {
 
   }
 
-  @Test
-  void 受講生詳細検索_maxAgeとminAgeにマイナスの値が与えられた場合_400番とInvalidRequestExceptionがスローされること()
+  @ParameterizedTest
+  @MethodSource("provideInvalidMaxMinAges")
+  void 受講生詳細検索_maxAgeとminAgeにマイナスの値が与えられた場合_400番とInvalidRequestExceptionがスローされること(
+      Integer minAge, Integer maxAge
+  )
       throws Exception {
     // 準備
     String fullName = null;
@@ -207,15 +212,13 @@ class StudentControllerTest {
     String nickName = null;
     String email = null;
     String city = null;
-    Integer minAge = -10;
-    Integer maxAge = -1;
     Gender gender = null;
     String remark = null;
 
     // 実行、検証
     mockMvc.perform(get("/students")
-            .param("minAge", minAge.toString())
-            .param("maxAge", maxAge.toString())
+            .param("minAge", Objects.nonNull(minAge) ? minAge.toString() : "")
+            .param("maxAge", Objects.nonNull(maxAge) ? maxAge.toString() : "")
         )
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value(
@@ -735,5 +738,14 @@ class StudentControllerTest {
         Arguments.of(new EnrollmentStatus(), "status", false)
     );
   }
+
+  static Stream<Arguments> provideInvalidMaxMinAges() {
+    return Stream.of(
+        Arguments.of(-1, null),
+        Arguments.of(null, -1),
+        Arguments.of(-1, -1)
+    );
+  }
+
 
 }
