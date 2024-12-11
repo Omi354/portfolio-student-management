@@ -81,7 +81,7 @@ public class StudentService {
   }
 
   /**
-   * 申込状況を指定して受講生詳細を検索します。 引数に受け取った申込状況に合致する受講生コース情報リストを取得し、受講生コース情報に紐づく受講生を取得します。
+   * 申込状況を指定して受講生詳細を検索します。引数に受け取った申込状況に合致する受講生コース情報リストを取得し、受講生コース情報に紐づく受講生を取得します。
    *
    * @param status 申込状況のステータス
    * @return 受講生詳細
@@ -91,6 +91,7 @@ public class StudentService {
         .selectCourseListWithLatestStatus(status);
     List<Student> studentList = studentCourseList.stream()
         .map(studentCourse -> studentRepository.selectStudentById(studentCourse.getStudentId()))
+        .filter(student -> !student.getIsDeleted())
         .toList();
     return converter.getStudentDetailsList(studentList, studentCourseList);
   }
