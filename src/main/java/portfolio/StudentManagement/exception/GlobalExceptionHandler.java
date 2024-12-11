@@ -45,6 +45,13 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
   }
 
+  @ExceptionHandler(InvalidRequestException.class)
+  public ResponseEntity<ErrorResponse> handleInvalidRequestException(
+      InvalidRequestException ex) {
+    ErrorResponse errorResponse = new ErrorResponse("Invalid Request", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+  }
+
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   public ResponseEntity<ErrorResponse> handleTypeMismatchException(
       MethodArgumentTypeMismatchException ex) {

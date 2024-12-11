@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,6 +29,7 @@ import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.exception.EnrollmentStatusBadRequestException;
 import portfolio.StudentManagement.exception.EnrollmentStatusNotFoundException;
+import portfolio.StudentManagement.exception.InvalidRequestException;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.service.StudentService;
@@ -97,9 +100,23 @@ public class StudentController {
       @RequestParam(required = false) Integer minAge,
       @RequestParam(required = false) Integer maxAge,
       @RequestParam(required = false) Gender gender,
-      @RequestParam(required = false) String remark) {
+      @RequestParam(required = false) String remark) throws InvalidRequestException {
+
+    if (status != null && (Stream.of(fullName, kana, nickName, email, city, minAge, maxAge, gender,
+            remark)
+        .anyMatch(Objects::nonNull))) {
+      throw new InvalidRequestException(
+          "申込状況とその他の検索条件を同時に指定することは出来ません");
+    }
     if (status != null) {
       return service.getStudentDetailListByStatus(status);
+    }
+
+    if ((maxAge != null && minAge != null && minAge > maxAge) ||
+        (maxAge != null && maxAge < 0) ||
+        (minAge != null && minAge < 0)) {
+      throw new InvalidRequestException(
+          "minAgeとmaxAgeの指定が無効です: 範囲が逆、または負の値が指定されています");
     }
     return service.getStudentDetailList(fullName, kana, nickName, email, city, minAge, maxAge,
         gender, remark);
