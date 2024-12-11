@@ -102,19 +102,22 @@ public class StudentController {
       @RequestParam(required = false) Gender gender,
       @RequestParam(required = false) String remark) throws InvalidRequestException {
 
-    if (status != null && (Stream.of(fullName, kana, nickName, email, city, minAge, maxAge, gender,
+    if (Objects.nonNull(status) && (Stream.of(fullName, kana, nickName, email, city, minAge, maxAge,
+            gender,
             remark)
         .anyMatch(Objects::nonNull))) {
       throw new InvalidRequestException(
           "申込状況とその他の検索条件を同時に指定することは出来ません");
     }
-    if (status != null) {
+    if (Objects.nonNull(status)) {
       return service.getStudentDetailListByStatus(status);
     }
 
-    if ((maxAge != null && minAge != null && minAge > maxAge) ||
-        (maxAge != null && maxAge < 0) ||
-        (minAge != null && minAge < 0)) {
+    if (
+        (Objects.nonNull(maxAge) && Objects.nonNull(minAge) && minAge > maxAge) ||
+            (Objects.nonNull(maxAge) && maxAge < 0) ||
+            (Objects.nonNull(minAge) && minAge < 0)
+    ) {
       throw new InvalidRequestException(
           "minAgeとmaxAgeの指定が無効です: 範囲が逆、または負の値が指定されています");
     }
