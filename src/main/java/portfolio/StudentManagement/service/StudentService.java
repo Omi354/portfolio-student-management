@@ -46,12 +46,18 @@ public class StudentService {
   }
 
   /**
-   * 受講生詳細の一覧検索を行います。
+   * 受講生詳細の検索を行います。
+   * クエリパラメータとして受け取った値がある場合、クエリにマッチする受講生とそれに紐づく受講生コースリストを含んだ受講生リストを返します。クエリパラメータが全てnullの場合、全件を返します。
+   * なお、論理削除されたレコードは対象外とします。
    *
-   * @return 受講生詳細一覧（全件）
+   * @return 受講生詳細リスト
    */
-  public List<StudentDetail> getAllStudentDetailList() {
-    List<Student> studentList = studentRepository.selectAllStudentList();
+  public List<StudentDetail> getStudentDetailList(String fullName, String kana,
+      String nickName, String email,
+      String city, Integer minAge, Integer maxAge,
+      Gender gender, String remark) {
+    List<Student> studentList = studentRepository.selectStudents(fullName, kana, nickName, email,
+        city, minAge, maxAge, gender, remark);
     List<StudentCourse> studentCourseList = studentCourseRepository.selectAllCourseList();
 
     return converter.getStudentDetailsList(studentList, studentCourseList);
@@ -75,7 +81,7 @@ public class StudentService {
   }
 
   /**
-   * 申込状況を指定して受講生詳細を検索します。 引数に受け取った申込状況に合致する受講生コース情報リストを取得し、受講生コース情報に紐づく受講生を取得します。
+   * 申込状況を指定して受講生詳細を検索します。引数に受け取った申込状況に合致する受講生コース情報リストを取得し、受講生コース情報に紐づく受講生を取得します。
    *
    * @param status 申込状況のステータス
    * @return 受講生詳細
@@ -85,6 +91,7 @@ public class StudentService {
         .selectCourseListWithLatestStatus(status);
     List<Student> studentList = studentCourseList.stream()
         .map(studentCourse -> studentRepository.selectStudentById(studentCourse.getStudentId()))
+        .filter(student -> !student.getIsDeleted())
         .toList();
     return converter.getStudentDetailsList(studentList, studentCourseList);
   }

@@ -1,10 +1,10 @@
 INSERT INTO students (id, full_name, kana, nick_name, email, city, age, gender, remark, is_deleted) VALUES
-  ('1c91a1b0-1111-1111-1111-111111111111', '佐藤 太郎', 'サトウ タロウ', 'たろちゃん', 'taro.sato@example.com', '東京', 25, 'Male', '優秀な学生です', false),
-  ('2c92b2c0-2222-2222-2222-222222222222', '鈴木 花子', 'スズキ ハナコ', 'はなちゃん', 'hanako.suzuki@example.com', '大阪', 28, 'Female', 'クリエイティブ志向', false),
-  ('3c93c3d0-3333-3333-3333-333333333333', '高橋 健一', 'タカハシ ケンイチ', '', 'kenichi.takahashi@example.com', '名古屋', 30, 'Male', 'リーダーシップあり', false),
-  ('4c94d4e0-4444-4444-4444-444444444444', '田中 美香', 'タナカ ミカ', 'みかりん', 'mika.tanaka@example.com', '福岡', 22, 'Female', '向上心が強い', false),
-  ('5c95e5f0-5555-5555-5555-555555555555', '山本 大輔', 'ヤマモト ダイスケ', '', 'daisuke.yamamoto@example.com', '札幌', 27, 'Male', '努力家', false),
-  ('6c96f6g0-6666-6666-6666-666666666666', '伊藤 次郎', 'イトウ ジロウ', 'ジロちゃん', 'jiro.ito@example.com', '仙台', 35, 'Male', '退会済みの学生', true);
+  ('1c91a1b0-1111-1111-1111-111111111111', '佐藤 太郎', 'サトウ タロウ', 'たろちゃん', 'taro.sato@example.com', '東京都港区', 25, 'Male', '優秀な学生です', false),
+  ('2c92b2c0-2222-2222-2222-222222222222', '鈴木 花子', 'スズキ ハナコ', 'はなちゃん', 'hanako.suzuki@example.com', '東京都江東区', 28, 'Female', 'クリエイティブ志向', false),
+  ('3c93c3d0-3333-3333-3333-333333333333', '高橋 健一', 'タカハシ ケンイチ', '', 'kenichi.takahashi@example.com', '愛知県名古屋市', 30, 'Male', 'リーダーシップあり', false),
+  ('4c94d4e0-4444-4444-4444-444444444444', '田中 美香', 'タナカ ミカ', 'みかりん', 'mika.tanaka@example.com', '福岡県福岡市', 22, 'Female', '向上心が強い', false),
+  ('5c95e5f0-5555-5555-5555-555555555555', '山本 大輔', 'ヤマモト ダイスケ', '', 'daisuke.yamamoto@example.com', '北海道札幌市', 27, 'Male', '努力家', false),
+  ('6c96f6g0-6666-6666-6666-666666666666', '伊藤 次郎', 'イトウ ジロウ', 'ジロちゃん', 'jiro.ito@example.com', '宮城県仙台市', 35, 'Male', '退会済みの学生', true);
 
 
 INSERT INTO students_courses (id, student_id, course_name, start_date, end_date) VALUES

@@ -17,6 +17,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -56,21 +57,69 @@ class StudentControllerTest {
 
   private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
+
   @Test
-  void 受講生詳細一覧検索_リクエストに対して200番と空のリストが返りserviceが適切に呼び出されること()
+  void 受講生詳細検索_クエリパラメーターが渡されなかった場合_リクエストに対して200番と空のリストが返りserviceが適切に呼び出されること()
       throws Exception {
+    // 準備
+    String fullName = null;
+    String kana = null;
+    String nickName = null;
+    String email = null;
+    String city = null;
+    Integer minAge = null;
+    Integer maxAge = null;
+    Gender gender = null;
+    String remark = null;
+
     // 実行、検証
     mockMvc.perform(get("/students"))
         .andExpect(status().isOk())
         .andExpect(content().json("[]"));
 
     // 検証
-    verify(service, times(1)).getAllStudentDetailList();
+    verify(service, times(1)).getStudentDetailList(fullName, kana, nickName, email,
+        city, minAge, maxAge, gender, remark);
   }
+
+  @Test
+  void 受講生詳細検索_受講生についてのクエリパラメーターが渡された場合_リクエストに対して200番と空のリストが返りserviceが適切に呼び出されること()
+      throws Exception {
+    // 準備
+    String fullName = "佐藤";
+    String kana = "タロ";
+    String nickName = "たろ";
+    String email = "sato";
+    String city = "東京";
+    Integer minAge = 25;
+    Integer maxAge = 25;
+    Gender gender = Gender.Male;
+    String remark = "学生";
+
+    // 実行、検証
+    mockMvc.perform(get("/students")
+            .param("fullName", fullName)
+            .param("kana", kana)
+            .param("nickName", nickName)
+            .param("email", email)
+            .param("city", city)
+            .param("minAge", minAge.toString())
+            .param("maxAge", maxAge.toString())
+            .param("gender", gender.toString())
+            .param("remark", remark)
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().json("[]"));
+
+    // 検証
+    verify(service, times(1)).getStudentDetailList(fullName, kana, nickName, email,
+        city, minAge, maxAge, gender, remark);
+  }
+
 
   @ParameterizedTest
   @EnumSource(Status.class)
-  void 受講生詳細申込状況検索_適切なリクエストパラメーターが渡された場合_serviceが呼び出され200番と空のリストが返ること(
+  void 受講生詳細検索_statusについてのみリクエストパラメーターが渡された場合_serviceが呼び出され200番と空のリストが返ること(
       Status status)
       throws Exception {
     // 実行と検証
@@ -83,9 +132,77 @@ class StudentControllerTest {
     verify(service, times(1)).getStudentDetailListByStatus(status);
   }
 
+  @Test
+  void 受講生詳細検索_受講生のクエリパラメーターと申込状況のクエリパラメーターが同時に渡された場合_400番とInvalidRequestExceptionがスローされること()
+      throws Exception {
+    // 準備
+    String fullName = "佐藤";
+    String kana = "タロ";
+    String nickName = "たろ";
+    String email = "sato";
+    String city = "東京";
+    Integer minAge = 25;
+    Integer maxAge = 25;
+    Gender gender = Gender.Male;
+    String remark = "学生";
+    Status status = Status.受講中;
+
+    // 実行、検証
+    mockMvc.perform(get("/students")
+            .param("fullName", fullName)
+            .param("kana", kana)
+            .param("nickName", nickName)
+            .param("email", email)
+            .param("city", city)
+            .param("minAge", minAge.toString())
+            .param("maxAge", maxAge.toString())
+            .param("gender", gender.toString())
+            .param("remark", remark)
+            .param("status", status.toString())
+        )
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value(
+            "申込状況とその他の検索条件を同時に指定することは出来ません"));
+
+    // 検証
+    verify(service, times(0)).getStudentDetailList(fullName, kana, nickName, email,
+        city, minAge, maxAge, gender, remark);
+    verify(service, times(0)).getStudentDetailListByStatus(status);
+
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideInvalidMaxMinAges")
+  void 受講生詳細検索_maxAgeとminAgeにマイナスの値が与えられた場合_400番とInvalidRequestExceptionがスローされること(
+      Integer minAge, Integer maxAge
+  )
+      throws Exception {
+    // 準備
+    String fullName = null;
+    String kana = null;
+    String nickName = null;
+    String email = null;
+    String city = null;
+    Gender gender = null;
+    String remark = null;
+
+    // 実行、検証
+    mockMvc.perform(get("/students")
+            .param("minAge", Objects.nonNull(minAge) ? minAge.toString() : "")
+            .param("maxAge", Objects.nonNull(maxAge) ? maxAge.toString() : "")
+        )
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value(
+            "minAgeとmaxAgeの指定が無効です: 範囲が逆、または負の値が指定されています"));
+
+    // 検証
+    verify(service, times(0)).getStudentDetailList(fullName, kana, nickName, email,
+        city, minAge, maxAge, gender, remark);
+
+  }
 
   @Test
-  void 受講生検索_存在するIDが渡された場合_受講生検索が実行され200が返ってくること()
+  void 受講生ID検索_存在するIDが渡された場合_受講生検索が実行され200が返ってくること()
       throws Exception {
     // 準備
     String id = UUID.randomUUID().toString();
@@ -99,7 +216,7 @@ class StudentControllerTest {
   }
 
   @Test
-  void 受講生検索_存在しないIDが渡された場合_受講生検索が実行され404とエラーメッセージが返ってくること()
+  void 受講生ID検索_存在しないIDが渡された場合_受講生検索が実行され404とエラーメッセージが返ってくること()
       throws Exception {
     // 準備
     String id = UUID.randomUUID().toString();
@@ -115,7 +232,7 @@ class StudentControllerTest {
   }
 
   @Test
-  void 受講生検索_誤った形式のIDが渡された場合_受講生検索が実行されず400とエラーメッセージが返ってくること()
+  void 受講生ID検索_誤った形式のIDが渡された場合_受講生検索が実行されず400とエラーメッセージが返ってくること()
       throws Exception {
     // 準備
     String wrongId = "aaa";
@@ -592,5 +709,15 @@ class StudentControllerTest {
         Arguments.of(new EnrollmentStatus(), "status", false)
     );
   }
+
+  static Stream<Arguments> provideInvalidMaxMinAges() {
+    return Stream.of(
+        Arguments.of(-1, null),
+        Arguments.of(null, -1),
+        Arguments.of(-1, -1),
+        Arguments.of(40, 30)
+    );
+  }
+
 
 }

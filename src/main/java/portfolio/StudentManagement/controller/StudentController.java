@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,9 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 import portfolio.StudentManagement.data.EnrollmentStatus;
 import portfolio.StudentManagement.data.EnrollmentStatus.Status;
 import portfolio.StudentManagement.data.ErrorResponse;
+import portfolio.StudentManagement.data.Student.Gender;
 import portfolio.StudentManagement.domain.StudentDetail;
 import portfolio.StudentManagement.exception.EnrollmentStatusBadRequestException;
 import portfolio.StudentManagement.exception.EnrollmentStatusNotFoundException;
+import portfolio.StudentManagement.exception.InvalidRequestException;
 import portfolio.StudentManagement.exception.StudentCourseNotFoundException;
 import portfolio.StudentManagement.exception.StudentNotFoundException;
 import portfolio.StudentManagement.service.StudentService;
@@ -51,21 +55,88 @@ public class StudentController {
 
   /**
    * 受講生詳細検索。クエリパラメータを使用しない場合は全件検索を行います。 statusパラメータとして申込状況を指定すると、該当する申込状況の受講生詳細を検索します。
+   * Studentフィールドの項目に対してパラメータとして検索条件を指定すると、該当する受講生詳細を検索します。
+   * 申込状況とStudentフィールドのパラメータを同時に指定することは出来ません。
    *
-   * @param status 申込状況のステータス（例: "仮申込", "本申込", "受講中", "受講終了"）、非必須
+   * @param status   申込状況のステータス（例: "仮申込", "本申込", "受講中", "受講終了"）、非必須
+   * @param fullName 受講生氏名、部分一致で検索可能、非必須
+   * @param kana     受講生フリガナ、部分一致で検索可能、非必須
+   * @param nickName 受講生ニックネーム、部分一致で検索可能、非必須
+   * @param email    受講生メールアドレス、部分一致で検索可能、非必須
+   * @param city     受講生居住地域、部分一致で検索可能、非必須
+   * @param minAge   検索対象の最小年齢、非必須。0以上の整数で指定。
+   * @param maxAge   検索対象の最大年齢、非必須。0以上の整数で指定。
+   * @param gender   受講生性別（例: "Male", "Female", "NON_BINARY", "Unspecified"）、非必須
+   * @param remark   受講生備考、部分一致で検索可能、非必須
    * @return 受講生詳細のリスト
+   * @throws InvalidRequestException リクエストパラメータに関する例外処理
    */
   @Operation(
       summary = "受講生詳細の検索",
       description = "受講生詳細の一覧を検索します。クエリパラメータ `status` を指定しない場合、全件検索を行います。"
-          +
-          "クエリパラメータ `status` を指定すると、そのステータスに該当する受講生詳細を検索します。",
+          + "クエリパラメータ `status` を指定すると、そのステータスに該当する受講生詳細を検索します。"
+          + "クエリパラメーターとしてStudentフィールドの項目を指定すると、条件に該当する受講生詳細を検索します。"
+          + "`status`の指定と、Studentフィールドの項目を同時に指定することは出来ません。",
       parameters = {
           @Parameter(
               name = "status",
               description = "申込状況のステータス（例: \"仮申込\", \"本申込\", \"受講中\", \"受講終了\"）。指定しない場合、全件を返します。",
               required = false,
               schema = @Schema(implementation = Status.class)
+          ),
+          @Parameter(
+              name = "fullName",
+              description = "受講生氏名。部分一致で検索可能。",
+              required = false,
+              schema = @Schema(type = "string")
+          ),
+          @Parameter(
+              name = "kana",
+              description = "受講生フリガナ。部分一致で検索可能。",
+              required = false,
+              schema = @Schema(type = "string")
+          ),
+          @Parameter(
+              name = "nickName",
+              description = "受講生ニックネーム。部分一致で検索可能。",
+              required = false,
+              schema = @Schema(type = "string")
+          ),
+          @Parameter(
+              name = "email",
+              description = "受講生メールアドレス。部分一致で検索可能。",
+              required = false,
+              schema = @Schema(type = "string")
+          ),
+          @Parameter(
+              name = "city",
+              description = "受講生居住地域。部分一致で検索可能。",
+              required = false,
+              schema = @Schema(type = "string")
+          ),
+          @Parameter(
+              name = "minAge",
+              description = "検索対象の最小年齢。0以上の整数を指定します。",
+              required = false,
+              schema = @Schema(type = "integer", format = "int32", minimum = "0")
+          ),
+          @Parameter(
+              name = "maxAge",
+              description = "検索対象の最大年齢。0以上の整数を指定します。",
+              required = false,
+              schema = @Schema(type = "integer", format = "int32", minimum = "0")
+          ),
+          @Parameter(
+              name = "gender",
+              description = "受講生性別（例: \"Male\", \"Female\", \"NON_BINARY\", \"Unspecified\"）",
+              required = false,
+              schema = @Schema(implementation = Gender.class)
+          ),
+          @Parameter(
+              name = "remark",
+              description = "受講生備考。部分一致で検索可能。",
+              required = false,
+              schema = @Schema(type = "string")
           )
       },
       responses = {
@@ -78,7 +149,9 @@ public class StudentController {
           ),
           @ApiResponse(
               responseCode = "400",
-              description = "不正なクエリパラメータ",
+              description = "不正なクエリパラメータ。以下のケースが考えられます:\n"
+                  + "1. `status`と他の検索条件が同時に指定されている\n"
+                  + "2. `minAge`と`maxAge`の範囲が逆転している、または負の値が指定されている",
               content = @Content(
                   mediaType = "application/json",
                   schema = @Schema(implementation = ErrorResponse.class)
@@ -87,11 +160,38 @@ public class StudentController {
       }
   )
   @GetMapping("/students")
-  public List<StudentDetail> getStudentList(@RequestParam(required = false) Status status) {
-    if (status != null) {
+  public List<StudentDetail> getStudentList(@RequestParam(required = false) Status status,
+      @RequestParam(required = false) String fullName,
+      @RequestParam(required = false) String kana,
+      @RequestParam(required = false) String nickName,
+      @RequestParam(required = false) String email,
+      @RequestParam(required = false) String city,
+      @RequestParam(required = false) Integer minAge,
+      @RequestParam(required = false) Integer maxAge,
+      @RequestParam(required = false) Gender gender,
+      @RequestParam(required = false) String remark) throws InvalidRequestException {
+
+    if (Objects.nonNull(status) && (Stream.of(fullName, kana, nickName, email, city, minAge, maxAge,
+            gender,
+            remark)
+        .anyMatch(Objects::nonNull))) {
+      throw new InvalidRequestException(
+          "申込状況とその他の検索条件を同時に指定することは出来ません");
+    }
+    if (Objects.nonNull(status)) {
       return service.getStudentDetailListByStatus(status);
     }
-    return service.getAllStudentDetailList();
+
+    if (
+        (Objects.nonNull(maxAge) && Objects.nonNull(minAge) && minAge > maxAge) ||
+            (Objects.nonNull(maxAge) && maxAge < 0) ||
+            (Objects.nonNull(minAge) && minAge < 0)
+    ) {
+      throw new InvalidRequestException(
+          "minAgeとmaxAgeの指定が無効です: 範囲が逆、または負の値が指定されています");
+    }
+    return service.getStudentDetailList(fullName, kana, nickName, email, city, minAge, maxAge,
+        gender, remark);
   }
 
   /**

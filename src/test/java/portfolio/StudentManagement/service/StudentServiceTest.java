@@ -3,6 +3,7 @@ package portfolio.StudentManagement.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,16 +67,29 @@ class StudentServiceTest {
   @Test
   void 受講生詳細の一覧検索_RepositoryとConverterの処理が適切に呼び出せていること() {
     // 事前準備
+    String fullName = "";
+    String kana = "";
+    String nickName = "";
+    String email = "";
+    String city = "";
+    Integer minAge = null;
+    Integer maxAge = null;
+    Gender gender = null;
+    String remark = "";
+
     List<Student> studentList = new ArrayList<>();
     List<StudentCourse> studentCourseList = new ArrayList<>();
-    when(studentRepository.selectAllStudentList()).thenReturn(studentList);
+    when(studentRepository.selectStudents(fullName, kana, nickName, email,
+        city, minAge, maxAge, gender, remark)).thenReturn(studentList);
     when(studentCourseRepository.selectAllCourseList()).thenReturn(studentCourseList);
 
     // 実行
-    sut.getAllStudentDetailList();
+    sut.getStudentDetailList(fullName, kana, nickName, email,
+        city, minAge, maxAge, gender, remark);
 
     // 検証
-    verify(studentRepository, times(1)).selectAllStudentList();
+    verify(studentRepository, times(1)).selectStudents(fullName, kana, nickName, email,
+        city, minAge, maxAge, gender, remark);
     verify(studentCourseRepository, times(1)).selectAllCourseList();
     verify(converter, times(1))
         .getStudentDetailsList(studentList, studentCourseList);
@@ -592,6 +606,13 @@ class StudentServiceTest {
 
     when(studentCourseRepository.selectCourseListWithLatestStatus(status))
         .thenReturn(mockedCourseList);
+
+    for (StudentCourse studentCourse : mockedCourseList) {
+      Student mockedStudent = mock(Student.class);
+      when(mockedStudent.getIsDeleted()).thenReturn(false);
+      when(studentRepository.selectStudentById(studentCourse.getStudentId()))
+          .thenReturn(mockedStudent);
+    }
 
     // 実行
     sut.getStudentDetailListByStatus(status);

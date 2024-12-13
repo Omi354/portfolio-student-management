@@ -5,12 +5,42 @@
 <mapper namespace="portfolio.StudentManagement.repository.StudentRepository">
 
   <!-- 受講生の全件検索 -->
-  <select id="selectAllStudentList" resultType="portfolio.StudentManagement.data.Student">
+  <select id="selectStudents" resultType="portfolio.StudentManagement.data.Student">
     SELECT * FROM students
     WHERE is_deleted = false
+    <if test="fullName != null and fullName != ''">
+      AND full_name LIKE CONCAT('%', #{fullName}, '%')
+    </if>
+    <if test="kana != null and kana != ''">
+      AND kana LIKE CONCAT('%', #{kana}, '%')
+    </if>
+    <if test="nickName != null and nickName != ''">
+      AND nick_name LIKE CONCAT('%', #{nickName}, '%')
+    </if>
+    <if test="email != null and email != ''">
+      AND email LIKE CONCAT('%', #{email}, '%')
+    </if>
+    <if test="city != null and city != ''">
+      AND city LIKE CONCAT('%', #{city}, '%')
+    </if>
+    <if test="minAge != null">
+      AND age >= #{minAge}
+    </if>
+    <if test="maxAge != null">
+      AND #{maxAge} >= age
+    </if>
+    <if test="nickName != null and nickName != ''">
+      AND nick_name LIKE CONCAT('%', #{nickName}, '%')
+    </if>
+    <if test="gender != null">
+      AND gender = #{gender}
+    </if>
+    <if test="remark != null and remark != ''">
+      AND remark LIKE CONCAT('%', #{remark}, '%')
+    </if>
   </select>
 
-  <!-- 受講生の検索 -->
+  <!-- 受講生のID検索 -->
   <select id="selectStudentById" parameterType="String"
     resultType="portfolio.StudentManagement.data.Student">
     SELECT * FROM students
