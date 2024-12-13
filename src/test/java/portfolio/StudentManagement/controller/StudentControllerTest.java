@@ -171,35 +171,6 @@ class StudentControllerTest {
 
   }
 
-  @Test
-  void 受講生詳細検索_maxAgeがminAgeよりも小さい時_400番とInvalidRequestExceptionがスローされること()
-      throws Exception {
-    // 準備
-    String fullName = null;
-    String kana = null;
-    String nickName = null;
-    String email = null;
-    String city = null;
-    Integer minAge = 30;
-    Integer maxAge = 25;
-    Gender gender = null;
-    String remark = null;
-
-    // 実行、検証
-    mockMvc.perform(get("/students")
-            .param("minAge", minAge.toString())
-            .param("maxAge", maxAge.toString())
-        )
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.message").value(
-            "minAgeとmaxAgeの指定が無効です: 範囲が逆、または負の値が指定されています"));
-
-    // 検証
-    verify(service, times(0)).getStudentDetailList(fullName, kana, nickName, email,
-        city, minAge, maxAge, gender, remark);
-
-  }
-
   @ParameterizedTest
   @MethodSource("provideInvalidMaxMinAges")
   void 受講生詳細検索_maxAgeとminAgeにマイナスの値が与えられた場合_400番とInvalidRequestExceptionがスローされること(
@@ -743,7 +714,8 @@ class StudentControllerTest {
     return Stream.of(
         Arguments.of(-1, null),
         Arguments.of(null, -1),
-        Arguments.of(-1, -1)
+        Arguments.of(-1, -1),
+        Arguments.of(40, 30)
     );
   }
 
