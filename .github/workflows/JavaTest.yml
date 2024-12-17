@@ -80,10 +80,3 @@ jobs:
             else
               sudo systemctl start portfolio-student-management
             fi
-
-
-
-#SPRING_DATASOURCE_URL=jdbc:mysql://studentmanagementdb.c32kmem8iygm.ap-northeast-1.rds.amazonaws.com:3306/StudentManagement
-#SPRING_DATASOURCE_USERNAME=root
-#SPRING_DATASOURCE_PASSWORD=rootroot
-#SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
