@@ -39,11 +39,22 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew bootJar
 
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-jar
+          path: build/libs/*.jar
+
   deploy:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     needs: build-and-test
     steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: built-jar
+          
       - name: SCP Copy Application to EC2
         env:
           PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
