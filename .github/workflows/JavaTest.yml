@@ -12,7 +12,6 @@ env:
   SRC_PATH: 'build/libs/*.jar'
   DEST_PATH: '/home/ec2-user/portfolio-student-management.jar'
 
-
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -54,7 +53,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: built-jar
-          
+
       - name: SCP Copy Application to EC2
         env:
           PRIVATE_KEY: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
