@@ -199,6 +199,8 @@ sequenceDiagram
 
 ### インフラ構成図
 
+![](images/infrastructure-diagram.drawio.svg)
+
 ## テスト
 
 ## 自動テスト
