@@ -201,9 +201,28 @@ sequenceDiagram
 
 ![](images/infrastructure-diagram.drawio.svg)
 
-## テスト
-
 ## 自動テスト
+
+下記テストをJUnit5で作成し、GitHub Actionsでプルリクエスト作成時に実行しています。
+
+
+<details>
+<summary>単体テスト</summary>
+
+- [Controller層の単体テスト](src/test/java/portfolio/StudentManagement/controller/StudentControllerTest.java)
+- [Service層の単体テスト](src/test/java/portfolio/StudentManagement/service/StudentServiceTest.java)
+- [Converterの単体テスト](src/test/java/portfolio/StudentManagement/controller/converter/StudentConverterTest.java)
+
+</details>
+
+<details>
+<summary>DBテスト</summary>
+
+- [StudentモデルのDBテスト](src/test/java/portfolio/StudentManagement/controller/converter/StudentConverterTest.java)
+- [StudentCourseモデルのDBテスト](src/test/java/portfolio/StudentManagement/repository/StudentCourseRepositoryTest.java)
+- [EnrollmentStatusモデルのDBテスト](src/test/java/portfolio/StudentManagement/repository/EnrollmentStatusRepositoryTest.java)
+
+</details>
 
 ## 作成スケジュール
 
@@ -222,3 +241,8 @@ sequenceDiagram
 ## ハマった点
 
 ## 今後の展望
+
+### インフラ環境の修正
+
+- SSMとS3を使って自動デプロイされるように修正
+    - 目的：現状IPアドレスを使ってデプロイ先を指定しているが、IPアドレスがEC2インスタンス再起動の度に
