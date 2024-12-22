@@ -58,6 +58,8 @@ JavaやSpring Bootの学習成果を形にするために作成しました。
 
 ### API仕様書
 
+[SwaggerによるAPI仕様書](https://omi354.github.io/portfolio-student-management/)
+
 ### ER図
 
 ```mermaid
