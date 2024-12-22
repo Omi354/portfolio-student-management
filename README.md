@@ -16,19 +16,25 @@ JavaやSpring Bootの学習成果を形にするために作成しました。
 
 ### バックエンド
 
-- Java: 21.0.5
-- SpringBoot: 3.3.5
+![badge](https://img.shields.io/badge/language-Java_21-%23007396)
+![badge](https://img.shields.io/badge/SpringBoot-3.3.5-%236DB33F?logo=spring)
 
 ### インフラ・DB
 
-- AWS: EC2, RDS, ALB
-- MySQL: 8.0.40
+![badge](https://img.shields.io/badge/AWS-EC2-FF9900?logo=amazonec2&labelColor=cccccc)
+![badge](https://img.shields.io/badge/AWS-RDS-527FFF?logo=amazonrds&labelColor=cccccc)
+![badge](https://img.shields.io/badge/AWS-ALB-8C4FFF?logo=awselasticloadbalancing&labelColor=cccccc)
+![badge](https://img.shields.io/badge/MySQL-%234479A1?logo=mysql&logoColor=white)
 
 ### 使用ツール
 
-- O/R Mapper: MyBatis
-- 自動テスト: JUnit5
-- CI/CDパイプライン: GitHub Actions
+![badge](https://img.shields.io/badge/MyBatis-%23DC382D?logoColor=white)
+![badge](https://img.shields.io/badge/Junit5-%2325A162?logo=junit5&logoColor=white)
+![badge](https://img.shields.io/badge/Postman-%23FF6C37?logo=postman&logoColor=white)
+![badge](https://img.shields.io/badge/Swagger-%2385EA2D?logo=swagger&logoColor=white)
+![badge](https://img.shields.io/badge/GitHub-%23181717?logo=github&logoColor=white)
+![badge](https://img.shields.io/badge/GitHub_Actions-%232088FF?logo=githubactions&logoColor=white)
+![badge](https://img.shields.io/badge/-intellij%20IDEA-000.svg?logo=intellij-idea&style=flat)
 
 ## 機能一覧
 
@@ -83,7 +89,7 @@ erDiagram
     }
 
     STUDENTS ||--o{ STUDENTS_COURSES: "enrolls"
-    STUDENTS_COURSES ||--|| ENROLLMENT_STATUSES: "has"
+    STUDENTS_COURSES ||--o{ ENROLLMENT_STATUSES: "has"
 
 ```
 
@@ -224,25 +230,35 @@ sequenceDiagram
 
 </details>
 
-## 作成スケジュール
+## 力をいれたところ
 
-## 工夫した点
+- **ユースケースに基づいた設計**<br>
+  分析に活用することを想定し、既存のレコードを保持するようなDB処理を行っています。<br>
+  具体的には、「受講生の削除機能をUPDATE処理を使い論理削除として実装」、「申込状況の更新機能をINSERT処理として実装」といった対応をしています。これにより、以下のようなデータ活用が可能です。
+    - 受講生の論理削除
+        - 退会者属性の傾向を分析し、マーケティングに役立てる
+        - 退会者数をKPIとしてモニタリングし、一定水準を下回った場合に早期に着手できるようにする
+    - 申込状況のINSERT処理
+        - 仮申込状況・本申込状況の期間をカスタマーサクセスチームのKPIとして設定する
+        - 受講期間をモニタリングし、講座難易度の調整に役立てる
 
-- 実際のユースケースを想定した実装を行いました
-  - 
-    - 分析に使用できるよう、論理削除・UPDATEせずにINSERT処理
-    - 申込状況更新について、後ろに戻るような修正を加える際に例外を発生させるよう実装しました
-        - 該当箇所：
-          - 
 
-- 更新処理においてパフォーマンスを意識し、更新有無をチェックし、更新がある場合のみSQLを発行するように実装しました
-    - 該当箇所：
+- **効果的なバリデーション、例外処理**<br>
+  正規表現などを用いてバリデーションを設定しました。<br>
+  また、エラーがあった際にユーザーが適切に修正できるよう、 バリデーションエラー、ID検索の際のNot
+  Foundエラー、意図していない操作をされた際のBadRequestエラーなどのハンドリングを行い、クライエント側にエラーメッセージが表示されるようにしました。
 
-## ハマった点
+
+- **実装意図が伝わりやすいコーディング・ドキュメント作成**<br>
+  具体的には以下の3点を行いました
+    - コード内でのドキュメント作成：主要なクラス・メソッドにJavadocやOpenAPIアノテーションを利用したドキュメントを記述しました
+    - 命名へのこだわり: 命名から挙動を想定できるよう、クラス名・メソッド名を工夫しました
+    - 読みやすいレビュー依頼: プルリクエストでのレビュー依頼時に概要を把握しやすいよう、変更点・変更目的・特にレビューいただきたい箇所などを明示しました
 
 ## 今後の展望
 
-### インフラ環境の修正
-
-- SSMとS3を使って自動デプロイされるように修正
-    - 目的：現状IPアドレスを使ってデプロイ先を指定しているが、IPアドレスがEC2インスタンス再起動の度に
+- フロントエンドの実装
+- インフラ構成の修正：SSMとS3を使用し、EC2のIPアドレスが変わっても動くように修正
+- アカウント作成・ログイン機能の実装
+- テーブルを跨いだ検索機能の実装
+- 結合テストの自動テストを作成
