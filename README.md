@@ -101,7 +101,7 @@ erDiagram
 | GET           | /students                           | 受講生詳細の取得             | クエリパラメータを指定した場合は<br/>条件検索をします |
 | GET           | /students/{id}                      | IDに合致する<br/>受講生詳細の取得 |                               |
 | PUT           | /students                           | 受講生詳細の更新             |                               |
-| POST          | /students/courses/enrollment-status | 申込状況の更新              | 挙動としては追加しますが<br/>実質更新処理を行います  |
+| POST          | /students/courses/enrollment-status | 申込状況の更新              | 挙動としては新規レコードを追加します            |
 
 ### シーケンス図
 
