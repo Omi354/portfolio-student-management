@@ -129,6 +129,8 @@ sequenceDiagram
     alt 入力データが有効な場合
         API ->> DB: SELECT受講生
         DB -->> API: 受講生
+        API ->> DB: SELECT受講コース
+        DB -->> API: 受講コース
         API -->> User: 200 受講生詳細
     else 入力データが無効な場合
         API -->>- User: 400 エラーメッセージ
