@@ -103,7 +103,7 @@ erDiagram
 |---------------|-------------------------------------|---------------------------------------|
 | POST          | /students                           | 受講生詳細の作成                              |
 | GET           | /students                           | 受講生詳細の取得<br/>クエリパラメータを指定した場合は条件検索をします | 
-| GET           | /students/{id}                      | 指定したIDの<br/>受講生詳細の取得                  |
+| GET           | /students/{id}                      | 指定したIDの受講生詳細の取得                       |
 | PUT           | /students                           | 受講生詳細の更新                              |
 | POST          | /students/courses/enrollment-status | 申込状況の更新<br/>※挙動としては新規レコードを追加します       | 
 
