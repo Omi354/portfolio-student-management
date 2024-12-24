@@ -3,94 +3,96 @@ info:
   title: 受講生管理システム
   description: 受講生情報を管理するためのシステムです。主に受講生の個人情報と受講しているコース情報の管理、操作を行います
 servers:
-- url: http://localhost:8080
-  description: Generated server url
+  - url: http://StudentManagementALB-764529681.ap-northeast-1.elb.amazonaws.com
+    description: Production server
+  - url: http://localhost:8080
+    description: Local development server
 paths:
   /students:
     get:
       tags:
-      - student-controller
+        - student-controller
       summary: 受講生詳細の検索
       description: 受講生詳細の一覧を検索します。クエリパラメータ `status` を指定しない場合、全件検索を行います。クエリパラメータ `status`
         を指定すると、そのステータスに該当する受講生詳細を検索します。クエリパラメーターとしてStudentフィールドの項目を指定すると、条件に該当する受講生詳細を検索します。`status`の指定と、Studentフィールドの項目を同時に指定することは出来ません。
       operationId: getStudentList
       parameters:
-      - name: status
-        in: query
-        description: "申込状況のステータス（例: \"仮申込\", \"本申込\", \"受講中\", \"受講終了\"）。指定しない場合、全\
+        - name: status
+          in: query
+          description: "申込状況のステータス（例: \"仮申込\", \"本申込\", \"受講中\", \"受講終了\"）。指定しない場合、全\
           件を返します。"
-        required: false
-        schema:
-          type: string
-          enum:
-          - 仮申込
-          - 本申込
-          - 受講中
-          - 受講終了
-      - name: fullName
-        in: query
-        description: 受講生氏名。部分一致で検索可能。
-        required: false
-        schema:
-          type: string
-      - name: kana
-        in: query
-        description: 受講生フリガナ。部分一致で検索可能。
-        required: false
-        schema:
-          type: string
-      - name: nickName
-        in: query
-        description: 受講生ニックネーム。部分一致で検索可能。
-        required: false
-        schema:
-          type: string
-      - name: email
-        in: query
-        description: 受講生メールアドレス。部分一致で検索可能。
-        required: false
-        schema:
-          type: string
-      - name: city
-        in: query
-        description: 受講生居住地域。部分一致で検索可能。
-        required: false
-        schema:
-          type: string
-      - name: minAge
-        in: query
-        description: 検索対象の最小年齢。0以上の整数を指定します。
-        required: false
-        schema:
-          minimum: 0
-          type: integer
-          format: int32
-      - name: maxAge
-        in: query
-        description: 検索対象の最大年齢。0以上の整数を指定します。
-        required: false
-        schema:
-          minimum: 0
-          type: integer
-          format: int32
-      - name: gender
-        in: query
-        description: "受講生性別（例: \"Male\", \"Female\", \"NON_BINARY\", \"Unspecified\"\
+          required: false
+          schema:
+            type: string
+            enum:
+              - 仮申込
+              - 本申込
+              - 受講中
+              - 受講終了
+        - name: fullName
+          in: query
+          description: 受講生氏名。部分一致で検索可能。
+          required: false
+          schema:
+            type: string
+        - name: kana
+          in: query
+          description: 受講生フリガナ。部分一致で検索可能。
+          required: false
+          schema:
+            type: string
+        - name: nickName
+          in: query
+          description: 受講生ニックネーム。部分一致で検索可能。
+          required: false
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: 受講生メールアドレス。部分一致で検索可能。
+          required: false
+          schema:
+            type: string
+        - name: city
+          in: query
+          description: 受講生居住地域。部分一致で検索可能。
+          required: false
+          schema:
+            type: string
+        - name: minAge
+          in: query
+          description: 検索対象の最小年齢。0以上の整数を指定します。
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: maxAge
+          in: query
+          description: 検索対象の最大年齢。0以上の整数を指定します。
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: gender
+          in: query
+          description: "受講生性別（例: \"Male\", \"Female\", \"NON_BINARY\", \"Unspecified\"\
           ）"
-        required: false
-        schema:
-          type: string
-          enum:
-          - Male
-          - Female
-          - NON_BINARY
-          - Unspecified
-      - name: remark
-        in: query
-        description: 受講生備考。部分一致で検索可能。
-        required: false
-        schema:
-          type: string
+          required: false
+          schema:
+            type: string
+            enum:
+              - Male
+              - Female
+              - NON_BINARY
+              - Unspecified
+        - name: remark
+          in: query
+          description: 受講生備考。部分一致で検索可能。
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: 検索結果としての受講生詳細のリスト
@@ -111,7 +113,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
     put:
       tags:
-      - student-controller
+        - student-controller
       summary: 受講生更新
       description: 受講生の情報を更新します。指定した受講生情報や受講生コース情報が存在しない場合、エラーを発生させます。
       operationId: updateStudent
@@ -144,7 +146,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
     post:
       tags:
-      - student-controller
+        - student-controller
       summary: 受講生登録
       description: 受講生を登録します
       operationId: registerStudent
@@ -172,7 +174,7 @@ paths:
   /students/courses/enrollment-status:
     post:
       tags:
-      - student-controller
+        - student-controller
       summary: 申込状況更新
       description: 申込状況を更新します。実際には同じ受講生コース情報に紐づく申込状況を作成し、過去の申込状況をDB上に保持できるようにしています。
       operationId: updateEnrollmentStatus
@@ -206,21 +208,21 @@ paths:
   /students/{id}:
     get:
       tags:
-      - student-controller
+        - student-controller
       summary: 受講生検索
       description: パスで指定されたIDに該当する受講生を検索します。IDに紐づく受講生が存在しない場合エラーを発生させます。
       operationId: getStudent
       parameters:
-      - name: id
-        in: path
-        description: 受講生ID
-        required: true
-        schema:
-          pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
-          type: string
-          description: 自動生成されたUUID
-          format: uuid
-          example: 5998fd5d-a2cd-11ef-b71f-6845f15f510c
+        - name: id
+          in: path
+          description: 受講生ID
+          required: true
+          schema:
+            pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+            type: string
+            description: 自動生成されたUUID
+            format: uuid
+            example: 5998fd5d-a2cd-11ef-b71f-6845f15f510c
       responses:
         "200":
           description: ok
@@ -244,7 +246,7 @@ components:
   schemas:
     EnrollmentStatus:
       required:
-      - status
+        - status
       type: object
       properties:
         id:
@@ -260,10 +262,10 @@ components:
           description: 申込状況
           example: 受講中
           enum:
-          - 仮申込
-          - 本申込
-          - 受講中
-          - 受講終了
+            - 仮申込
+            - 本申込
+            - 受講中
+            - 受講終了
         createdAt:
           type: string
           description: レコード作成日
@@ -271,9 +273,9 @@ components:
       description: 申込状況
     Student:
       required:
-      - city
-      - email
-      - fullName
+        - city
+        - email
+        - fullName
       type: object
       properties:
         id:
@@ -311,10 +313,10 @@ components:
           description: 性別
           example: Male
           enum:
-          - Male
-          - Female
-          - NON_BINARY
-          - Unspecified
+            - Male
+            - Female
+            - NON_BINARY
+            - Unspecified
         remark:
           type: string
           description: 備考
@@ -326,7 +328,7 @@ components:
       description: 受講生
     StudentCourse:
       required:
-      - courseName
+        - courseName
       type: object
       properties:
         id:
