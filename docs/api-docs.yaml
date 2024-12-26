@@ -3,8 +3,6 @@ info:
   title: 受講生管理システム
   description: 受講生情報を管理するためのシステムです。主に受講生の個人情報と受講しているコース情報の管理、操作を行います
 servers:
-  - url: http://StudentManagementALB-764529681.ap-northeast-1.elb.amazonaws.com
-    description: Production server
   - url: http://localhost:8080
     description: Local development server
 paths:
