@@ -8,7 +8,7 @@ on:
 
 env:
   EC2_USER: 'ec2-user'
-  EC2_HOST: '13.231.194.167'
+  EC2_HOST: '52.196.21.198'
   SRC_PATH: 'build/libs/*.jar'
   DEST_PATH: '/home/ec2-user/portfolio-student-management.jar'
 
