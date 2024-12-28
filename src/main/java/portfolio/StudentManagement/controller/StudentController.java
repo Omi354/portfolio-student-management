@@ -160,7 +160,8 @@ public class StudentController {
       }
   )
   @GetMapping("/students")
-  public List<StudentDetail> getStudentList(@RequestParam(required = false) Status status,
+  public List<StudentDetail> getStudentList(
+      @RequestParam(required = false) Status status,
       @RequestParam(required = false) String fullName,
       @RequestParam(required = false) String kana,
       @RequestParam(required = false) String nickName,
@@ -172,8 +173,7 @@ public class StudentController {
       @RequestParam(required = false) String remark) throws InvalidRequestException {
 
     if (Objects.nonNull(status) && (Stream.of(fullName, kana, nickName, email, city, minAge, maxAge,
-            gender,
-            remark)
+            gender, remark)
         .anyMatch(Objects::nonNull))) {
       throw new InvalidRequestException(
           "申込状況とその他の検索条件を同時に指定することは出来ません");
