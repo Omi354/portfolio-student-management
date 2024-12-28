@@ -92,6 +92,42 @@
       AND s.student_id = #{studentId}
   </select>
 
+  <!-- 受講生コース情報の検索 -->
+  <select id="selectCourseListBySearchQuery" resultMap="StudentCourseResultMap">
+    WITH ranked_statuses AS (
+      SELECT
+        e.id AS enrollment_status_id,
+        e.student_course_id,
+        e.status,
+        e.created_at,
+        ROW_NUMBER() OVER (
+          PARTITION BY e.student_course_id
+          ORDER BY e.created_at DESC
+        ) AS rn
+      FROM
+      enrollment_statuses e
+    )
+    SELECT
+      s.id AS id,
+      s.student_id,
+      s.course_name,
+      s.start_date,
+      s.end_date,
+      r.enrollment_status_id,
+      r.student_course_id,
+      r.status,
+      r.created_at
+    FROM
+      students_courses s
+    INNER JOIN
+      ranked_statuses r
+      ON s.id = r.student_course_id
+    WHERE
+      r.rn = 1
+      <if test="courseName != null and courseName != ''">
+        AND s.course_name LIKE CONCAT('%', #{courseName}, '%')
+      </if>
+  </select>
 
   <!-- 受講生コース情報の申込状況検索 -->
   <select id="selectCourseListWithLatestStatus"
