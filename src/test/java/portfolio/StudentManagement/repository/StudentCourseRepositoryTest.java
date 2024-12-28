@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import portfolio.StudentManagement.data.EnrollmentStatus;
@@ -136,6 +137,26 @@ class StudentCourseRepositoryTest {
         .usingRecursiveFieldByFieldElementComparator()
         .isEqualTo(expected);
 
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"Javaフルコース", "AWSフルコース", "デザインコース"})
+  void 受講生コース条件検索_受講生コース名が条件指定された場合_条件に合致する受講生コースが取得できること(
+      String courseName) {
+
+    // 準備
+    List<StudentCourse> expected = provideExistingStudentCourses()
+        .filter(studentCourse -> studentCourse.getCourseName().equals(courseName))
+        .toList();
+
+    LocalDateTime startDate = null;
+    LocalDateTime endDate = null;
+
+    // 実行
+    List<StudentCourse> actual = sut.selectCourseListBySearchQuery(courseName, startDate, endDate);
+
+    // 検証
+    assertThat(actual).isEqualTo(expected);
   }
 
 
