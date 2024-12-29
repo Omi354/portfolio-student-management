@@ -127,6 +127,12 @@
       <if test="courseName != null and courseName != ''">
         AND s.course_name LIKE CONCAT('%', #{courseName}, '%')
       </if>
+      <if test="startDate != null and startDate != ''">
+        AND s.start_date LIKE CONCAT('%', #{startDate}, '%')
+      </if>
+      <if test="endDate != null and endDate != ''">
+        AND s.end_date LIKE CONCAT('%', #{endDate}, '%')
+      </if>
   </select>
 
   <!-- 受講生コース情報の申込状況検索 -->
