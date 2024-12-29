@@ -149,11 +149,91 @@ class StudentCourseRepositoryTest {
         .filter(studentCourse -> studentCourse.getCourseName().equals(courseName))
         .toList();
 
-    LocalDateTime startDate = null;
-    LocalDateTime endDate = null;
+    LocalDateTime startDateRangeFrom = null;
+    LocalDateTime startDateRangeTo = null;
+    LocalDateTime endDateRangeFrom = null;
+    LocalDateTime endDateRangeTo = null;
 
     // 実行
-    List<StudentCourse> actual = sut.selectCourseListBySearchQuery(courseName, startDate, endDate);
+    List<StudentCourse> actual = sut.selectCourseListBySearchQuery(courseName, startDateRangeFrom,
+        startDateRangeTo, endDateRangeFrom, endDateRangeTo);
+
+    // 検証
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  void 受講生コース条件検索_受講開始日の範囲指定がされた場合_条件に合致する受講生コースが取得できること() {
+
+    // 準備
+
+    LocalDateTime startDateRangeFrom = LocalDateTime.of(2023, 12, 31, 0, 0, 0);
+    LocalDateTime startDateRangeTo = LocalDateTime.of(2024, 4, 1, 0, 0, 0);
+
+    List<StudentCourse> expected = provideExistingStudentCourses()
+        .filter(studentCourse -> studentCourse.getStartDate().isAfter(startDateRangeFrom))
+        .filter(studentCourse -> studentCourse.getStartDate().isBefore(startDateRangeTo))
+        .toList();
+
+    String courseName = null;
+    LocalDateTime endDateRangeFrom = null;
+    LocalDateTime endDateRangeTo = null;
+
+    // 実行
+    List<StudentCourse> actual = sut.selectCourseListBySearchQuery(courseName, startDateRangeFrom,
+        startDateRangeTo, endDateRangeFrom, endDateRangeTo);
+
+    // 検証
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  void 受講生コース条件検索_受講終了日の範囲指定がされた場合_条件に合致する受講生コースが取得できること() {
+
+    // 準備
+
+    LocalDateTime endDateRangeFrom = LocalDateTime.of(2024, 5, 31, 0, 0, 0);
+    LocalDateTime endDateRangeTo = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
+
+    List<StudentCourse> expected = provideExistingStudentCourses()
+        .filter(studentCourse -> studentCourse.getEndDate().isAfter(endDateRangeFrom))
+        .filter(studentCourse -> studentCourse.getEndDate().isBefore(endDateRangeTo))
+        .toList();
+
+    String courseName = null;
+    LocalDateTime startDateRangeFrom = null;
+    LocalDateTime startDateRangeTo = null;
+
+    // 実行
+    List<StudentCourse> actual = sut.selectCourseListBySearchQuery(courseName, startDateRangeFrom,
+        startDateRangeTo, endDateRangeFrom, endDateRangeTo);
+
+    // 検証
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"Javaフルコース", "AWSフルコース", "デザインコース"})
+  void 受講生コース条件検索_複数条件で条件指定された場合_条件に合致する受講生コースが取得できること(
+      String courseName) {
+
+    // 準備
+    LocalDateTime startDateRangeFrom = LocalDateTime.of(2023, 12, 31, 0, 0, 0);
+    LocalDateTime startDateRangeTo = LocalDateTime.of(2024, 4, 1, 0, 0, 0);
+    LocalDateTime endDateRangeFrom = LocalDateTime.of(2024, 5, 31, 0, 0, 0);
+    LocalDateTime endDateRangeTo = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
+
+    List<StudentCourse> expected = provideExistingStudentCourses()
+        .filter(studentCourse -> studentCourse.getCourseName().equals(courseName))
+        .filter(studentCourse -> studentCourse.getStartDate().isAfter(startDateRangeFrom))
+        .filter(studentCourse -> studentCourse.getStartDate().isBefore(startDateRangeTo))
+        .filter(studentCourse -> studentCourse.getEndDate().isAfter(endDateRangeFrom))
+        .filter(studentCourse -> studentCourse.getEndDate().isBefore(endDateRangeTo))
+        .toList();
+
+    // 実行
+    List<StudentCourse> actual = sut.selectCourseListBySearchQuery(courseName, startDateRangeFrom,
+        startDateRangeTo, endDateRangeFrom, endDateRangeTo);
 
     // 検証
     assertThat(actual).isEqualTo(expected);
