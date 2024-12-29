@@ -34,14 +34,14 @@ public interface StudentCourseRepository {
    * 申込状況については最新のものを取得し、受講生コース情報のフィールドに含めて返します。
    *
    * @param courseName 受講コース名
-   * @param startDate  受講開始日
-   * @param endDate    受講終了日
    * @return 検索条件に合致する受講生コース情報のリスト
    */
   List<StudentCourse> selectCourseListBySearchQuery(
       @Param("courseName") String courseName,
-      @Param("startDate") LocalDateTime startDate,
-      @Param("endDate") LocalDateTime endDate
+      @Param("startDateRangeFrom") LocalDateTime startDateRangeFrom,
+      @Param("startDateRangeTo") LocalDateTime startDateRangeTo,
+      @Param("endDateRangeFrom") LocalDateTime endDateRangeFrom,
+      @Param("endDateRangeTo") LocalDateTime endDateRangeTo
   );
 
   /**

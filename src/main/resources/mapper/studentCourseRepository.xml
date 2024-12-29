@@ -127,11 +127,17 @@
       <if test="courseName != null and courseName != ''">
         AND s.course_name LIKE CONCAT('%', #{courseName}, '%')
       </if>
-      <if test="startDate != null and startDate != ''">
-        AND s.start_date LIKE CONCAT('%', #{startDate}, '%')
+      <if test="startDateRangeFrom != null">
+        AND s.start_date >= #{startDateRangeFrom}
       </if>
-      <if test="endDate != null and endDate != ''">
-        AND s.end_date LIKE CONCAT('%', #{endDate}, '%')
+      <if test="startDateRangeTo != null">
+        AND #{startDateRangeTo} >= s.start_date
+      </if>
+      <if test="endDateRangeFrom != null">
+        AND s.end_date >= #{endDateRangeFrom}
+      </if>
+      <if test="endDateRangeTo != null">
+        AND #{endDateRangeTo} >= s.end_date
       </if>
   </select>
 
