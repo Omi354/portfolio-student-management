@@ -1,4 +1,15 @@
-import { Box, Container, Typography, Card, CardContent } from '@mui/material'
+import {
+  Box,
+  Container,
+  Typography,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material'
 import type { NextPage } from 'next'
 import useSWR from 'swr'
 import { fetcher } from '@/utils'
@@ -7,17 +18,24 @@ type StudentProps = {
   student: {
     id: string
     fullName: string
-    age: number
+    kana: string
+    nickName: string
     email: string
     city: string
+    age: number
     gender: string
+    remark: string
   }
   studentCourseList: {
     id: string
     courseName: string
-    status: string
     startDate: string
     endDate: string
+    enrollmentStatus: {
+      id: string
+      status: string
+      createdAt: string
+    }
   }[]
 }
 
@@ -32,25 +50,44 @@ const StudentPage: NextPage = () => {
 
   return (
     <Box sx={{ backgroundColor: '#f9f9f9', minHeight: '100vh', py: 4 }}>
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Typography variant="h4" gutterBottom>
-          学生情報
+          受講生一覧
         </Typography>
 
-        {/* 学生の基本情報 */}
-        {studentsData.map((studentData: StudentProps) => (
-          // eslint-disable-next-line react/jsx-key
-          <Card sx={{ mb: 4 }}>
-            <CardContent>
-              <Typography variant="h6">基本情報</Typography>
-              <Typography>名前: {studentData.student.fullName}</Typography>
-              <Typography>年齢: {studentData.student.age}</Typography>
-              <Typography>メール: {studentData.student.email}</Typography>
-              <Typography>住所: {studentData.student.city}</Typography>
-              <Typography>性別: {studentData.student.gender}</Typography>
-            </CardContent>
-          </Card>
-        ))}
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>氏名</TableCell>
+                <TableCell>カナ名</TableCell>
+                <TableCell>ニックネーム</TableCell>
+                <TableCell>メールアドレス</TableCell>
+                <TableCell>居住地域</TableCell>
+                <TableCell>年齢</TableCell>
+                <TableCell>性別</TableCell>
+                <TableCell>備考</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {studentsData.map((studentData: StudentProps) => (
+                <TableRow
+                  key={studentData.student.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell>{studentData.student.fullName}</TableCell>
+                  <TableCell>{studentData.student.kana}</TableCell>
+                  <TableCell>{studentData.student.nickName}</TableCell>
+                  <TableCell>{studentData.student.email}</TableCell>
+                  <TableCell>{studentData.student.city}</TableCell>
+                  <TableCell>{studentData.student.age}</TableCell>
+                  <TableCell>{studentData.student.gender}</TableCell>
+                  <TableCell>{studentData.student.remark}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Container>
     </Box>
   )
