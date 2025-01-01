@@ -18,7 +18,7 @@
       "error",
       {
         "trailingComma": "all",
-        "endOfLine": "lf",
+        "endOfLine": "crlf",
         "semi": false,
         "singleQuote": true,
         "printWidth": 80,
