@@ -1,12 +1,22 @@
-import { Box, Container, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Container,
+  Dialog,
+  DialogTitle,
+  Typography,
+} from '@mui/material'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import FilterInputs from '@/components/FilterInputs'
+import RegisterForm from '@/components/RegisterForm'
 import StudentTable from '@/components/StudentTable'
 import { fetcher } from '@/utils'
 
-export type StudentProps = {
+export type StudentDetailProps = {
   student: {
     id: string
     fullName: string
@@ -32,8 +42,8 @@ export type StudentProps = {
 }
 
 const StudentPage: NextPage = () => {
-  const url = 'http://localhost:8080/students'
-  const { data, error } = useSWR(url, fetcher)
+  const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students'
+  const { data, error, mutate } = useSWR(url, fetcher)
   const [fullName, setFullName] = useState('')
   const [kana, setKana] = useState('')
   const [nickName, setNickName] = useState('')
@@ -43,56 +53,79 @@ const StudentPage: NextPage = () => {
   const [minAge, setMinAge] = useState('')
   const [gender, setGender] = useState('')
   const [remark, setRemark] = useState('')
-  const [filteredData, setFilteredData] = useState<StudentProps[]>([])
+  const [filteredData, setFilteredData] = useState<StudentDetailProps[]>([])
+  const [open, setOpen] = useState(false)
+  const { control, handleSubmit, reset } = useForm<StudentDetailProps>({
+    defaultValues: {
+      student: {
+        id: '',
+        fullName: '',
+        kana: '',
+        nickName: '',
+        email: '',
+        city: '',
+        age: 0,
+        gender: '',
+      },
+      studentCourseList: [
+        {
+          courseName: '',
+          enrollmentStatus: {
+            status: '',
+          },
+        },
+      ],
+    },
+  })
 
   useEffect(() => {
     if (data) {
       let result = data
 
       if (fullName) {
-        result = result.filter((studentData: StudentProps) =>
+        result = result.filter((studentData: StudentDetailProps) =>
           studentData.student.fullName.includes(fullName),
         )
       }
       if (kana) {
-        result = result.filter((studentData: StudentProps) =>
+        result = result.filter((studentData: StudentDetailProps) =>
           studentData.student.kana.includes(kana),
         )
       }
       if (nickName) {
-        result = result.filter((studentData: StudentProps) =>
+        result = result.filter((studentData: StudentDetailProps) =>
           studentData.student.nickName.includes(nickName),
         )
       }
       if (email) {
-        result = result.filter((studentData: StudentProps) =>
+        result = result.filter((studentData: StudentDetailProps) =>
           studentData.student.email.includes(email),
         )
       }
       if (city) {
-        result = result.filter((studentData: StudentProps) =>
+        result = result.filter((studentData: StudentDetailProps) =>
           studentData.student.city.includes(city),
         )
       }
       if (gender) {
-        result = result.filter((studentData: StudentProps) =>
+        result = result.filter((studentData: StudentDetailProps) =>
           studentData.student.gender.includes(gender),
         )
       }
       if (remark) {
-        result = result.filter((studentData: StudentProps) =>
+        result = result.filter((studentData: StudentDetailProps) =>
           studentData.student.remark.includes(remark),
         )
       }
       if (maxAge) {
         result = result.filter(
-          (studentData: StudentProps) =>
+          (studentData: StudentDetailProps) =>
             studentData.student.age <= Number(maxAge),
         )
       }
       if (minAge) {
         result = result.filter(
-          (studentData: StudentProps) =>
+          (studentData: StudentDetailProps) =>
             studentData.student.age >= Number(minAge),
         )
       }
@@ -111,6 +144,31 @@ const StudentPage: NextPage = () => {
     remark,
   ])
 
+  const onSubmit: SubmitHandler<StudentDetailProps> = (data) => {
+    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students'
+    const headers = { 'Content-Type': 'application/json' }
+
+    axios({ method: 'POST', url: url, data: data, headers: headers })
+      .then((res: AxiosResponse) => {
+        res.status === 200 && mutate()
+        handleClickClose()
+        alert(res.data.student.fullName + 'さんを登録しました')
+      })
+      .catch((err: AxiosError<{ error: string }>) => {
+        console.log(err.message)
+        alert(err.message)
+      })
+  }
+
+  const handleClickOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClickClose = () => {
+    setOpen(false)
+    reset()
+  }
+
   if (error) return <div>An error has occurred.</div>
   if (!data) return <div>Loading...</div>
 
@@ -120,6 +178,15 @@ const StudentPage: NextPage = () => {
         <Typography variant="h4" gutterBottom>
           受講生一覧
         </Typography>
+
+        <Dialog open={open} onClose={handleClickClose}>
+          <DialogTitle>新規受講生登録</DialogTitle>
+          <RegisterForm
+            control={control}
+            onSubmit={handleSubmit(onSubmit)}
+            onClick={handleClickClose}
+          />
+        </Dialog>
 
         <FilterInputs
           fullName={fullName}
@@ -141,6 +208,12 @@ const StudentPage: NextPage = () => {
           remark={remark}
           setRemark={setRemark}
         />
+        <Box
+          onClick={handleClickOpen}
+          sx={{ mt: 2, mb: 2, textAlign: 'center' }}
+        >
+          <Button variant="contained">新規登録</Button>
+        </Box>
 
         <StudentTable data={filteredData} />
       </Container>
