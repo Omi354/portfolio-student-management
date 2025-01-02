@@ -1,56 +1,148 @@
-import { Box, Container, Typography, Card, CardContent } from '@mui/material'
+import { Box, Container, Typography } from '@mui/material'
 import type { NextPage } from 'next'
+import { useEffect, useState } from 'react'
 import useSWR from 'swr'
+import FilterInputs from '@/components/FilterInputs'
+import StudentTable from '@/components/StudentTable'
 import { fetcher } from '@/utils'
 
-type StudentProps = {
+export type StudentProps = {
   student: {
     id: string
     fullName: string
-    age: number
+    kana: string
+    nickName: string
     email: string
     city: string
+    age: number
     gender: string
+    remark: string
   }
   studentCourseList: {
     id: string
     courseName: string
-    status: string
     startDate: string
     endDate: string
+    enrollmentStatus: {
+      id: string
+      status: string
+      createdAt: string
+    }
   }[]
 }
 
 const StudentPage: NextPage = () => {
   const url = 'http://localhost:8080/students'
   const { data, error } = useSWR(url, fetcher)
+  const [fullName, setFullName] = useState('')
+  const [kana, setKana] = useState('')
+  const [nickName, setNickName] = useState('')
+  const [email, setEmail] = useState('')
+  const [city, setCity] = useState('')
+  const [maxAge, setMaxAge] = useState('')
+  const [minAge, setMinAge] = useState('')
+  const [gender, setGender] = useState('')
+  const [remark, setRemark] = useState('')
+  const [filteredData, setFilteredData] = useState<StudentProps[]>([])
+
+  useEffect(() => {
+    if (data) {
+      let result = data
+
+      if (fullName) {
+        result = result.filter((studentData: StudentProps) =>
+          studentData.student.fullName.includes(fullName),
+        )
+      }
+      if (kana) {
+        result = result.filter((studentData: StudentProps) =>
+          studentData.student.kana.includes(kana),
+        )
+      }
+      if (nickName) {
+        result = result.filter((studentData: StudentProps) =>
+          studentData.student.nickName.includes(nickName),
+        )
+      }
+      if (email) {
+        result = result.filter((studentData: StudentProps) =>
+          studentData.student.email.includes(email),
+        )
+      }
+      if (city) {
+        result = result.filter((studentData: StudentProps) =>
+          studentData.student.city.includes(city),
+        )
+      }
+      if (gender) {
+        result = result.filter((studentData: StudentProps) =>
+          studentData.student.gender.includes(gender),
+        )
+      }
+      if (remark) {
+        result = result.filter((studentData: StudentProps) =>
+          studentData.student.remark.includes(remark),
+        )
+      }
+      if (maxAge) {
+        result = result.filter(
+          (studentData: StudentProps) =>
+            studentData.student.age <= Number(maxAge),
+        )
+      }
+      if (minAge) {
+        result = result.filter(
+          (studentData: StudentProps) =>
+            studentData.student.age >= Number(minAge),
+        )
+      }
+      setFilteredData(result)
+    }
+  }, [
+    data,
+    fullName,
+    kana,
+    nickName,
+    email,
+    city,
+    maxAge,
+    minAge,
+    gender,
+    remark,
+  ])
 
   if (error) return <div>An error has occurred.</div>
   if (!data) return <div>Loading...</div>
 
-  const studentsData = data
-
   return (
     <Box sx={{ backgroundColor: '#f9f9f9', minHeight: '100vh', py: 4 }}>
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Typography variant="h4" gutterBottom>
-          学生情報
+          受講生一覧
         </Typography>
 
-        {/* 学生の基本情報 */}
-        {studentsData.map((studentData: StudentProps) => (
-          // eslint-disable-next-line react/jsx-key
-          <Card sx={{ mb: 4 }}>
-            <CardContent>
-              <Typography variant="h6">基本情報</Typography>
-              <Typography>名前: {studentData.student.fullName}</Typography>
-              <Typography>年齢: {studentData.student.age}</Typography>
-              <Typography>メール: {studentData.student.email}</Typography>
-              <Typography>住所: {studentData.student.city}</Typography>
-              <Typography>性別: {studentData.student.gender}</Typography>
-            </CardContent>
-          </Card>
-        ))}
+        <FilterInputs
+          fullName={fullName}
+          setFullName={setFullName}
+          kana={kana}
+          setKana={setKana}
+          nickName={nickName}
+          setNickName={setNickName}
+          email={email}
+          setEmail={setEmail}
+          city={city}
+          setCity={setCity}
+          maxAge={maxAge}
+          setMaxAge={setMaxAge}
+          minAge={minAge}
+          setMinAge={setMinAge}
+          gender={gender}
+          setGender={setGender}
+          remark={remark}
+          setRemark={setRemark}
+        />
+
+        <StudentTable data={filteredData} />
       </Container>
     </Box>
   )
