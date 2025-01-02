@@ -2,20 +2,17 @@ import {
   Box,
   Button,
   Container,
-  FormControl,
-  Grid2,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
+  Dialog,
+  DialogTitle,
   Typography,
 } from '@mui/material'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import FilterInputs from '@/components/FilterInputs'
+import RegisterForm from '@/components/RegisterForm'
 import StudentTable from '@/components/StudentTable'
 import { fetcher } from '@/utils'
 
@@ -57,6 +54,7 @@ const StudentPage: NextPage = () => {
   const [gender, setGender] = useState('')
   const [remark, setRemark] = useState('')
   const [filteredData, setFilteredData] = useState<StudentDetailProps[]>([])
+  const [open, setOpen] = useState(false)
   const { control, handleSubmit, reset } = useForm<StudentDetailProps>({
     defaultValues: {
       student: {
@@ -66,7 +64,7 @@ const StudentPage: NextPage = () => {
         nickName: '',
         email: '',
         city: '',
-        age: undefined,
+        age: 0,
         gender: '',
       },
       studentCourseList: [
@@ -153,13 +151,22 @@ const StudentPage: NextPage = () => {
     axios({ method: 'POST', url: url, data: data, headers: headers })
       .then((res: AxiosResponse) => {
         res.status === 200 && mutate()
-        reset()
+        handleClickClose()
         alert(res.data.student.fullName + 'さんを登録しました')
       })
       .catch((err: AxiosError<{ error: string }>) => {
         console.log(err.message)
         alert(err.message)
       })
+  }
+
+  const handleClickOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClickClose = () => {
+    setOpen(false)
+    reset()
   }
 
   if (error) return <div>An error has occurred.</div>
@@ -172,168 +179,14 @@ const StudentPage: NextPage = () => {
           受講生一覧
         </Typography>
 
-        <Typography variant="h5" gutterBottom>
-          新規受講生登録
-        </Typography>
-
-        <Grid2 container component="form" spacing={2}>
-          <Grid2 size={6}>
-            <Controller
-              name="student.fullName"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  label="氏名"
-                  sx={{ backgroundColor: 'white', width: '100%' }}
-                />
-              )}
-            />
-          </Grid2>
-          <Grid2 size={6}>
-            <Controller
-              name="student.kana"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  label="カナ名"
-                  sx={{ backgroundColor: 'white', width: '100%' }}
-                />
-              )}
-            />
-          </Grid2>
-          <Grid2 size={6}>
-            <Controller
-              name="student.nickName"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  label="ニックネーム"
-                  sx={{ backgroundColor: 'white', width: '100%' }}
-                />
-              )}
-            />
-          </Grid2>
-
-          <Grid2 size={6}>
-            <Controller
-              name="student.email"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  type="email"
-                  label="メールアドレス"
-                  sx={{ backgroundColor: 'white', width: '100%' }}
-                />
-              )}
-            />
-          </Grid2>
-          <Grid2 size={6}>
-            <Controller
-              name="student.city"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  label="居住地域"
-                  sx={{ backgroundColor: 'white', width: '100%' }}
-                />
-              )}
-            />
-          </Grid2>
-
-          <Grid2 size={6}>
-            <Controller
-              name="student.age"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  type="number"
-                  label="年齢"
-                  sx={{ backgroundColor: 'white', width: '100%' }}
-                />
-              )}
-            />
-          </Grid2>
-          <Grid2 size={4}>
-            <Controller
-              name="student.gender"
-              control={control}
-              render={({ field }) => (
-                <FormControl sx={{ width: '100%' }}>
-                  <InputLabel id="gender">性別</InputLabel>
-                  <Select {...field} labelId="gender" label="gender">
-                    <MenuItem value={'Male'}>Male</MenuItem>
-                    <MenuItem value={'Female'}>Female</MenuItem>
-                    <MenuItem value={'NON_BINARY'}>NON_BINARY</MenuItem>
-                  </Select>
-                </FormControl>
-              )}
-            />
-          </Grid2>
-          <Grid2 size={4}>
-            <Controller
-              name={`studentCourseList.${0}.courseName`}
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  label="コース名"
-                  sx={{ backgroundColor: 'white', width: '100%' }}
-                />
-              )}
-            />
-          </Grid2>
-          <Grid2 size={4}>
-            <Controller
-              name={`studentCourseList.${0}.enrollmentStatus.status`}
-              control={control}
-              render={({ field }) => (
-                <FormControl sx={{ width: '100%' }}>
-                  <InputLabel id="status">申込状況</InputLabel>
-                  <Select {...field} labelId="status" label="status">
-                    <MenuItem value={'仮申込'}>仮申込</MenuItem>
-                    <MenuItem value={'本申込'}>本申込</MenuItem>
-                    <MenuItem value={'受講中'}>受講中</MenuItem>
-                    <MenuItem value={'受講終了'}>受講終了</MenuItem>
-                  </Select>
-                </FormControl>
-              )}
-            />
-          </Grid2>
-          <Grid2 size={6}>
-            <Button
-              variant="contained"
-              type="button"
-              size="large"
-              onClick={handleSubmit(onSubmit)}
-              sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
-            >
-              登録
-            </Button>
-          </Grid2>
-          <Grid2 size={6}>
-            <Button
-              variant="contained"
-              type="button"
-              color="error"
-              size="large"
-              onClick={handleSubmit(onSubmit)}
-              sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
-            >
-              キャンセル
-            </Button>
-          </Grid2>
-        </Grid2>
+        <Dialog open={open} onClose={handleClickClose}>
+          <DialogTitle>新規受講生登録</DialogTitle>
+          <RegisterForm
+            control={control}
+            onSubmit={handleSubmit(onSubmit)}
+            onClick={handleClickClose}
+          />
+        </Dialog>
 
         <FilterInputs
           fullName={fullName}
@@ -355,6 +208,12 @@ const StudentPage: NextPage = () => {
           remark={remark}
           setRemark={setRemark}
         />
+        <Box
+          onClick={handleClickOpen}
+          sx={{ mt: 2, mb: 2, textAlign: 'center' }}
+        >
+          <Button variant="contained">受講生新規登録</Button>
+        </Box>
 
         <StudentTable data={filteredData} />
       </Container>
