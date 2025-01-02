@@ -8,7 +8,6 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
 } from '@mui/material'
 
 import { Control, Controller } from 'react-hook-form'
@@ -88,10 +87,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   }
   return (
     <Box sx={{ m: 2 }}>
-      <Typography variant="h5" gutterBottom>
-        新規受講生登録
-      </Typography>
-
       <Grid2 container component="form" spacing={2}>
         <Grid2 size={6}>
           <Controller
