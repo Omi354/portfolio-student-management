@@ -1,24 +1,12 @@
-import {
-  Box,
-  Container,
-  Typography,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Stack,
-  TextField,
-  Button,
-} from '@mui/material'
+import { Box, Container, Typography } from '@mui/material'
 import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
+import FilterInputs from '@/components/FilterInputs'
+import StudentTable from '@/components/StudentTable'
 import { fetcher } from '@/utils'
 
-type StudentProps = {
+export type StudentProps = {
   student: {
     id: string
     fullName: string
@@ -55,7 +43,7 @@ const StudentPage: NextPage = () => {
   const [minAge, setMinAge] = useState('')
   const [gender, setGender] = useState('')
   const [remark, setRemark] = useState('')
-  const [fillteredData, setFilteredData] = useState<StudentProps[]>([])
+  const [filteredData, setFilteredData] = useState<StudentProps[]>([])
 
   useEffect(() => {
     if (data) {
@@ -126,24 +114,6 @@ const StudentPage: NextPage = () => {
   if (error) return <div>An error has occurred.</div>
   if (!data) return <div>Loading...</div>
 
-  const handleInputChange =
-    (setter: React.Dispatch<React.SetStateAction<string>>) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setter(event.target.value)
-    }
-
-  const handleReset = () => {
-    setFullName('')
-    setKana('')
-    setNickName('')
-    setEmail('')
-    setCity('')
-    setMaxAge('')
-    setMinAge('')
-    setGender('')
-    setRemark('')
-  }
-
   return (
     <Box sx={{ backgroundColor: '#f9f9f9', minHeight: '100vh', py: 4 }}>
       <Container maxWidth="lg">
@@ -151,102 +121,28 @@ const StudentPage: NextPage = () => {
           受講生一覧
         </Typography>
 
-        <Stack direction="row" spacing={2}>
-          <TextField
-            label="氏名"
-            value={fullName}
-            variant="outlined"
-            onChange={handleInputChange(setFullName)}
-          />
-          <TextField
-            label="カナ名"
-            value={kana}
-            variant="outlined"
-            onChange={handleInputChange(setKana)}
-          />
-          <TextField
-            label="ニックネーム"
-            value={nickName}
-            variant="outlined"
-            onChange={handleInputChange(setNickName)}
-          />
-          <TextField
-            label="メールアドレス"
-            value={email}
-            variant="outlined"
-            onChange={handleInputChange(setEmail)}
-          />
-          <TextField
-            label="居住地域"
-            value={city}
-            variant="outlined"
-            onChange={handleInputChange(setCity)}
-          />
-        </Stack>
+        <FilterInputs
+          fullName={fullName}
+          setFullName={setFullName}
+          kana={kana}
+          setKana={setKana}
+          nickName={nickName}
+          setNickName={setNickName}
+          email={email}
+          setEmail={setEmail}
+          city={city}
+          setCity={setCity}
+          maxAge={maxAge}
+          setMaxAge={setMaxAge}
+          minAge={minAge}
+          setMinAge={setMinAge}
+          gender={gender}
+          setGender={setGender}
+          remark={remark}
+          setRemark={setRemark}
+        />
 
-        <Stack direction="row" spacing={2} sx={{ mt: 1, mb: 1 }}>
-          <TextField
-            label="最大年齢"
-            value={maxAge}
-            variant="outlined"
-            onChange={handleInputChange(setMaxAge)}
-          />
-          <TextField
-            label="最小年齢"
-            value={minAge}
-            variant="outlined"
-            onChange={handleInputChange(setMinAge)}
-          />
-          <TextField
-            label="性別"
-            value={gender}
-            variant="outlined"
-            onChange={handleInputChange(setGender)}
-          />
-          <TextField
-            label="備考"
-            value={remark}
-            variant="outlined"
-            onChange={handleInputChange(setRemark)}
-          />
-          <Button variant="contained" onClick={handleReset}>
-            リセット
-          </Button>
-        </Stack>
-
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>氏名</TableCell>
-                <TableCell>カナ名</TableCell>
-                <TableCell>ニックネーム</TableCell>
-                <TableCell>メールアドレス</TableCell>
-                <TableCell>居住地域</TableCell>
-                <TableCell>年齢</TableCell>
-                <TableCell>性別</TableCell>
-                <TableCell>備考</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {fillteredData.map((studentData: StudentProps) => (
-                <TableRow
-                  key={studentData.student.id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell>{studentData.student.fullName}</TableCell>
-                  <TableCell>{studentData.student.kana}</TableCell>
-                  <TableCell>{studentData.student.nickName}</TableCell>
-                  <TableCell>{studentData.student.email}</TableCell>
-                  <TableCell>{studentData.student.city}</TableCell>
-                  <TableCell>{studentData.student.age}</TableCell>
-                  <TableCell>{studentData.student.gender}</TableCell>
-                  <TableCell>{studentData.student.remark}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <StudentTable data={filteredData} />
       </Container>
     </Box>
   )
