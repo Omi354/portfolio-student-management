@@ -32,7 +32,7 @@ export type StudentProps = {
 }
 
 const StudentPage: NextPage = () => {
-  const url = 'http://localhost:8080/students'
+  const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students'
   const { data, error } = useSWR(url, fetcher)
   const [fullName, setFullName] = useState('')
   const [kana, setKana] = useState('')
