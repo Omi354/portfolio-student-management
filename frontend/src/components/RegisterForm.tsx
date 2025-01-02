@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   Grid2,
   InputLabel,
   MenuItem,
@@ -27,6 +28,64 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   // eslint-disable-next-line react/prop-types
   onClick,
 }) => {
+  const validationRules = {
+    student: {
+      fullName: {
+        required: '氏名は必須です',
+      },
+      kana: {
+        pattern: {
+          // eslint-disable-next-line no-irregular-whitespace
+          value: /^$|^[ァ-ヶー\s　]+$/,
+          message: 'カナ名はカタカナとスペースのみを入力してください',
+        },
+      },
+      email: {
+        required: 'メールアドレスは必須です',
+        pattern: {
+          value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+          message: '正しい形式のメールアドレスを入力してください。',
+        },
+      },
+      city: {
+        required: '居住地域は必須です',
+      },
+      age: {
+        min: {
+          value: 0,
+          message: '年齢は0歳以上である必要があります',
+        },
+        max: {
+          value: 150,
+          message: '年齢は150歳以下である必要があります',
+        },
+      },
+      gender: {
+        validate: (value: string) => {
+          return (
+            ['Male', 'Female', 'NON_BINARY', ''].includes(value) ||
+            '性別はMale, Female, NON_BINARY のいずれかを指定してください'
+          )
+        },
+      },
+    },
+    studentCourseList: {
+      courseName: {
+        required: 'コース名は必須です',
+      },
+      enrollmentStatus: {
+        status: {
+          required: '申込状況は必須です',
+          validate: (value: string) => {
+            return (
+              ['仮申込', '本申込', '受講中', '受講終了'].includes(value) ||
+              '申込状況は仮申込, 本申込, 受講中, 受講終了 のいずれかを指定してください'
+            )
+          },
+        },
+      },
+    },
+  }
   return (
     <Box sx={{ m: 2 }}>
       <Typography variant="h5" gutterBottom>
@@ -38,9 +97,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           <Controller
             name="student.fullName"
             control={control}
-            render={({ field }) => (
+            rules={validationRules.student.fullName}
+            render={({ field, fieldState }) => (
               <TextField
                 {...field}
+                error={fieldState.invalid}
+                helperText={fieldState.error?.message}
                 type="text"
                 label="氏名"
                 sx={{ backgroundColor: 'white', width: '100%' }}
@@ -53,9 +115,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           <Controller
             name="student.kana"
             control={control}
-            render={({ field }) => (
+            rules={validationRules.student.kana}
+            render={({ field, fieldState }) => (
               <TextField
                 {...field}
+                error={fieldState.invalid}
+                helperText={fieldState.error?.message}
                 type="text"
                 label="カナ名"
                 sx={{ backgroundColor: 'white', width: '100%' }}
@@ -83,9 +148,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           <Controller
             name="student.email"
             control={control}
-            render={({ field }) => (
+            rules={validationRules.student.email}
+            render={({ field, fieldState }) => (
               <TextField
                 {...field}
+                error={fieldState.invalid}
+                helperText={fieldState.error?.message}
                 type="email"
                 label="メールアドレス"
                 sx={{ backgroundColor: 'white', width: '100%' }}
@@ -98,9 +166,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           <Controller
             name="student.city"
             control={control}
-            render={({ field }) => (
+            rules={validationRules.student.city}
+            render={({ field, fieldState }) => (
               <TextField
                 {...field}
+                error={fieldState.invalid}
+                helperText={fieldState.error?.message}
                 type="text"
                 label="居住地域"
                 sx={{ backgroundColor: 'white', width: '100%' }}
@@ -113,9 +184,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           <Controller
             name="student.age"
             control={control}
-            render={({ field }) => (
+            rules={validationRules.student.age}
+            render={({ field, fieldState }) => (
               <TextField
                 {...field}
+                error={fieldState.invalid}
+                helperText={fieldState.error?.message}
                 type="number"
                 label="年齢"
                 sx={{ backgroundColor: 'white', width: '100%' }}
@@ -128,8 +202,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           <Controller
             name="student.gender"
             control={control}
-            render={({ field }) => (
-              <FormControl sx={{ width: '100%' }}>
+            rules={validationRules.student.gender}
+            render={({ field, fieldState }) => (
+              <FormControl sx={{ width: '100%' }} error={fieldState.invalid}>
                 <InputLabel id="gender">性別</InputLabel>
 
                 <Select {...field} labelId="gender" label="gender">
@@ -139,6 +214,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
                   <MenuItem value={'NON_BINARY'}>NON_BINARY</MenuItem>
                 </Select>
+                <FormHelperText>{fieldState.error?.message}</FormHelperText>
               </FormControl>
             )}
           />
@@ -148,9 +224,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           <Controller
             name={`studentCourseList.${0}.courseName`}
             control={control}
-            render={({ field }) => (
+            rules={validationRules.studentCourseList.courseName}
+            render={({ field, fieldState }) => (
               <TextField
                 {...field}
+                error={fieldState.invalid}
+                helperText={fieldState.error?.message}
                 type="text"
                 label="コース名"
                 sx={{ backgroundColor: 'white', width: '100%' }}
@@ -163,19 +242,18 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           <Controller
             name={`studentCourseList.${0}.enrollmentStatus.status`}
             control={control}
-            render={({ field }) => (
-              <FormControl sx={{ width: '100%' }}>
+            rules={validationRules.studentCourseList.enrollmentStatus.status}
+            render={({ field, fieldState }) => (
+              <FormControl sx={{ width: '100%' }} error={fieldState.invalid}>
                 <InputLabel id="status">申込状況</InputLabel>
 
                 <Select {...field} labelId="status" label="status">
                   <MenuItem value={'仮申込'}>仮申込</MenuItem>
-
                   <MenuItem value={'本申込'}>本申込</MenuItem>
-
                   <MenuItem value={'受講中'}>受講中</MenuItem>
-
                   <MenuItem value={'受講終了'}>受講終了</MenuItem>
                 </Select>
+                <FormHelperText>{fieldState.error?.message}</FormHelperText>
               </FormControl>
             )}
           />
