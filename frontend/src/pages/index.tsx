@@ -212,7 +212,7 @@ const StudentPage: NextPage = () => {
           onClick={handleClickOpen}
           sx={{ mt: 2, mb: 2, textAlign: 'center' }}
         >
-          <Button variant="contained">受講生新規登録</Button>
+          <Button variant="contained">新規登録</Button>
         </Box>
 
         <StudentTable data={filteredData} />
