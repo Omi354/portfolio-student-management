@@ -9,6 +9,7 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material'
+import router from 'next/router'
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { StudentDetailProps } from '@/pages'
@@ -40,7 +41,13 @@ const StudentTable: React.FC<StudentTableProps> = ({ data, deleteStudent }) => {
           </TableHead>
           <TableBody>
             {data.map((studentData) => (
-              <TableRow key={studentData.student.id}>
+              <TableRow
+                key={studentData.student.id}
+                onClick={() =>
+                  router.push(`/students/${studentData.student.id}`)
+                }
+                style={{ cursor: 'pointer' }}
+              >
                 <TableCell>{studentData.student.fullName}</TableCell>
                 <TableCell>{studentData.student.kana}</TableCell>
                 <TableCell>{studentData.student.nickName}</TableCell>

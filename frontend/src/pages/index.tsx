@@ -56,7 +56,7 @@ const StudentPage: NextPage = () => {
   const [remark, setRemark] = useState('')
   const [filteredData, setFilteredData] = useState<StudentDetailProps[]>([])
   const [open, setOpen] = useState(false)
-  const { control, handleSubmit, reset} = useForm<StudentDetailProps>({
+  const { control, handleSubmit, reset } = useForm<StudentDetailProps>({
     defaultValues: {
       student: {
         id: '',
@@ -194,10 +194,10 @@ const StudentPage: NextPage = () => {
 
   const deleteStudent = (studentData: StudentDetailProps) => {
     const confirmDelete = window.confirm(
-      studentData.student.fullName + 'さんを本当に削除してよろしいですか？'
+      studentData.student.fullName + 'さんを本当に削除してよろしいですか？',
     )
 
-    if(!confirmDelete){
+    if (!confirmDelete) {
       return
     }
 
@@ -210,8 +210,10 @@ const StudentPage: NextPage = () => {
     axios({ method: 'PUT', url: url, data: data, headers: headers })
       .then((res: AxiosResponse) => {
         res.status === 200 && mutate()
-        alert(data.student.fullName + 'さんを削除しました\n\n' +
-          'データの復旧を希望の場合は管理者にお問い合わせください'
+        alert(
+          data.student.fullName +
+            'さんを削除しました\n\n' +
+            'データの復旧を希望の場合は管理者にお問い合わせください',
         )
       })
       .catch((err: AxiosError<{ error: string }>) => {
@@ -219,7 +221,6 @@ const StudentPage: NextPage = () => {
         alert(err.message)
       })
   }
-
 
   if (error) return <div>An error has occurred.</div>
   if (!data) return <div>Loading...</div>
@@ -267,7 +268,11 @@ const StudentPage: NextPage = () => {
           <Button variant="contained">新規登録</Button>
         </Box>
 
-        <StudentTable data={filteredData} deleteStudent={deleteStudent} updateForm={updateForm}/>
+        <StudentTable
+          data={filteredData}
+          deleteStudent={deleteStudent}
+          updateForm={updateForm}
+        />
       </Container>
     </Box>
   )
