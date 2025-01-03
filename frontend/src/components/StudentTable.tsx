@@ -1,43 +1,28 @@
 import {
   Box,
   Button,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid2,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
 } from '@mui/material'
 import React from 'react'
-import { Controller, useForm, UseFormReturn } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form'
 import { StudentDetailProps } from '@/pages'
-import { Check, CheckBox } from '@mui/icons-material';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import UpdateForm from './UpdateForm';
 
 type StudentTableProps = {
-  data: StudentDetailProps[];
+  data: StudentDetailProps[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateForm: UseFormReturn<StudentDetailProps, any, undefined>
-  deleteStudent: (studentDetail: StudentDetailProps) => void;
-};
+  deleteStudent: (studentDetail: StudentDetailProps) => void
+}
 
-const StudentTable: React.FC<StudentTableProps> = ({ data, deleteStudent, updateForm }) => {
-
+const StudentTable: React.FC<StudentTableProps> = ({ data, deleteStudent }) => {
   return (
     <Box>
-
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -65,7 +50,12 @@ const StudentTable: React.FC<StudentTableProps> = ({ data, deleteStudent, update
                 <TableCell>{studentData.student.gender}</TableCell>
                 <TableCell>{studentData.student.remark}</TableCell>
                 <TableCell>
-                  <Button variant="contained" color='error' size="small" onClick={() => deleteStudent(studentData)}>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    size="small"
+                    onClick={() => deleteStudent(studentData)}
+                  >
                     削除
                   </Button>
                 </TableCell>
