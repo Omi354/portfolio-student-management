@@ -11,13 +11,10 @@ import {
 } from '@mui/material'
 import router from 'next/router'
 import React from 'react'
-import { UseFormReturn } from 'react-hook-form'
 import { StudentDetailProps } from '@/pages'
 
 type StudentTableProps = {
   data: StudentDetailProps[]
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  updateForm: UseFormReturn<StudentDetailProps, any, undefined>
   deleteStudent: (studentDetail: StudentDetailProps) => void
 }
 

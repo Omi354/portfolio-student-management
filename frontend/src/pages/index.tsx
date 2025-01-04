@@ -78,28 +78,6 @@ const StudentPage: NextPage = () => {
       ],
     },
   })
-  const updateForm = useForm<StudentDetailProps>({
-    defaultValues: {
-      student: {
-        id: '',
-        fullName: '',
-        kana: '',
-        nickName: '',
-        email: '',
-        city: '',
-        age: 0,
-        gender: '',
-      },
-      studentCourseList: [
-        {
-          courseName: '',
-          enrollmentStatus: {
-            status: '',
-          },
-        },
-      ],
-    },
-  })
 
   useEffect(() => {
     if (data) {
@@ -268,11 +246,7 @@ const StudentPage: NextPage = () => {
           <Button variant="contained">新規登録</Button>
         </Box>
 
-        <StudentTable
-          data={filteredData}
-          deleteStudent={deleteStudent}
-          updateForm={updateForm}
-        />
+        <StudentTable data={filteredData} deleteStudent={deleteStudent} />
       </Container>
     </Box>
   )
