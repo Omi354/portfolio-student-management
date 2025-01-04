@@ -1,6 +1,9 @@
 import {
   Box,
+  Button,
   Container,
+  Dialog,
+  DialogTitle,
   Paper,
   Table,
   TableBody,
@@ -13,10 +16,10 @@ import {
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
-import UpdateForm from '@/components/UpdateForm'
+import EditForm from '@/components/EditForm'
 import { StudentDetailProps } from '@/pages/index'
 import { fetcher } from '@/utils'
 
@@ -36,6 +39,7 @@ const StudentDetail: NextPage = () => {
   const router = useRouter()
   const { id } = router.query
   const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students/'
+  const [isEditFormOpen, setIsEditFormOpen] = useState(false)
 
   const { data, error, mutate } = useSWR(id ? url + id : null, fetcher)
   const { control, handleSubmit, reset } = useForm<StudentDetailProps>({
@@ -56,6 +60,7 @@ const StudentDetail: NextPage = () => {
       .then((res: AxiosResponse) => {
         res.status === 200 && mutate()
         alert(data.student.fullName + 'さんの情報を更新しました')
+        handleEditFormClose()
       })
       .catch((err: AxiosError<{ error: string }>) => {
         console.log(err.message)
@@ -63,8 +68,14 @@ const StudentDetail: NextPage = () => {
       })
   }
 
-  const handleCancelClick = () => {
-    reset(data)
+  const handleEditFormOpen = () => {
+    setIsEditFormOpen(true)
+    reset()
+  }
+
+  const handleEditFormClose = () => {
+    setIsEditFormOpen(false)
+    reset()
   }
 
   if (error) return <div>An error has occurred.</div>
@@ -73,9 +84,14 @@ const StudentDetail: NextPage = () => {
   return (
     <Box sx={{ backgroundColor: '#f9f9f9', minHeight: '100vh', py: 4 }}>
       <Container maxWidth="lg">
-        <Typography variant="h4" gutterBottom>
-          受講生詳細
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography variant="h4" gutterBottom>
+            受講生詳細
+          </Typography>
+          <Button onClick={handleEditFormOpen} variant="contained">
+            編集
+          </Button>
+        </Box>
         <Typography variant="h5" gutterBottom>
           基本情報
         </Typography>
@@ -142,12 +158,15 @@ const StudentDetail: NextPage = () => {
           </Table>
         </TableContainer>
 
-        <UpdateForm
-          studentData={data}
-          control={control}
-          onSubmit={handleSubmit(updateStudent)}
-          onClick={handleCancelClick}
-        />
+        <Dialog open={isEditFormOpen} onClose={handleEditFormClose}>
+          <DialogTitle>受講生情報編集</DialogTitle>
+          <EditForm
+            studentData={data}
+            control={control}
+            onSubmit={handleSubmit(updateStudent)}
+            onClick={handleEditFormClose}
+          />
+        </Dialog>
       </Container>
     </Box>
   )

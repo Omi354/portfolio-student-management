@@ -21,7 +21,7 @@ type updateFormProps = {
   onClick: () => void
 }
 
-const UpdateForm: React.FC<updateFormProps> = ({
+const EditForm: React.FC<updateFormProps> = ({
   studentData,
   control,
   onSubmit,
@@ -178,7 +178,7 @@ const UpdateForm: React.FC<updateFormProps> = ({
 
         {studentData.studentCourseList.map((studentCourse, index) => (
           <Grid2 container spacing={2} key={index}>
-            <Grid2 size={4}>
+            <Grid2 size={12}>
               <Controller
                 name={`studentCourseList.${index}.courseName`}
                 control={control}
@@ -195,7 +195,7 @@ const UpdateForm: React.FC<updateFormProps> = ({
               />
             </Grid2>
 
-            <Grid2 size={3}>
+            <Grid2 size={6}>
               <Controller
                 name={`studentCourseList.${index}.startDate`}
                 control={control}
@@ -212,7 +212,7 @@ const UpdateForm: React.FC<updateFormProps> = ({
               />
             </Grid2>
 
-            <Grid2 size={3}>
+            <Grid2 size={6}>
               <Controller
                 name={`studentCourseList.${index}.endDate`}
                 control={control}
@@ -227,24 +227,6 @@ const UpdateForm: React.FC<updateFormProps> = ({
                   />
                 )}
               />
-            </Grid2>
-
-            <Grid2 size={2}>
-              <FormControl sx={{ width: '100%' }}>
-                <InputLabel id="status">申込状況</InputLabel>
-                <Controller
-                  name={`studentCourseList.${index}.enrollmentStatus.status`}
-                  control={control}
-                  render={({ field }) => (
-                    <Select {...field} labelId="status" label="status">
-                      <MenuItem value={'仮申込'}>仮申込</MenuItem>
-                      <MenuItem value={'本申込'}>本申込</MenuItem>
-                      <MenuItem value={'受講中'}>受講中</MenuItem>
-                      <MenuItem value={'受講終了'}>受講終了</MenuItem>
-                    </Select>
-                  )}
-                />
-              </FormControl>
             </Grid2>
           </Grid2>
         ))}
@@ -280,4 +262,4 @@ const UpdateForm: React.FC<updateFormProps> = ({
   )
 }
 
-export default UpdateForm
+export default EditForm
