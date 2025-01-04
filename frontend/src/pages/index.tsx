@@ -8,6 +8,7 @@ import {
 } from '@mui/material'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import type { NextPage } from 'next'
+import Router from 'next/router'
 import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
@@ -31,11 +32,13 @@ export type StudentDetailProps = {
   }
   studentCourseList: {
     id: string
+    studentId: string
     courseName: string
     startDate: string
     endDate: string
     enrollmentStatus: {
       id: string
+      studentCourseId: string
       status: string
       createdAt: string
     }
@@ -145,11 +148,11 @@ const StudentPage: NextPage = () => {
     remark,
   ])
 
-  const onSubmit: SubmitHandler<StudentDetailProps> = (data) => {
+  const registerStudent: SubmitHandler<StudentDetailProps> = (formData) => {
     const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students'
     const headers = { 'Content-Type': 'application/json' }
 
-    axios({ method: 'POST', url: url, data: data, headers: headers })
+    axios({ method: 'POST', url: url, data: formData, headers: headers })
       .then((res: AxiosResponse) => {
         res.status === 200 && mutate()
         handleClickClose()
@@ -179,20 +182,21 @@ const StudentPage: NextPage = () => {
       return
     }
 
-    const data = studentData
-    data.student.isDeleted = true
+    const modifiedData = studentData
+    modifiedData.student.isDeleted = true
 
     const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students'
     const headers = { 'Content-Type': 'application/json' }
 
-    axios({ method: 'PUT', url: url, data: data, headers: headers })
+    axios({ method: 'PUT', url: url, data: modifiedData, headers: headers })
       .then((res: AxiosResponse) => {
         res.status === 200 && mutate()
         alert(
-          data.student.fullName +
+          modifiedData.student.fullName +
             'さんを削除しました\n\n' +
             'データの復旧を希望の場合は管理者にお問い合わせください',
         )
+        Router.push('/')
       })
       .catch((err: AxiosError<{ error: string }>) => {
         console.log(err)
@@ -214,7 +218,7 @@ const StudentPage: NextPage = () => {
           <DialogTitle>新規受講生登録</DialogTitle>
           <RegisterForm
             control={control}
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(registerStudent)}
             onClick={handleClickClose}
           />
         </Dialog>

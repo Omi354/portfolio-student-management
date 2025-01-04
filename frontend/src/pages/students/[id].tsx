@@ -10,9 +10,14 @@ import {
   TableRow,
   Typography,
 } from '@mui/material'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
+import UpdateForm from '@/components/UpdateForm'
+import { StudentDetailProps } from '@/pages/index'
 import { fetcher } from '@/utils'
 
 type StudentCourseProps = {
@@ -30,8 +35,37 @@ type StudentCourseProps = {
 const StudentDetail: NextPage = () => {
   const router = useRouter()
   const { id } = router.query
-  const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students/' + id
-  const { data, error, mutate } = useSWR(url, fetcher)
+  const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students/'
+
+  const { data, error, mutate } = useSWR(id ? url + id : null, fetcher)
+  const { control, handleSubmit, reset } = useForm<StudentDetailProps>({
+    defaultValues: data,
+  })
+
+  useEffect(() => {
+    if (data) {
+      reset(data)
+    }
+  }, [data, reset])
+
+  const updateStudent: SubmitHandler<StudentDetailProps> = (formData) => {
+    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students'
+    const headers = { 'Content-Type': 'application/json' }
+
+    axios({ method: 'PUT', url: url, data: formData, headers: headers })
+      .then((res: AxiosResponse) => {
+        res.status === 200 && mutate()
+        alert(data.student.fullName + 'さんの情報を更新しました')
+      })
+      .catch((err: AxiosError<{ error: string }>) => {
+        console.log(err.message)
+        alert(err.message)
+      })
+  }
+
+  const handleCancelClick = () => {
+    reset(data)
+  }
 
   if (error) return <div>An error has occurred.</div>
   if (!data) return <div>Loading...</div>
@@ -107,6 +141,13 @@ const StudentDetail: NextPage = () => {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <UpdateForm
+          studentData={data}
+          control={control}
+          onSubmit={handleSubmit(updateStudent)}
+          onClick={handleCancelClick}
+        />
       </Container>
     </Box>
   )
