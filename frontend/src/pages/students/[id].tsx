@@ -4,13 +4,6 @@ import {
   Container,
   Dialog,
   DialogTitle,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
 } from '@mui/material'
 import axios, { AxiosError, AxiosResponse } from 'axios'
@@ -20,19 +13,15 @@ import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import EditForm from '@/components/EditForm'
+import EnrollmentStatusForm from '@/components/EnrollmentStatusForm'
+import StudentCourseTable from '@/components/StudentCourseTable'
+import StudentInfoTable from '@/components/StudentInfoTable'
 import { StudentDetailProps } from '@/pages/index'
 import { fetcher } from '@/utils'
 
-type StudentCourseProps = {
-  id: string
-  courseName: string
-  startDate: string
-  endDate: string
-  enrollmentStatus: {
-    id: string
-    status: string
-    createdAt: string
-  }
+export type EnrollmentStatusFormData = {
+  studentCourseId: string
+  status: string
 }
 
 const StudentDetail: NextPage = () => {
@@ -40,17 +29,18 @@ const StudentDetail: NextPage = () => {
   const { id } = router.query
   const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students/'
   const [isEditFormOpen, setIsEditFormOpen] = useState(false)
-
+  const [isStatusFormOpen, setIsStatusFormOpen] = useState(false)
   const { data, error, mutate } = useSWR(id ? url + id : null, fetcher)
-  const { control, handleSubmit, reset } = useForm<StudentDetailProps>({
+  const editFormHandler = useForm<StudentDetailProps>({
     defaultValues: data,
   })
+  const enrollmentStatusFormHandler = useForm<EnrollmentStatusFormData>()
 
   useEffect(() => {
     if (data) {
-      reset(data)
+      editFormHandler.reset(data)
     }
-  }, [data, reset])
+  }, [data, editFormHandler])
 
   const updateStudent: SubmitHandler<StudentDetailProps> = (formData) => {
     const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students'
@@ -59,7 +49,7 @@ const StudentDetail: NextPage = () => {
     axios({ method: 'PUT', url: url, data: formData, headers: headers })
       .then((res: AxiosResponse) => {
         res.status === 200 && mutate()
-        alert(data.student.fullName + 'さんの情報を更新しました')
+        alert(formData.student.fullName + 'さんの情報を更新しました')
         handleEditFormClose()
       })
       .catch((err: AxiosError<{ error: string }>) => {
@@ -70,16 +60,53 @@ const StudentDetail: NextPage = () => {
 
   const handleEditFormOpen = () => {
     setIsEditFormOpen(true)
-    reset()
+    editFormHandler.reset()
   }
-
   const handleEditFormClose = () => {
     setIsEditFormOpen(false)
-    reset()
+    editFormHandler.reset()
+  }
+  const handleEditFormReset = () => {
+    editFormHandler.reset()
   }
 
-  const handleReset = () => {
-    reset()
+  const updateEnrollmentStatus: SubmitHandler<EnrollmentStatusFormData> = (
+    formData,
+  ) => {
+    const confirmDelete = window.confirm(
+      'ステータスを元に戻すことはできません。誤りはありませんか？',
+    )
+
+    if (!confirmDelete) {
+      return
+    }
+    const url =
+      process.env.NEXT_PUBLIC_API_BASE_URL +
+      '/students/courses/enrollment-status'
+    const headers = { 'Content-Type': 'application/json' }
+
+    axios({ method: 'post', url: url, data: formData, headers: headers })
+      .then((res: AxiosResponse) => {
+        res.status === 200 && mutate()
+        alert('申込状況を更新しました')
+        handleStatusFormClose()
+      })
+      .catch((err: AxiosError<{ message: string }>) => {
+        console.log(err)
+        alert(err.response?.data.message)
+      })
+  }
+
+  const handleStatusFormOpen = (
+    studentCourseId: string,
+    enrollmentStatus: string,
+  ) => {
+    setIsStatusFormOpen(true)
+    enrollmentStatusFormHandler.setValue('studentCourseId', studentCourseId)
+    enrollmentStatusFormHandler.setValue('status', enrollmentStatus)
+  }
+  const handleStatusFormClose = () => {
+    setIsStatusFormOpen(false)
   }
 
   if (error) return <div>An error has occurred.</div>
@@ -99,77 +126,33 @@ const StudentDetail: NextPage = () => {
         <Typography variant="h5" gutterBottom>
           基本情報
         </Typography>
-        <TableContainer component={Paper} sx={{ mb: 2 }}>
-          <Table sx={{ minWidth: 650 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>氏名</TableCell>
-                <TableCell>カナ名</TableCell>
-                <TableCell>ニックネーム</TableCell>
-                <TableCell>メールアドレス</TableCell>
-                <TableCell>居住地域</TableCell>
-                <TableCell>年齢</TableCell>
-                <TableCell>性別</TableCell>
-                <TableCell>備考</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow key={data.student.id}>
-                <TableCell>{data.student.fullName}</TableCell>
-                <TableCell>{data.student.kana}</TableCell>
-                <TableCell>{data.student.nickName}</TableCell>
-                <TableCell>{data.student.email}</TableCell>
-                <TableCell>{data.student.city}</TableCell>
-                <TableCell>{data.student.age}</TableCell>
-                <TableCell>{data.student.gender}</TableCell>
-                <TableCell>{data.student.remark}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <StudentInfoTable data={data} />
 
         <Typography variant="h5" gutterBottom>
           受講コース
         </Typography>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>受講コース名</TableCell>
-                <TableCell>受講開始日</TableCell>
-                <TableCell>受講修了予定日</TableCell>
-                <TableCell>申込状況</TableCell>
-                <TableCell>申込状況更新日時</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.studentCourseList.map(
-                (studentCourse: StudentCourseProps) => (
-                  <TableRow key={studentCourse.id}>
-                    <TableCell>{studentCourse.courseName}</TableCell>
-                    <TableCell>{studentCourse.startDate}</TableCell>
-                    <TableCell>{studentCourse.endDate}</TableCell>
-                    <TableCell>
-                      {studentCourse.enrollmentStatus.status}
-                    </TableCell>
-                    <TableCell>
-                      {studentCourse.enrollmentStatus.createdAt}
-                    </TableCell>
-                  </TableRow>
-                ),
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+
+        <StudentCourseTable data={data} onClick={handleStatusFormOpen} />
 
         <Dialog open={isEditFormOpen} onClose={handleEditFormClose}>
           <DialogTitle>受講生情報編集</DialogTitle>
           <EditForm
             studentData={data}
-            control={control}
-            onSubmit={handleSubmit(updateStudent)}
+            control={editFormHandler.control}
+            onSubmit={editFormHandler.handleSubmit(updateStudent)}
             onCancel={handleEditFormClose}
-            onReset={handleReset}
+            onReset={handleEditFormReset}
+          />
+        </Dialog>
+
+        <Dialog open={isStatusFormOpen} onClose={handleStatusFormClose}>
+          <DialogTitle>申込状況更新</DialogTitle>
+          <EnrollmentStatusForm
+            formHandler={enrollmentStatusFormHandler}
+            onSubmit={enrollmentStatusFormHandler.handleSubmit(
+              updateEnrollmentStatus,
+            )}
+            onCancel={handleStatusFormClose}
           />
         </Dialog>
       </Container>
