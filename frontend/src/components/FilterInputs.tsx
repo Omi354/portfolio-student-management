@@ -81,30 +81,35 @@ const FilterInputs: React.FC<FilterInputsProps> = ({
           variant="outlined"
           value={fullName}
           onChange={handleTextInputChange(setFullName)}
+          sx={{ backgroundColor: '#ffffff' }}
         />
         <TextField
           label="カナ名"
           variant="outlined"
           value={kana}
           onChange={handleTextInputChange(setKana)}
+          sx={{ backgroundColor: '#ffffff' }}
         />
         <TextField
           label="ニックネーム"
           variant="outlined"
           value={nickName}
           onChange={handleTextInputChange(setNickName)}
+          sx={{ backgroundColor: '#ffffff' }}
         />
         <TextField
           label="メールアドレス"
           variant="outlined"
           value={email}
           onChange={handleTextInputChange(setEmail)}
+          sx={{ backgroundColor: '#ffffff' }}
         />
         <TextField
           label="居住地域"
           variant="outlined"
           value={city}
           onChange={handleTextInputChange(setCity)}
+          sx={{ backgroundColor: '#ffffff' }}
         />
       </Stack>
       <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
@@ -113,12 +118,14 @@ const FilterInputs: React.FC<FilterInputsProps> = ({
           variant="outlined"
           value={maxAge}
           onChange={handleTextInputChange(setMaxAge)}
+          sx={{ backgroundColor: '#ffffff' }}
         />
         <TextField
           label="最小年齢"
           variant="outlined"
           value={minAge}
           onChange={handleTextInputChange(setMinAge)}
+          sx={{ backgroundColor: '#ffffff' }}
         />
         <FormControl sx={{ minWidth: 120 }}>
           <InputLabel id="gender">性別</InputLabel>
@@ -127,6 +134,7 @@ const FilterInputs: React.FC<FilterInputsProps> = ({
             value={gender}
             label="gender"
             onChange={handleSelectChange(setGender)}
+            sx={{ backgroundColor: '#ffffff' }}
           >
             <MenuItem value={'Male'}>Male</MenuItem>
             <MenuItem value={'Female'}>Female</MenuItem>
@@ -138,8 +146,13 @@ const FilterInputs: React.FC<FilterInputsProps> = ({
           variant="outlined"
           value={remark}
           onChange={handleTextInputChange(setRemark)}
+          sx={{ backgroundColor: '#ffffff' }}
         />
-        <Button variant="contained" onClick={handleReset}>
+        <Button
+          variant="contained"
+          onClick={handleReset}
+          sx={{ fontWeight: 'bold', color: 'white' }}
+        >
           リセット
         </Button>
       </Stack>

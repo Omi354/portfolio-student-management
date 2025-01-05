@@ -16,13 +16,8 @@ import EditForm from '@/components/EditForm'
 import EnrollmentStatusForm from '@/components/EnrollmentStatusForm'
 import StudentCourseTable from '@/components/StudentCourseTable'
 import StudentInfoTable from '@/components/StudentInfoTable'
-import { StudentDetailProps } from '@/pages/index'
+import { EnrollmentStatusFormData, StudentDetailProps } from '@/types'
 import { fetcher } from '@/utils'
-
-export type EnrollmentStatusFormData = {
-  studentCourseId: string
-  status: string
-}
 
 const StudentDetail: NextPage = () => {
   const router = useRouter()
@@ -113,15 +108,41 @@ const StudentDetail: NextPage = () => {
   if (!data) return <div>Loading...</div>
 
   return (
-    <Box sx={{ backgroundColor: '#f9f9f9', minHeight: '100vh', py: 4 }}>
+    <Box sx={{ backgroundColor: '#faf6f2', minHeight: '100vh', py: 4 }}>
       <Container maxWidth="lg">
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            textAlign: 'center',
+            alignItems: 'center',
+          }}
+        >
           <Typography variant="h4" gutterBottom>
             受講生詳細
           </Typography>
-          <Button onClick={handleEditFormOpen} variant="contained">
-            編集
-          </Button>
+          <Box>
+            <Button
+              onClick={() => router.push('/students')}
+              variant="contained"
+              sx={{
+                fontWeight: 'bold',
+                color: 'white',
+                minWidth: '80px',
+                mr: 2,
+              }}
+              color="error"
+            >
+              一覧へ戻る
+            </Button>
+            <Button
+              onClick={handleEditFormOpen}
+              variant="contained"
+              sx={{ fontWeight: 'bold', color: 'white', minWidth: '80px' }}
+            >
+              編集
+            </Button>
+          </Box>
         </Box>
         <Typography variant="h5" gutterBottom>
           基本情報

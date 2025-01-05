@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 
 import { Control, Controller } from 'react-hook-form'
-import { StudentDetailProps } from '@/pages'
+import { StudentDetailProps } from '@/types'
 import { validationRules } from '@/utils'
 
 type RegisterFormProps = {
@@ -198,24 +198,23 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           <Button
             variant="contained"
             type="button"
-            size="large"
-            onClick={onSubmit}
-            sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
-          >
-            登録
-          </Button>
-        </Grid2>
-
-        <Grid2 size={6}>
-          <Button
-            variant="contained"
-            type="button"
             color="error"
             size="large"
             onClick={onClick}
             sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
           >
             キャンセル
+          </Button>
+        </Grid2>
+        <Grid2 size={6}>
+          <Button
+            variant="contained"
+            type="button"
+            size="large"
+            onClick={onSubmit}
+            sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
+          >
+            登録
           </Button>
         </Grid2>
       </Grid2>

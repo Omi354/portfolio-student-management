@@ -7,7 +7,7 @@ import {
   TableCell,
   TableBody,
 } from '@mui/material'
-import { StudentDetailProps } from '@/pages'
+import { StudentDetailProps } from '@/types'
 
 type StudentInfoTableProps = {
   data: StudentDetailProps
