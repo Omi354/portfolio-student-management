@@ -73,6 +73,13 @@ const StudentDetail: NextPage = () => {
   const updateEnrollmentStatus: SubmitHandler<EnrollmentStatusFormData> = (
     formData,
   ) => {
+    const confirmDelete = window.confirm(
+      'ステータスを元に戻すことはできません。誤りはありませんか？',
+    )
+
+    if (!confirmDelete) {
+      return
+    }
     const url =
       process.env.NEXT_PUBLIC_API_BASE_URL +
       '/students/courses/enrollment-status'
@@ -147,68 +154,6 @@ const StudentDetail: NextPage = () => {
             )}
             onCancel={handleStatusFormClose}
           />
-          {/* <Box sx={{ m: 2 }}>
-            <Grid2 container component="form" spacing={2}>
-              <Grid2 size={12}>
-                <Controller
-                  name="studentCourseId"
-                  control={enrollmentStatusFormHandler.control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      error={fieldState.invalid}
-                      helperText={fieldState.error?.message}
-                      type="text"
-                      label="コースID"
-                      sx={{ backgroundColor: 'white', width: '100%' }}
-                    />
-                  )}
-                />
-              </Grid2>
-              <Grid2 size={12}>
-                <FormControl sx={{ width: '100%' }}>
-                  <InputLabel id="status">申込状況</InputLabel>
-                  <Controller
-                    name="status"
-                    control={enrollmentStatusFormHandler.control}
-                    render={({ field }) => (
-                      <Select {...field} labelId="status" label="status">
-                        <MenuItem value={'仮申込'}>仮申込</MenuItem>
-                        <MenuItem value={'本申込'}>本申込</MenuItem>
-                        <MenuItem value={'受講中'}>受講中</MenuItem>
-                        <MenuItem value={'受講終了…'}>受講終了</MenuItem>
-                      </Select>
-                    )}
-                  />
-                </FormControl>
-              </Grid2>
-              <Grid2 size={6}>
-                <Button
-                  variant="contained"
-                  type="button"
-                  size="large"
-                  onClick={enrollmentStatusFormHandler.handleSubmit(
-                    updateEnrollmentStatus,
-                  )}
-                  sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
-                >
-                  更新
-                </Button>
-              </Grid2>
-              <Grid2 size={6}>
-                <Button
-                  variant="contained"
-                  type="button"
-                  color="error"
-                  size="large"
-                  onClick={handleStatusFormClose}
-                  sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
-                >
-                  キャンセル
-                </Button>
-              </Grid2>
-            </Grid2>
-          </Box> */}
         </Dialog>
       </Container>
     </Box>
