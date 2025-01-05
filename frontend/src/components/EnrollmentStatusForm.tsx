@@ -34,6 +34,7 @@ const EnrollmentStatusForm: React.FC<EnrollmentStatusFormProps> = ({
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
+                disabled={true}
                 error={fieldState.invalid}
                 helperText={fieldState.error?.message}
                 type="text"
@@ -54,7 +55,7 @@ const EnrollmentStatusForm: React.FC<EnrollmentStatusFormProps> = ({
                   <MenuItem value={'仮申込'}>仮申込</MenuItem>
                   <MenuItem value={'本申込'}>本申込</MenuItem>
                   <MenuItem value={'受講中'}>受講中</MenuItem>
-                  <MenuItem value={'受講終了…'}>受講終了</MenuItem>
+                  <MenuItem value={'受講終了'}>受講終了</MenuItem>
                 </Select>
               )}
             />
