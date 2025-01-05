@@ -9,8 +9,7 @@ import {
   Button,
 } from '@mui/material'
 import { Controller, UseFormReturn } from 'react-hook-form'
-
-import { EnrollmentStatusFormData } from '@/pages/students/[id]'
+import { EnrollmentStatusFormData } from '@/types'
 
 type EnrollmentStatusFormProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,23 +64,23 @@ const EnrollmentStatusForm: React.FC<EnrollmentStatusFormProps> = ({
           <Button
             variant="contained"
             type="button"
-            size="large"
-            onClick={onSubmit}
-            sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
-          >
-            更新
-          </Button>
-        </Grid2>
-        <Grid2 size={6}>
-          <Button
-            variant="contained"
-            type="button"
             color="error"
             size="large"
             onClick={onCancel}
             sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
           >
             キャンセル
+          </Button>
+        </Grid2>
+        <Grid2 size={6}>
+          <Button
+            variant="contained"
+            type="button"
+            size="large"
+            onClick={onSubmit}
+            sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
+          >
+            更新
           </Button>
         </Grid2>
       </Grid2>

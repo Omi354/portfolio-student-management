@@ -9,13 +9,11 @@ import {
   Box,
   Typography,
 } from '@mui/material'
-
 import { Control, Controller } from 'react-hook-form'
-
-import { StudentDetailProps } from '@/pages'
+import { StudentDetailProps } from '@/types'
 import { validationRules } from '@/utils'
 
-type updateFormProps = {
+type EditFormProps = {
   studentData: StudentDetailProps
   control: Control<StudentDetailProps>
   onSubmit: () => void
@@ -23,7 +21,7 @@ type updateFormProps = {
   onReset: () => void
 }
 
-const EditForm: React.FC<updateFormProps> = ({
+const EditForm: React.FC<EditFormProps> = ({
   studentData,
   control,
   onSubmit,
@@ -250,19 +248,19 @@ const EditForm: React.FC<updateFormProps> = ({
             <Button
               variant="contained"
               type="button"
+              color="error"
               size="large"
-              onClick={onSubmit}
+              onClick={onCancel}
               sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
             >
-              更新
+              キャンセル
             </Button>
           </Grid2>
-
           <Grid2 size={4}>
             <Button
               variant="contained"
               type="button"
-              color="error"
+              color="secondary"
               size="large"
               onClick={onReset}
               sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
@@ -270,17 +268,15 @@ const EditForm: React.FC<updateFormProps> = ({
               リセット
             </Button>
           </Grid2>
-
           <Grid2 size={4}>
             <Button
               variant="contained"
               type="button"
-              color="error"
               size="large"
-              onClick={onCancel}
+              onClick={onSubmit}
               sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
             >
-              キャンセル
+              更新
             </Button>
           </Grid2>
         </Grid2>

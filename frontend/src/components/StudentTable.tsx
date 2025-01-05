@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import router from 'next/router'
 import React from 'react'
-import { StudentDetailProps } from '@/pages'
+import { StudentDetailProps } from '@/types'
 
 type StudentTableProps = {
   data: StudentDetailProps[]

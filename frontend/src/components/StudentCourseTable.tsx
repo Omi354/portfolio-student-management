@@ -8,23 +8,11 @@ import {
   TableBody,
   Button,
 } from '@mui/material'
-import { StudentDetailProps } from '@/pages'
+import { StudentCourseProps, StudentDetailProps } from '@/types'
 
 type StudentCourseTableProps = {
   data: StudentDetailProps
   onClick: (studentCourseId: string, enrollmentStatus: string) => void
-}
-
-type StudentCourseProps = {
-  id: string
-  courseName: string
-  startDate: string
-  endDate: string
-  enrollmentStatus: {
-    id: string
-    status: string
-    createdAt: string
-  }
 }
 
 const StudentCourseTable: React.FC<StudentCourseTableProps> = ({
@@ -54,13 +42,15 @@ const StudentCourseTable: React.FC<StudentCourseTableProps> = ({
               <TableCell>{studentCourse.enrollmentStatus.createdAt}</TableCell>
               <TableCell>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   onClick={() =>
                     onClick(
                       studentCourse.id,
                       studentCourse.enrollmentStatus.status,
                     )
                   }
+                  color="secondary"
+                  sx={{ color: '#ffffff' }}
                 >
                   申込状況更新
                 </Button>
