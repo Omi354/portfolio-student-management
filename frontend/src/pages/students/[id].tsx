@@ -58,7 +58,7 @@ const StudentDetail: NextPage = () => {
         handleEditFormClose()
       })
       .catch((err: AxiosError<{ error: string }>) => {
-        console.log(err)
+        console.log(err.message)
         alert(err.message)
       })
   }
@@ -89,9 +89,9 @@ const StudentDetail: NextPage = () => {
         alert('申込状況を更新しました')
         handleStatusFormClose()
       })
-      .catch((err: AxiosError<{ error: string }>) => {
-        console.log(err.message)
-        alert(err.message)
+      .catch((err: AxiosError<{ message: string }>) => {
+        console.log(err)
+        alert(err.response?.data.message)
       })
   }
 
