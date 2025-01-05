@@ -13,6 +13,7 @@ import {
 import { Control, Controller } from 'react-hook-form'
 
 import { StudentDetailProps } from '@/pages'
+import { validationRules } from '@/utils'
 
 type updateFormProps = {
   studentData: StudentDetailProps
@@ -41,6 +42,7 @@ const EditForm: React.FC<updateFormProps> = ({
             <Controller
               name="student.fullName"
               control={control}
+              rules={validationRules.student.fullName}
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
@@ -58,6 +60,7 @@ const EditForm: React.FC<updateFormProps> = ({
             <Controller
               name="student.kana"
               control={control}
+              rules={validationRules.student.kana}
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
@@ -90,6 +93,7 @@ const EditForm: React.FC<updateFormProps> = ({
             <Controller
               name="student.email"
               control={control}
+              rules={validationRules.student.email}
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
@@ -107,6 +111,7 @@ const EditForm: React.FC<updateFormProps> = ({
             <Controller
               name="student.city"
               control={control}
+              rules={validationRules.student.city}
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
@@ -124,6 +129,7 @@ const EditForm: React.FC<updateFormProps> = ({
             <Controller
               name="student.age"
               control={control}
+              rules={validationRules.student.age}
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
@@ -160,11 +166,9 @@ const EditForm: React.FC<updateFormProps> = ({
             <Controller
               name="student.remark"
               control={control}
-              render={({ field, fieldState }) => (
+              render={({ field }) => (
                 <TextField
                   {...field}
-                  error={fieldState.invalid}
-                  helperText={fieldState.error?.message}
                   type="text"
                   label="備考"
                   sx={{ backgroundColor: 'white', width: '100%' }}
@@ -184,6 +188,7 @@ const EditForm: React.FC<updateFormProps> = ({
               <Controller
                 name={`studentCourseList.${index}.courseName`}
                 control={control}
+                rules={validationRules.studentCourseList.courseName}
                 render={({ field, fieldState }) => (
                   <TextField
                     {...field}
@@ -201,6 +206,7 @@ const EditForm: React.FC<updateFormProps> = ({
               <Controller
                 name={`studentCourseList.${index}.startDate`}
                 control={control}
+                rules={validationRules.studentCourseList.startData}
                 render={({ field, fieldState }) => (
                   <TextField
                     {...field}
@@ -218,6 +224,7 @@ const EditForm: React.FC<updateFormProps> = ({
               <Controller
                 name={`studentCourseList.${index}.endDate`}
                 control={control}
+                rules={validationRules.studentCourseList.endData}
                 render={({ field, fieldState }) => (
                   <TextField
                     {...field}
