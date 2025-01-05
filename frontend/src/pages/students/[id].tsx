@@ -78,6 +78,10 @@ const StudentDetail: NextPage = () => {
     reset()
   }
 
+  const handleReset = () => {
+    reset()
+  }
+
   if (error) return <div>An error has occurred.</div>
   if (!data) return <div>Loading...</div>
 
@@ -164,7 +168,8 @@ const StudentDetail: NextPage = () => {
             studentData={data}
             control={control}
             onSubmit={handleSubmit(updateStudent)}
-            onClick={handleEditFormClose}
+            onCancel={handleEditFormClose}
+            onReset={handleReset}
           />
         </Dialog>
       </Container>

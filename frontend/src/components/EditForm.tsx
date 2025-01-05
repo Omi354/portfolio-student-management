@@ -18,14 +18,16 @@ type updateFormProps = {
   studentData: StudentDetailProps
   control: Control<StudentDetailProps>
   onSubmit: () => void
-  onClick: () => void
+  onCancel: () => void
+  onReset: () => void
 }
 
 const EditForm: React.FC<updateFormProps> = ({
   studentData,
   control,
   onSubmit,
-  onClick,
+  onCancel,
+  onReset,
 }) => {
   return (
     <Box sx={{ m: 2 }}>
@@ -232,7 +234,7 @@ const EditForm: React.FC<updateFormProps> = ({
         ))}
 
         <Grid2 container spacing={2} sx={{ mt: 3 }}>
-          <Grid2 size={6}>
+          <Grid2 size={4}>
             <Button
               variant="contained"
               type="button"
@@ -244,13 +246,26 @@ const EditForm: React.FC<updateFormProps> = ({
             </Button>
           </Grid2>
 
-          <Grid2 size={6}>
+          <Grid2 size={4}>
             <Button
               variant="contained"
               type="button"
               color="error"
               size="large"
-              onClick={onClick}
+              onClick={onReset}
+              sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
+            >
+              リセット
+            </Button>
+          </Grid2>
+
+          <Grid2 size={4}>
+            <Button
+              variant="contained"
+              type="button"
+              color="error"
+              size="large"
+              onClick={onCancel}
               sx={{ fontWeight: 'bold', color: 'white', width: '100%' }}
             >
               キャンセル
