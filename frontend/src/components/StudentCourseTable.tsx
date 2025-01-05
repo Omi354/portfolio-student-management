@@ -8,15 +8,11 @@ import {
   TableBody,
   Button,
 } from '@mui/material'
-import { UseFormReturn } from 'react-hook-form'
 import { StudentDetailProps } from '@/pages'
-import { EnrollmentStatusFormProps } from '@/pages/students/[id]'
 
 type StudentCourseTableProps = {
   data: StudentDetailProps
   onClick: (studentCourseId: string, enrollmentStatus: string) => void
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  formHandler: UseFormReturn<EnrollmentStatusFormProps, any, undefined>
 }
 
 type StudentCourseProps = {

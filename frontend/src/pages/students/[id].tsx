@@ -4,27 +4,22 @@ import {
   Container,
   Dialog,
   DialogTitle,
-  FormControl,
-  Grid2,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
   Typography,
 } from '@mui/material'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import EditForm from '@/components/EditForm'
+import EnrollmentStatusForm from '@/components/EnrollmentStatusForm'
 import StudentCourseTable from '@/components/StudentCourseTable'
 import StudentInfoTable from '@/components/StudentInfoTable'
 import { StudentDetailProps } from '@/pages/index'
 import { fetcher } from '@/utils'
 
-export type EnrollmentStatusFormProps = {
+export type EnrollmentStatusFormData = {
   studentCourseId: string
   status: string
 }
@@ -39,7 +34,7 @@ const StudentDetail: NextPage = () => {
   const editFormHandler = useForm<StudentDetailProps>({
     defaultValues: data,
   })
-  const enrollmentStatusFormHandler = useForm<EnrollmentStatusFormProps>()
+  const enrollmentStatusFormHandler = useForm<EnrollmentStatusFormData>()
 
   useEffect(() => {
     if (data) {
@@ -75,7 +70,7 @@ const StudentDetail: NextPage = () => {
     editFormHandler.reset()
   }
 
-  const updateEnrollmentStatus: SubmitHandler<EnrollmentStatusFormProps> = (
+  const updateEnrollmentStatus: SubmitHandler<EnrollmentStatusFormData> = (
     formData,
   ) => {
     const url =
@@ -130,11 +125,7 @@ const StudentDetail: NextPage = () => {
           受講コース
         </Typography>
 
-        <StudentCourseTable
-          data={data}
-          onClick={handleStatusFormOpen}
-          formHandler={enrollmentStatusFormHandler}
-        />
+        <StudentCourseTable data={data} onClick={handleStatusFormOpen} />
 
         <Dialog open={isEditFormOpen} onClose={handleEditFormClose}>
           <DialogTitle>受講生情報編集</DialogTitle>
@@ -149,7 +140,14 @@ const StudentDetail: NextPage = () => {
 
         <Dialog open={isStatusFormOpen} onClose={handleStatusFormClose}>
           <DialogTitle>申込状況更新</DialogTitle>
-          <Box sx={{ m: 2 }}>
+          <EnrollmentStatusForm
+            formHandler={enrollmentStatusFormHandler}
+            onSubmit={enrollmentStatusFormHandler.handleSubmit(
+              updateEnrollmentStatus,
+            )}
+            onCancel={handleStatusFormClose}
+          />
+          {/* <Box sx={{ m: 2 }}>
             <Grid2 container component="form" spacing={2}>
               <Grid2 size={12}>
                 <Controller
@@ -210,7 +208,7 @@ const StudentDetail: NextPage = () => {
                 </Button>
               </Grid2>
             </Grid2>
-          </Box>
+          </Box> */}
         </Dialog>
       </Container>
     </Box>
