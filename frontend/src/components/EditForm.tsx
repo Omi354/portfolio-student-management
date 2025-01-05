@@ -183,61 +183,66 @@ const EditForm: React.FC<updateFormProps> = ({
         </Typography>
 
         {studentData.studentCourseList.map((studentCourse, index) => (
-          <Grid2 container spacing={2} key={index}>
-            <Grid2 size={12}>
-              <Controller
-                name={`studentCourseList.${index}.courseName`}
-                control={control}
-                rules={validationRules.studentCourseList.courseName}
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    error={fieldState.invalid}
-                    helperText={fieldState.error?.message}
-                    type="text"
-                    label="コース名"
-                    sx={{ backgroundColor: 'white', width: '100%' }}
-                  />
-                )}
-              />
-            </Grid2>
+          <Box sx={{ mt: 1 }} key={index}>
+            <Typography gutterBottom sx={{ mt: 1, mb: 1 }}>
+              受講コース{index + 1}
+            </Typography>
+            <Grid2 container spacing={2}>
+              <Grid2 size={12}>
+                <Controller
+                  name={`studentCourseList.${index}.courseName`}
+                  control={control}
+                  rules={validationRules.studentCourseList.courseName}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      error={fieldState.invalid}
+                      helperText={fieldState.error?.message}
+                      type="text"
+                      label="コース名"
+                      sx={{ backgroundColor: 'white', width: '100%' }}
+                    />
+                  )}
+                />
+              </Grid2>
 
-            <Grid2 size={6}>
-              <Controller
-                name={`studentCourseList.${index}.startDate`}
-                control={control}
-                rules={validationRules.studentCourseList.startData}
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    error={fieldState.invalid}
-                    helperText={fieldState.error?.message}
-                    type="string"
-                    label="受講開始日"
-                    sx={{ backgroundColor: 'white', width: '100%' }}
-                  />
-                )}
-              />
-            </Grid2>
+              <Grid2 size={6}>
+                <Controller
+                  name={`studentCourseList.${index}.startDate`}
+                  control={control}
+                  rules={validationRules.studentCourseList.startData}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      error={fieldState.invalid}
+                      helperText={fieldState.error?.message}
+                      type="string"
+                      label="受講開始日"
+                      sx={{ backgroundColor: 'white', width: '100%' }}
+                    />
+                  )}
+                />
+              </Grid2>
 
-            <Grid2 size={6}>
-              <Controller
-                name={`studentCourseList.${index}.endDate`}
-                control={control}
-                rules={validationRules.studentCourseList.endData}
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    error={fieldState.invalid}
-                    helperText={fieldState.error?.message}
-                    type="string"
-                    label="受講終了予定日"
-                    sx={{ backgroundColor: 'white', width: '100%' }}
-                  />
-                )}
-              />
+              <Grid2 size={6}>
+                <Controller
+                  name={`studentCourseList.${index}.endDate`}
+                  control={control}
+                  rules={validationRules.studentCourseList.endData}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      error={fieldState.invalid}
+                      helperText={fieldState.error?.message}
+                      type="string"
+                      label="受講終了予定日"
+                      sx={{ backgroundColor: 'white', width: '100%' }}
+                    />
+                  )}
+                />
+              </Grid2>
             </Grid2>
-          </Grid2>
+          </Box>
         ))}
 
         <Grid2 container spacing={2} sx={{ mt: 3 }}>
