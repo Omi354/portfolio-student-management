@@ -6,11 +6,17 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Button,
 } from '@mui/material'
+import { UseFormReturn } from 'react-hook-form'
 import { StudentDetailProps } from '@/pages'
+import { EnrollmentStatusFormProps } from '@/pages/students/[id]'
 
 type StudentCourseTableProps = {
   data: StudentDetailProps
+  onClick: (studentCourseId: string, enrollmentStatus: string) => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  formHandler: UseFormReturn<EnrollmentStatusFormProps, any, undefined>
 }
 
 type StudentCourseProps = {
@@ -25,7 +31,10 @@ type StudentCourseProps = {
   }
 }
 
-const StudentCourseTable: React.FC<StudentCourseTableProps> = ({ data }) => {
+const StudentCourseTable: React.FC<StudentCourseTableProps> = ({
+  data,
+  onClick,
+}) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }}>
@@ -36,6 +45,7 @@ const StudentCourseTable: React.FC<StudentCourseTableProps> = ({ data }) => {
             <TableCell>受講修了予定日</TableCell>
             <TableCell>申込状況</TableCell>
             <TableCell>申込状況更新日時</TableCell>
+            <TableCell>申込状況更新</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -46,6 +56,19 @@ const StudentCourseTable: React.FC<StudentCourseTableProps> = ({ data }) => {
               <TableCell>{studentCourse.endDate}</TableCell>
               <TableCell>{studentCourse.enrollmentStatus.status}</TableCell>
               <TableCell>{studentCourse.enrollmentStatus.createdAt}</TableCell>
+              <TableCell>
+                <Button
+                  variant="outlined"
+                  onClick={() =>
+                    onClick(
+                      studentCourse.id,
+                      studentCourse.enrollmentStatus.status,
+                    )
+                  }
+                >
+                  申込状況更新
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
