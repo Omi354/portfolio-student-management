@@ -11,20 +11,17 @@ import {
 } from '@mui/material'
 
 import { Control, Controller } from 'react-hook-form'
+import { StudentDetailProps } from '@/pages'
 
 type RegisterFormProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>
+  control: Control<StudentDetailProps>
   onSubmit: () => void
   onClick: () => void
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({
-  // eslint-disable-next-line react/prop-types
   control,
-  // eslint-disable-next-line react/prop-types
   onSubmit,
-  // eslint-disable-next-line react/prop-types
   onClick,
 }) => {
   const validationRules = {
