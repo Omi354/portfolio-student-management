@@ -19,7 +19,7 @@
       "error",
       {
         "trailingComma": "all",
-        "endOfLine": "crlf",
+        "endOfLine": "lf",
         "semi": false,
         "singleQuote": true,
         "printWidth": 80,
