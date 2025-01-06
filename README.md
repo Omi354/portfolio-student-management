@@ -18,15 +18,24 @@ JavaやSpring Bootの学習成果を形にするために作成しました。
 
 ### バックエンド
 
-![badge](https://img.shields.io/badge/language-Java_21-%23007396)
+![badge](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=ED8B00)
 ![badge](https://img.shields.io/badge/SpringBoot-3.3.5-%236DB33F?logo=spring)
+
+### フロントエンドエンド
+![badge](https://shields.io/badge/TypeScript-5.3.3-3178C6?logo=TypeScript&logoColor=3178C6)
+![badge](https://img.shields.io/badge/next.js-15.1.3-000000?logo=nextdotjs&logoColor=white)
+
+
 
 ### インフラ・DB
 
 ![badge](https://img.shields.io/badge/AWS-EC2-FF9900?logo=amazonec2&labelColor=cccccc)
 ![badge](https://img.shields.io/badge/AWS-RDS-527FFF?logo=amazonrds&labelColor=cccccc)
 ![badge](https://img.shields.io/badge/AWS-ALB-8C4FFF?logo=awselasticloadbalancing&labelColor=cccccc)
+![badge](https://img.shields.io/badge/AWS-R53-8C4FFF?logo=amazonroute53&labelColor=cccccc)
+![badge](https://img.shields.io/badge/AWS-ACM-DD344C?labelColor=cccccc)
 ![badge](https://img.shields.io/badge/MySQL-%234479A1?logo=mysql&logoColor=white)
+![badge](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)
 
 ### 使用ツール
 
@@ -34,9 +43,13 @@ JavaやSpring Bootの学習成果を形にするために作成しました。
 ![badge](https://img.shields.io/badge/Junit5-%2325A162?logo=junit5&logoColor=white)
 ![badge](https://img.shields.io/badge/Postman-%23FF6C37?logo=postman&logoColor=white)
 ![badge](https://img.shields.io/badge/Swagger-%2385EA2D?logo=swagger&logoColor=white)
+![badge](https://img.shields.io/badge/Material%20UI-007FFF?logo=mui&logoColor=white)
+![badge](https://img.shields.io/badge/ESLint-3A33D1?logo=eslint)
+![badge](https://img.shields.io/badge/Prettier-F7B93E?style=flat&logo=Prettier&logoColor=white)
 ![badge](https://img.shields.io/badge/GitHub-%23181717?logo=github&logoColor=white)
 ![badge](https://img.shields.io/badge/GitHub_Actions-%232088FF?logo=githubactions&logoColor=white)
 ![badge](https://img.shields.io/badge/-intellij%20IDEA-000.svg?logo=intellij-idea&style=flat)
+![badge](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?logo=visualstudiocode&logoColor=fff)
 
 ## 機能一覧
 
@@ -55,6 +68,27 @@ JavaやSpring Bootの学習成果を形にするために作成しました。
 - 受講コース： コース名、開始日、終了日、申込状況などをもつオブジェクト
 - 申込状況： 仮申込,本申込といった申込状況、作成日などをもつオブジェクト
 - 受講生詳細： 受講生、受講コース（申込状況含む）をもつオブジェクト
+
+## 使用イメージ
+### 受講生一覧画面
+#### 絞り込み
+<div><video controls src="images/受講生一覧_絞り込み.mp4" muted="false"></video></div>
+
+#### 新規登録
+<div><video controls src="images/受講生一覧_新規登録.mp4" muted="false"></video></div>
+
+#### 削除
+<div><video controls src="images/受講生一覧_削除.mp4" muted="false"></video></div>
+
+### 受講生詳細画面
+#### 編集
+<div><video controls src="images/受講生詳細_編集.mp4" muted="false"></video></div>
+
+#### 申込状況更新
+<div><video controls src="images/受講生詳細_申込状況更新.mp4" muted="false"></video></div>
+
+### フォームバリデーション
+![](images/バリデーション.drawio.svg)
 
 ## 設計書
 
@@ -98,15 +132,18 @@ erDiagram
 
 ```
 
-### URL設計
+### APIのURL設計
 
 | HTTP<br/>メソッド | URL                                 | 処理内容                                  | 
 |---------------|-------------------------------------|---------------------------------------|
-| POST          | /students                           | 受講生詳細の作成                              |
-| GET           | /students                           | 受講生詳細の取得<br/>クエリパラメータを指定した場合は条件検索をします | 
-| GET           | /students/{id}                      | 指定したIDの受講生詳細の取得                       |
-| PUT           | /students                           | 受講生詳細の更新                              |
-| POST          | /students/courses/enrollment-status | 申込状況の更新<br/>※挙動としては新規レコードを追加します       | 
+| POST          | /api/students                           | 受講生詳細の作成                              |
+| GET           | /api/students                           | 受講生詳細の取得<br/>クエリパラメータを指定した場合は条件検索をします | 
+| GET           | /api/students/{id}                      | 指定したIDの受講生詳細の取得                       |
+| PUT           | /api/students                           | 受講生詳細の更新                              |
+| POST          | /api/students/courses/enrollment-status | 申込状況の更新<br/>※挙動としては新規レコードを追加します       | 
+
+### 画面遷移図
+![](images/page-flow-diagram.drawio.svg)
 
 ### シーケンス図
 
@@ -116,7 +153,7 @@ sequenceDiagram
     participant API as Spring Boot API
     participant DB as Database
     Note right of User: 受講生詳細の登録フロー
-    User ->>+ API: POST /students (リクエストボディ：受講生詳細)
+    User ->>+ API: POST /api/students (リクエストボディ：受講生詳細)
     API ->> API: 入力データ検証
     alt 入力データが有効な場合
         API ->> API: UUIDなどのデフォルト値を設定
@@ -129,7 +166,7 @@ sequenceDiagram
     end
 
     Note right of User: 受講生の条件検索フロー
-    User ->>+ API: GET /students (クエリパラメータ: 受講生フィールドの項目)
+    User ->>+ API: GET /api/students (クエリパラメータ: 受講生フィールドの項目)
     API ->> API: 入力データ検証
     alt 入力データが有効な場合
         API ->> DB: SELECT受講生
@@ -142,7 +179,7 @@ sequenceDiagram
     end
 
     Note right of User: 申込状況での検索フロー
-    User ->>+ API: GET /students (クエリパラメータ: 申込状況)
+    User ->>+ API: GET /api/students (クエリパラメータ: 申込状況)
     API ->> API: 入力データ検証
     alt 入力データが有効な場合
         API ->> DB: SELECT受講コース（条件：申込状況）
@@ -155,7 +192,7 @@ sequenceDiagram
     end
 
     Note right of User: 受講生のID検索フロー
-    User ->>+ API: GET /students/id
+    User ->>+ API: GET /api/students/id
     API ->> API: IDの形式を検証
     alt IDの形式が正しい場合
         API ->> DB: SELECT受講生
@@ -173,7 +210,7 @@ sequenceDiagram
     end
 
     Note right of User: 受講生詳細の更新フロー
-    User ->>+ API: PUT /students（リクエストボディ：受講生詳細）
+    User ->>+ API: PUT /api/students（リクエストボディ：受講生詳細）
     API ->> API: 入力データ検証
     alt 入力データが正しい場合
         API ->> API: 入力データのIDを抽出
@@ -193,7 +230,7 @@ sequenceDiagram
     end
 
     Note right of User: 申込状況の更新フロー
-    User ->>+ API: POST /students/courses/enrollment-status（リクエストボディ：申込状況）
+    User ->>+ API: POST /api/students/courses/enrollment-status（リクエストボディ：申込状況）
     API ->> DB: SELECT申込状況（全件）
     DB -->> API: 申込状況（全件）
     API ->> API: リクエストボディの検証
@@ -264,11 +301,15 @@ sequenceDiagram
 
 ## 今後の展望
 
-- フロントエンドの実装
-    - ReactとMaterial-UIなどのUIライブラリを使用し、開発スピードとレスポンシブ対応などの機能面を両立
-    - シンプルな表形式のデータ表示を想定
+- フロントエンドの追加・修正~~実装~~（2025.01.06 フロントエンドを実装しました）
+    - ~~ReactとMaterial-UIなどのUIライブラリを使用し、開発スピードとレスポンシブ対応などの機能面を両立~~
+    - ~~シンプルな表形式のデータ表示を想定~~
+    - 申込状況一覧検索画面の追加
+    - リファクタリング、命名の見直し
+      - 1週間と期限を決めて作成したため、可読性の改善が必要
 - インフラ構成の修正
-    - SSMとS3を使用し、EC2のIPアドレスが変わってもCDが機能するように修正
+    - Vercelの使用状況を確認し、必要があればAWSでのデプロイに切替
 - テーブルを横断的に検索する機能の実装
+- 受講コース追加機能の実装
 - 結合テストの自動テストを作成
 - 認証機能の実装
