@@ -73,7 +73,7 @@ class StudentControllerTest {
     String remark = null;
 
     // 実行、検証
-    mockMvc.perform(get("/students"))
+    mockMvc.perform(get("/api/students"))
         .andExpect(status().isOk())
         .andExpect(content().json("[]"));
 
@@ -97,7 +97,7 @@ class StudentControllerTest {
     String remark = "学生";
 
     // 実行、検証
-    mockMvc.perform(get("/students")
+    mockMvc.perform(get("/api/students")
             .param("fullName", fullName)
             .param("kana", kana)
             .param("nickName", nickName)
@@ -123,7 +123,7 @@ class StudentControllerTest {
       Status status)
       throws Exception {
     // 実行と検証
-    mockMvc.perform(get("/students")
+    mockMvc.perform(get("/api/students")
             .param("status", status.name()))
         .andExpect(status().isOk())
         .andExpect(content().json("[]"));
@@ -148,7 +148,7 @@ class StudentControllerTest {
     Status status = Status.受講中;
 
     // 実行、検証
-    mockMvc.perform(get("/students")
+    mockMvc.perform(get("/api/students")
             .param("fullName", fullName)
             .param("kana", kana)
             .param("nickName", nickName)
@@ -187,7 +187,7 @@ class StudentControllerTest {
     String remark = null;
 
     // 実行、検証
-    mockMvc.perform(get("/students")
+    mockMvc.perform(get("/api/students")
             .param("minAge", Objects.nonNull(minAge) ? minAge.toString() : "")
             .param("maxAge", Objects.nonNull(maxAge) ? maxAge.toString() : "")
         )
@@ -208,7 +208,7 @@ class StudentControllerTest {
     String id = UUID.randomUUID().toString();
 
     // 実行、検証
-    mockMvc.perform(get("/students/{id}", id))
+    mockMvc.perform(get("/api/students/{id}", id))
         .andExpect(status().isOk());
 
     // 検証
@@ -223,7 +223,7 @@ class StudentControllerTest {
     when(service.getStudentDetailById(id)).thenThrow(new StudentNotFoundException());
 
     // 実行、検証
-    mockMvc.perform(get("/students/{id}", id))
+    mockMvc.perform(get("/api/students/{id}", id))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.message").value("指定したIDの受講生が見つかりませんでした"));
 
@@ -238,7 +238,7 @@ class StudentControllerTest {
     String wrongId = "aaa";
 
     // 実行、検証
-    mockMvc.perform(get("/students/{id}", wrongId))
+    mockMvc.perform(get("/api/students/{id}", wrongId))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value(
             "入力された値が無効です。再度ご確認の上、正しい値を入力してください。"));
@@ -273,7 +273,7 @@ class StudentControllerTest {
             }
         """;
     // 実行、検証
-    mockMvc.perform(post("/students")
+    mockMvc.perform(post("/api/students")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isOk());
@@ -309,7 +309,7 @@ class StudentControllerTest {
             }
         """;
     // 実行、検証
-    mockMvc.perform(post("/students")
+    mockMvc.perform(post("/api/students")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isBadRequest())
@@ -351,7 +351,7 @@ class StudentControllerTest {
         """;
 
     // 実行と検証
-    mockMvc.perform(put("/students")
+    mockMvc.perform(put("/api/students")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isOk())
@@ -393,7 +393,7 @@ class StudentControllerTest {
         """;
 
     // 実行と検証
-    mockMvc.perform(put("/students")
+    mockMvc.perform(put("/api/students")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isBadRequest())
@@ -438,7 +438,7 @@ class StudentControllerTest {
         .when(service).updateStudent(any());
 
     // 実行と検証
-    mockMvc.perform(put("/students")
+    mockMvc.perform(put("/api/students")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isNotFound())
@@ -482,7 +482,7 @@ class StudentControllerTest {
         .when(service).updateStudent(any());
 
     // 実行と検証
-    mockMvc.perform(put("/students")
+    mockMvc.perform(put("/api/students")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isNotFound())
@@ -506,7 +506,7 @@ class StudentControllerTest {
         """;
 
     // 実行と検証
-    mockMvc.perform(post("/students/courses/enrollment-status")
+    mockMvc.perform(post("/api/students/courses/enrollment-status")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isOk())
@@ -532,7 +532,7 @@ class StudentControllerTest {
         .when(service).updateEnrollmentStatus(any());
 
     // 実行と検証
-    mockMvc.perform(post("/students/courses/enrollment-status")
+    mockMvc.perform(post("/api/students/courses/enrollment-status")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isNotFound())
@@ -561,7 +561,7 @@ class StudentControllerTest {
         .when(service).updateEnrollmentStatus(any());
 
     // 実行と検証
-    mockMvc.perform(post("/students/courses/enrollment-status")
+    mockMvc.perform(post("/api/students/courses/enrollment-status")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isBadRequest())
