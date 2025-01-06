@@ -88,7 +88,7 @@ https://github.com/user-attachments/assets/6a3ee1fa-8c25-4beb-a8a1-9e7111aa18a3
 https://github.com/user-attachments/assets/171af81c-3172-403c-9b5d-3180b6f088b2
 
 ### フォームバリデーション
-![](images/バリデーション.drawio.svg)
+![](images/バリデーション.drawio.png)
 
 ## 設計書
 
@@ -143,7 +143,7 @@ erDiagram
 | POST          | /api/students/courses/enrollment-status | 申込状況の更新<br/>※挙動としては新規レコードを追加します       | 
 
 ### 画面遷移図
-![](images/page-flow-diagram.drawio.svg)
+![](images/画面遷移図.drawio.png)
 
 ### シーケンス図
 
@@ -249,7 +249,7 @@ sequenceDiagram
 
 ### インフラ構成図
 
-![](images/infrastructure-diagram.drawio.svg)
+![](images/インフラ構成図.drawio.png)
 
 ## 自動テスト
 
