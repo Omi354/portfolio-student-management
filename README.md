@@ -72,20 +72,20 @@ JavaやSpring Bootの学習成果を形にするために作成しました。
 ## 使用イメージ
 ### 受講生一覧画面
 #### 絞り込み
-<div><video controls src="images/受講生一覧_絞り込み.mp4" muted="false"></video></div>
+https://github.com/user-attachments/assets/c03fd7a9-0524-4749-b75b-7d66c9f402bc
 
 #### 新規登録
-<div><video controls src="images/受講生一覧_新規登録.mp4" muted="false"></video></div>
+https://github.com/user-attachments/assets/7680adc5-59db-493c-9872-b35bf14dfada
 
 #### 削除
-<div><video controls src="images/受講生一覧_削除.mp4" muted="false"></video></div>
+https://github.com/user-attachments/assets/07421022-33d4-4398-b991-135a5f108e1d
 
 ### 受講生詳細画面
 #### 編集
-<div><video controls src="images/受講生詳細_編集.mp4" muted="false"></video></div>
+https://github.com/user-attachments/assets/6a3ee1fa-8c25-4beb-a8a1-9e7111aa18a3
 
 #### 申込状況更新
-<div><video controls src="images/受講生詳細_申込状況更新.mp4" muted="false"></video></div>
+https://github.com/user-attachments/assets/171af81c-3172-403c-9b5d-3180b6f088b2
 
 ### フォームバリデーション
 ![](images/バリデーション.drawio.svg)
