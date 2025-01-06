@@ -8,7 +8,6 @@ import {
 } from '@mui/material'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import type { NextPage } from 'next'
-import Router from 'next/router'
 import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
@@ -146,7 +145,12 @@ const StudentPage: NextPage = () => {
     reset()
   }
 
-  const deleteStudent = (studentData: StudentDetailProps) => {
+  const deleteStudent = (
+    studentData: StudentDetailProps,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.stopPropagation()
+
     const confirmDelete = window.confirm(
       studentData.student.fullName + 'さんを本当に削除してよろしいですか？',
     )
@@ -169,7 +173,6 @@ const StudentPage: NextPage = () => {
             'さんを削除しました\n\n' +
             'データの復旧を希望の場合は管理者にお問い合わせください',
         )
-        Router.push('/')
       })
       .catch((err: AxiosError<{ error: string }>) => {
         console.log(err)

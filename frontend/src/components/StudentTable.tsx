@@ -15,7 +15,10 @@ import { StudentDetailProps } from '@/types'
 
 type StudentTableProps = {
   data: StudentDetailProps[]
-  deleteStudent: (studentDetail: StudentDetailProps) => void
+  deleteStudent: (
+    studentDetail: StudentDetailProps,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => void
 }
 
 const StudentTable: React.FC<StudentTableProps> = ({ data, deleteStudent }) => {
@@ -58,7 +61,7 @@ const StudentTable: React.FC<StudentTableProps> = ({ data, deleteStudent }) => {
                     variant="contained"
                     color="error"
                     size="small"
-                    onClick={() => deleteStudent(studentData)}
+                    onClick={(e) => deleteStudent(studentData, e)}
                   >
                     削除
                   </Button>
