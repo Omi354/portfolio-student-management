@@ -42,7 +42,8 @@ import portfolio.StudentManagement.service.StudentService;
 @Validated
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://www.naomichiizumi.com",
+    "https://naomichiizumi.com"})
 public class StudentController {
 
   private StudentService service;
