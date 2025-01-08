@@ -23,7 +23,7 @@ JavaやSpring Bootの学習成果を形にするために作成しました。
 
 ### フロントエンドエンド
 ![badge](https://shields.io/badge/TypeScript-5.3.3-3178C6?logo=TypeScript&logoColor=3178C6)
-![badge](https://img.shields.io/badge/next.js-15.1.3-000000?logo=nextdotjs&logoColor=white)
+![badge](https://img.shields.io/badge/Next.js-15.1.3-000000?logo=nextdotjs&logoColor=white)
 
 
 
@@ -147,6 +147,7 @@ erDiagram
 
 ### シーケンス図
 
+#### 受講生詳細の登録フロー
 ```mermaid
 sequenceDiagram
     actor User
@@ -164,7 +165,14 @@ sequenceDiagram
     else 入力データが無効な場合
         API -->>- User: 400 エラーメッセージ
     end
+```
 
+#### 受講生の条件検索フロー
+```mermaid
+sequenceDiagram
+    actor User
+    participant API as Spring Boot API
+    participant DB as Database
     Note right of User: 受講生の条件検索フロー
     User ->>+ API: GET /api/students (クエリパラメータ: 受講生フィールドの項目)
     API ->> API: 入力データ検証
@@ -177,7 +185,13 @@ sequenceDiagram
     else 入力データが無効な場合
         API -->>- User: 400 エラーメッセージ
     end
-
+```
+#### 申込状況での検索フロー
+```mermaid
+sequenceDiagram
+    actor User
+    participant API as Spring Boot API
+    participant DB as Database
     Note right of User: 申込状況での検索フロー
     User ->>+ API: GET /api/students (クエリパラメータ: 申込状況)
     API ->> API: 入力データ検証
@@ -190,7 +204,13 @@ sequenceDiagram
     else 入力データが無効な場合
         API -->>- User: 400 エラーメッセージ
     end
-
+```
+#### 受講生のID検索フロー
+```mermaid
+sequenceDiagram
+    actor User
+    participant API as Spring Boot API
+    participant DB as Database
     Note right of User: 受講生のID検索フロー
     User ->>+ API: GET /api/students/id
     API ->> API: IDの形式を検証
@@ -209,6 +229,13 @@ sequenceDiagram
         API -->>- User: 400 エラーメッセージ
     end
 
+```
+#### 受講生詳細の更新フロー
+```mermaid
+sequenceDiagram
+    actor User
+    participant API as Spring Boot API
+    participant DB as Database
     Note right of User: 受講生詳細の更新フロー
     User ->>+ API: PUT /api/students（リクエストボディ：受講生詳細）
     API ->> API: 入力データ検証
@@ -229,6 +256,13 @@ sequenceDiagram
         API -->>- User: 400 エラーメッセージ
     end
 
+```
+#### 申込状況の更新フロー
+```mermaid
+sequenceDiagram
+    actor User
+    participant API as Spring Boot API
+    participant DB as Database
     Note right of User: 申込状況の更新フロー
     User ->>+ API: POST /api/students/courses/enrollment-status（リクエストボディ：申込状況）
     API ->> DB: SELECT申込状況（全件）
@@ -300,6 +334,9 @@ sequenceDiagram
     - 読みやすいレビュー依頼: プルリクエストでのレビュー依頼時に概要を把握しやすいよう、変更点・変更目的・特にレビューいただきたい箇所などを明示しました
 
 ## 今後の展望
+- 全体関わる改修
+  - テーブル構成の修正：コースマスターと受講状況のテーブルを分ける
+  - 受講コース追加機能の実装
 
 - フロントエンドの追加・修正~~実装~~（2025.01.06 フロントエンドを実装しました）
     - ~~ReactとMaterial-UIなどのUIライブラリを使用し、開発スピードとレスポンシブ対応などの機能面を両立~~
@@ -307,9 +344,13 @@ sequenceDiagram
     - 申込状況一覧検索画面の追加
     - リファクタリング、命名の見直し
       - 1週間と期限を決めて作成したため、可読性の改善が必要
+    - 一覧表示→絞り込み、ではなく、条件指定→検索ボタン押下→一覧表示の流れに修正
 - インフラ構成の修正
     - Vercelの使用状況を確認し、必要があればAWSでのデプロイに切替
-- テーブルを横断的に検索する機能の実装
-- 受講コース追加機能の実装
-- 結合テストの自動テストを作成
-- 認証機能の実装
+    - CD時のEC2インスタンスの指定方法を独自ドメインを利用する形に修正
+
+- バックエンドの修正
+  - 結合テストの自動テストを作成
+  - 認証機能の実装
+  - 受講生詳細更新用のエンドポイントを`/api/students/{id}`に修正
+  - レコードの全件取得をしているメソッドについて、全件本当に必要か見直す
