@@ -11,6 +11,7 @@ import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
+import Error from '@/components/Error'
 import FilterInputs from '@/components/FilterInputs'
 import Loading from '@/components/Loading'
 import RegisterForm from '@/components/RegisterForm'
@@ -181,7 +182,7 @@ const StudentPage: NextPage = () => {
       })
   }
 
-  if (error) return <div>An error has occurred.</div>
+  if (error) return <Error error={error} />
   if (!data) return <Loading />
 
   return (
