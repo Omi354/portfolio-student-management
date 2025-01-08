@@ -7,7 +7,9 @@
   <!-- 申込状況の全件検索 -->
   <select id="selectAllEnrollmentStatus"
     resultType="portfolio.StudentManagement.data.EnrollmentStatus">
-    SELECT * FROM enrollment_statuses
+    SELECT *
+    FROM enrollment_statuses
+    ORDER BY created_at
   </select>
 
   <!-- 申込状況の新規登録 -->
