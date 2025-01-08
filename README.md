@@ -23,7 +23,7 @@ JavaやSpring Bootの学習成果を形にするために作成しました。
 
 ### フロントエンドエンド
 ![badge](https://shields.io/badge/TypeScript-5.3.3-3178C6?logo=TypeScript&logoColor=3178C6)
-![badge](https://img.shields.io/badge/next.js-15.1.3-000000?logo=nextdotjs&logoColor=white)
+![badge](https://img.shields.io/badge/Next.js-15.1.3-000000?logo=nextdotjs&logoColor=white)
 
 
 
