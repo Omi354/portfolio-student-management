@@ -170,7 +170,7 @@ class StudentCourseRepositoryTest {
     EnrollmentStatus status6 = new EnrollmentStatus(
         "bd9bf9l0-bbbb-7b20-8000-000000000015",
         "bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
-        Status.valueOf("受講終了"), LocalDateTime.parse("2024-12-01T09:00:00")
+        Status.valueOf("受講中"), LocalDateTime.parse("2024-12-01T09:00:00")
     );
 
     EnrollmentStatus status7 = new EnrollmentStatus(
@@ -206,7 +206,7 @@ class StudentCourseRepositoryTest {
     EnrollmentStatus status12 = new EnrollmentStatus(
         "hd9hj9r0-hhhh-7b20-8000-000000000012",
         "hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh",
-        Status.valueOf("受講終了"), LocalDateTime.parse("2023-07-01T09:00:00")
+        Status.valueOf("受講中"), LocalDateTime.parse("2023-07-01T09:00:00")
     );
 
     return Stream.of(

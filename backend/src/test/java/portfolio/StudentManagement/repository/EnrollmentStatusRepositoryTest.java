@@ -105,13 +105,13 @@ class EnrollmentStatusRepositoryTest {
         EnrollmentStatus.builder()
             .id("bd9bf9l0-bbbb-7b20-8000-000000000006")
             .studentCourseId("bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb")
-            .status(Status.受講中)
+            .status(Status.仮申込)
             .createdAt(LocalDateTime.parse("2024-07-01T09:00:00"))
             .build(),
         EnrollmentStatus.builder()
             .id("bd9bf9l0-bbbb-7b20-8000-000000000015")
             .studentCourseId("bd9bf9l0-bbbb-bbbb-bbbb-bbbbbbbbbbbb")
-            .status(Status.受講終了)
+            .status(Status.受講中)
             .createdAt(LocalDateTime.parse("2024-12-01T09:00:00"))
             .build(),
         EnrollmentStatus.builder()
@@ -147,7 +147,7 @@ class EnrollmentStatusRepositoryTest {
         EnrollmentStatus.builder()
             .id("hd9hj9r0-hhhh-7b20-8000-000000000012")
             .studentCourseId("hd9hj9r0-hhhh-hhhh-hhhh-hhhhhhhhhhhh")
-            .status(Status.受講終了)
+            .status(Status.受講中)
             .createdAt(LocalDateTime.parse("2023-07-01T09:00:00"))
             .build()
     );
