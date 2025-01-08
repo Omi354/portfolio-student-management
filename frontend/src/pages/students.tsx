@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import FilterInputs from '@/components/FilterInputs'
+import Loading from '@/components/Loading'
 import RegisterForm from '@/components/RegisterForm'
 import StudentTable from '@/components/StudentTable'
 import { StudentDetailProps } from '@/types'
@@ -181,7 +182,7 @@ const StudentPage: NextPage = () => {
   }
 
   if (error) return <div>An error has occurred.</div>
-  if (!data) return <div>Loading...</div>
+  if (!data) return <Loading />
 
   return (
     <Box sx={{ backgroundColor: '#faf6f2', minHeight: '100vh', py: 4 }}>
