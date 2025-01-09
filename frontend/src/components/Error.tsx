@@ -14,7 +14,7 @@ type ErrorProps = {
 const Error: React.FC<ErrorProps> = ({ error }) => {
   return (
     <Container maxWidth="sm">
-      <Card sx={{ p: 3, mt: 8, backgroundColor: '#EEEEEE' }}>
+      <Card sx={{ p: 3, mt: 8, backgroundColor: '#efe3d4' }}>
         <CardContent sx={{ lineHeight: 2 }}>
           {error?.response?.data?.message
             ? error.response.data.message
