@@ -243,7 +243,7 @@ const EditForm: React.FC<EditFormProps> = ({
           </Box>
         ))}
 
-        <Grid2 container spacing={2} sx={{ mt: 3 }}>
+        <Grid2 container spacing={4} sx={{ mt: 3 }}>
           <Grid2 size={4}>
             <Button
               variant="contained"
