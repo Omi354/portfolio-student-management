@@ -152,6 +152,7 @@ const FilterInputs: React.FC<FilterInputsProps> = ({
           variant="contained"
           onClick={handleReset}
           sx={{ fontWeight: 'bold', color: 'white' }}
+          color="secondary"
         >
           リセット
         </Button>

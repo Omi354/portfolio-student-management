@@ -133,7 +133,7 @@ const StudentDetail: NextPage = () => {
                 minWidth: '80px',
                 mr: 2,
               }}
-              color="error"
+              color="secondary"
             >
               一覧へ戻る
             </Button>
