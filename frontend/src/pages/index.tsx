@@ -21,6 +21,7 @@ const TopPage: NextPage = () => {
           alt="Top Image"
           width={1000}
           height={500}
+          unoptimized
         />
         <Button
           variant="contained"
