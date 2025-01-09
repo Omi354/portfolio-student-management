@@ -14,6 +14,8 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import EditForm from '@/components/EditForm'
 import EnrollmentStatusForm from '@/components/EnrollmentStatusForm'
+import Error from '@/components/Error'
+import Loading from '@/components/Loading'
 import StudentCourseTable from '@/components/StudentCourseTable'
 import StudentInfoTable from '@/components/StudentInfoTable'
 import { EnrollmentStatusFormData, StudentDetailProps } from '@/types'
@@ -104,8 +106,8 @@ const StudentDetail: NextPage = () => {
     setIsStatusFormOpen(false)
   }
 
-  if (error) return <div>An error has occurred.</div>
-  if (!data) return <div>Loading...</div>
+  if (error) return <Error error={error} />
+  if (!data) return <Loading />
 
   return (
     <Box sx={{ backgroundColor: '#faf6f2', minHeight: '100vh', py: 4 }}>
@@ -131,7 +133,7 @@ const StudentDetail: NextPage = () => {
                 minWidth: '80px',
                 mr: 2,
               }}
-              color="error"
+              color="secondary"
             >
               一覧へ戻る
             </Button>

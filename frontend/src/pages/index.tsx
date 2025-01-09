@@ -2,7 +2,6 @@ import { Box, Button } from '@mui/material'
 import { NextPage } from 'next'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import localImage from '../images/student-management.gif'
 
 const TopPage: NextPage = () => {
   const router = useRouter()
@@ -17,7 +16,13 @@ const TopPage: NextPage = () => {
           textAlign: 'center',
         }}
       >
-        <Image src={localImage} alt="Top Image" width={1000} height={500} />
+        <Image
+          src={'/student-management.gif'}
+          alt="Top Image"
+          width={1000}
+          height={500}
+          unoptimized
+        />
         <Button
           variant="contained"
           color="primary"

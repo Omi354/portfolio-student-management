@@ -11,7 +11,9 @@ import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
+import Error from '@/components/Error'
 import FilterInputs from '@/components/FilterInputs'
+import Loading from '@/components/Loading'
 import RegisterForm from '@/components/RegisterForm'
 import StudentTable from '@/components/StudentTable'
 import { StudentDetailProps } from '@/types'
@@ -180,15 +182,30 @@ const StudentPage: NextPage = () => {
       })
   }
 
-  if (error) return <div>An error has occurred.</div>
-  if (!data) return <div>Loading...</div>
+  if (error) return <Error error={error} />
+  if (!data) return <Loading />
 
   return (
     <Box sx={{ backgroundColor: '#faf6f2', minHeight: '100vh', py: 4 }}>
       <Container maxWidth="lg">
-        <Typography variant="h4" gutterBottom>
-          受講生一覧
-        </Typography>
+        <Box
+          mb={3}
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h4">受講生一覧</Typography>
+          <Button
+            variant="contained"
+            onClick={handleClickOpen}
+            size="large"
+            sx={{ fontWeight: 'bold', color: 'white' }}
+          >
+            新規登録
+          </Button>
+        </Box>
 
         <Dialog open={open} onClose={handleClickClose}>
           <DialogTitle>新規受講生登録</DialogTitle>
@@ -199,36 +216,27 @@ const StudentPage: NextPage = () => {
           />
         </Dialog>
 
-        <FilterInputs
-          fullName={fullName}
-          setFullName={setFullName}
-          kana={kana}
-          setKana={setKana}
-          nickName={nickName}
-          setNickName={setNickName}
-          email={email}
-          setEmail={setEmail}
-          city={city}
-          setCity={setCity}
-          maxAge={maxAge}
-          setMaxAge={setMaxAge}
-          minAge={minAge}
-          setMinAge={setMinAge}
-          gender={gender}
-          setGender={setGender}
-          remark={remark}
-          setRemark={setRemark}
-        />
-        <Box
-          onClick={handleClickOpen}
-          sx={{ mt: 2, mb: 2, textAlign: 'center' }}
-        >
-          <Button
-            variant="contained"
-            sx={{ fontWeight: 'bold', color: 'white' }}
-          >
-            新規登録
-          </Button>
+        <Box mb={3}>
+          <FilterInputs
+            fullName={fullName}
+            setFullName={setFullName}
+            kana={kana}
+            setKana={setKana}
+            nickName={nickName}
+            setNickName={setNickName}
+            email={email}
+            setEmail={setEmail}
+            city={city}
+            setCity={setCity}
+            maxAge={maxAge}
+            setMaxAge={setMaxAge}
+            minAge={minAge}
+            setMinAge={setMinAge}
+            gender={gender}
+            setGender={setGender}
+            remark={remark}
+            setRemark={setRemark}
+          />
         </Box>
 
         <StudentTable data={filteredData} deleteStudent={deleteStudent} />

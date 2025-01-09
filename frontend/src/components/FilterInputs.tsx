@@ -75,7 +75,11 @@ const FilterInputs: React.FC<FilterInputsProps> = ({
 
   return (
     <div>
-      <Stack direction="row" spacing={2}>
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{ justifyContent: 'space-between' }}
+      >
         <TextField
           label="氏名"
           variant="outlined"
@@ -112,7 +116,7 @@ const FilterInputs: React.FC<FilterInputsProps> = ({
           sx={{ backgroundColor: '#ffffff' }}
         />
       </Stack>
-      <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
+      <Stack direction="row" spacing={5} sx={{ mt: 2 }}>
         <TextField
           label="最大年齢"
           variant="outlined"
@@ -152,6 +156,7 @@ const FilterInputs: React.FC<FilterInputsProps> = ({
           variant="contained"
           onClick={handleReset}
           sx={{ fontWeight: 'bold', color: 'white' }}
+          color="secondary"
         >
           リセット
         </Button>
