@@ -16,9 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -332,10 +332,26 @@ public class StudentController {
           content = @Content(
               schema = @Schema(implementation = StudentDetail.class)
           )
-      )
+      ),
+      parameters = {
+          @Parameter(in = ParameterIn.PATH, name = "id",
+              required = true,
+              description = "受講生ID",
+              schema = @Schema(
+                  type = "string",
+                  format = "uuid",
+                  description = "UUID",
+                  example = "5998fd5d-a2cd-11ef-b71f-6845f15f510c"
+              )
+          )
+      }
   )
-  @PutMapping("/students")
-  public ResponseEntity<String> updateStudent(@RequestBody @Valid StudentDetail studentDetail)
+  @PatchMapping("/students/{id}")
+  public ResponseEntity<String> updateStudent(
+      @PathVariable @Pattern(
+          regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
+      String id,
+      @RequestBody @Valid StudentDetail studentDetail)
       throws StudentNotFoundException, StudentCourseNotFoundException {
     service.updateStudent(studentDetail);
     return ResponseEntity.ok("更新に成功しました");
