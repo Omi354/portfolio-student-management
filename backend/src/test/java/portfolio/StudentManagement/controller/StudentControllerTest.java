@@ -7,8 +7,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -351,7 +351,7 @@ class StudentControllerTest {
         """;
 
     // 実行と検証
-    mockMvc.perform(put("/api/students")
+    mockMvc.perform(patch("/api/students/9b1010ec-4e5b-46e5-8c26-9b4b23159b3d")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isOk())
@@ -393,7 +393,7 @@ class StudentControllerTest {
         """;
 
     // 実行と検証
-    mockMvc.perform(put("/api/students")
+    mockMvc.perform(patch("/api/students/9b1010ec-4e5b-46e5-8c26-9b4b2359b3d")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isBadRequest())
@@ -438,7 +438,7 @@ class StudentControllerTest {
         .when(service).updateStudent(any());
 
     // 実行と検証
-    mockMvc.perform(put("/api/students")
+    mockMvc.perform(patch("/api/students/9b1010ec-4e5b-46e5-8c26-9b4b23159b3d")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isNotFound())
@@ -482,7 +482,7 @@ class StudentControllerTest {
         .when(service).updateStudent(any());
 
     // 実行と検証
-    mockMvc.perform(put("/api/students")
+    mockMvc.perform(patch("/api/students/9b1010ec-4e5b-46e5-8c26-9b4b23159b3d")
             .contentType("application/json")
             .content(body))
         .andExpect(status().isNotFound())

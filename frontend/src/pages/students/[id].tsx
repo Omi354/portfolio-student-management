@@ -40,10 +40,10 @@ const StudentDetail: NextPage = () => {
   }, [data, editFormHandler])
 
   const updateStudent: SubmitHandler<StudentDetailProps> = (formData) => {
-    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students'
+    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students/' + id
     const headers = { 'Content-Type': 'application/json' }
 
-    axios({ method: 'PUT', url: url, data: formData, headers: headers })
+    axios({ method: 'PATCH', url: url, data: formData, headers: headers })
       .then((res: AxiosResponse) => {
         res.status === 200 && mutate()
         alert(formData.student.fullName + 'さんの情報を更新しました')
