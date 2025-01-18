@@ -161,13 +161,15 @@ const StudentPage: NextPage = () => {
       return
     }
 
+    const studentId = studentData.student.id
     const modifiedData = studentData
     modifiedData.student.isDeleted = true
 
-    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students'
+    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students/' + studentId
     const headers = { 'Content-Type': 'application/json' }
+    console.log(url)
 
-    axios({ method: 'PUT', url: url, data: modifiedData, headers: headers })
+    axios({ method: 'PATCH', url: url, data: modifiedData, headers: headers })
       .then((res: AxiosResponse) => {
         res.status === 200 && mutate()
         alert(
