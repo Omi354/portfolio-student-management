@@ -167,7 +167,6 @@ const StudentPage: NextPage = () => {
 
     const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/students/' + studentId
     const headers = { 'Content-Type': 'application/json' }
-    console.log(url)
 
     axios({ method: 'PATCH', url: url, data: modifiedData, headers: headers })
       .then((res: AxiosResponse) => {

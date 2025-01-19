@@ -15,10 +15,7 @@ type StudentCourseTableProps = {
   onClick: (studentCourseId: string, enrollmentStatus: string) => void
 }
 
-const StudentCourseTable: React.FC<StudentCourseTableProps> = ({
-  data,
-  onClick,
-}) => {
+const StudentCourseTable = ({ data, onClick }: StudentCourseTableProps) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }}>

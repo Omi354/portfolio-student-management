@@ -18,11 +18,11 @@ type EnrollmentStatusFormProps = {
   onCancel: () => void
 }
 
-const EnrollmentStatusForm: React.FC<EnrollmentStatusFormProps> = ({
+const EnrollmentStatusForm = ({
   formHandler,
   onSubmit,
   onCancel,
-}) => {
+}: EnrollmentStatusFormProps) => {
   return (
     <Box sx={{ m: 2 }}>
       <Grid2 container component="form" spacing={2}>
