@@ -20,11 +20,7 @@ type RegisterFormProps = {
   onClick: () => void
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({
-  control,
-  onSubmit,
-  onClick,
-}) => {
+const RegisterForm = ({ control, onSubmit, onClick }: RegisterFormProps) => {
   return (
     <Box sx={{ m: 2 }}>
       <Grid2 container component="form" spacing={2}>

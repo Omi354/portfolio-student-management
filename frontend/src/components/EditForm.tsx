@@ -21,13 +21,13 @@ type EditFormProps = {
   onReset: () => void
 }
 
-const EditForm: React.FC<EditFormProps> = ({
+const EditForm = ({
   studentData,
   control,
   onSubmit,
   onCancel,
   onReset,
-}) => {
+}: EditFormProps) => {
   return (
     <Box sx={{ m: 2 }}>
       <form>

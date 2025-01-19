@@ -13,7 +13,7 @@ type StudentInfoTableProps = {
   data: StudentDetailProps
 }
 
-const StudentInfoTable: React.FC<StudentInfoTableProps> = ({ data }) => {
+const StudentInfoTable = ({ data }: StudentInfoTableProps) => {
   return (
     <TableContainer component={Paper} sx={{ mb: 2 }}>
       <Table sx={{ minWidth: 650 }}>

@@ -31,7 +31,7 @@ type FilterInputsProps = {
   setRemark: React.Dispatch<React.SetStateAction<string>>
 }
 
-const FilterInputs: React.FC<FilterInputsProps> = ({
+const FilterInputs = ({
   fullName,
   setFullName,
   kana,
@@ -50,7 +50,7 @@ const FilterInputs: React.FC<FilterInputsProps> = ({
   setGender,
   remark,
   setRemark,
-}) => {
+}: FilterInputsProps) => {
   const handleTextInputChange =
     (setter: React.Dispatch<React.SetStateAction<string>>) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {

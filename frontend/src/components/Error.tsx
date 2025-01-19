@@ -11,7 +11,7 @@ type ErrorProps = {
   }
 }
 
-const Error: React.FC<ErrorProps> = ({ error }) => {
+const Error = ({ error }: ErrorProps) => {
   return (
     <Container maxWidth="sm">
       <Card sx={{ p: 3, mt: 8, backgroundColor: '#efe3d4' }}>

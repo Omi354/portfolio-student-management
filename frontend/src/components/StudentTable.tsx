@@ -21,7 +21,7 @@ type StudentTableProps = {
   ) => void
 }
 
-const StudentTable: React.FC<StudentTableProps> = ({ data, deleteStudent }) => {
+const StudentTable = ({ data, deleteStudent }: StudentTableProps) => {
   return (
     <Box>
       <TableContainer component={Paper}>
