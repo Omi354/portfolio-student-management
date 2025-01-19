@@ -77,9 +77,11 @@ const StudentDetail: NextPage = () => {
     if (!confirmDelete) {
       return
     }
+
     const url =
       process.env.NEXT_PUBLIC_API_BASE_URL +
       '/students/courses/enrollment-status'
+
     const headers = { 'Content-Type': 'application/json' }
 
     axios({ method: 'post', url: url, data: formData, headers: headers })
